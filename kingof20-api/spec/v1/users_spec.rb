@@ -15,7 +15,7 @@ RSpec.describe 'User API', type: :request do
 
     subject { post '/api/users', params: { user: valid_params } }
 
-    it 'should respond' do
+    it 'should respond and add a new User' do
       expect{ subject }.to change{ User.count }.by(1)
       expect( json ).to include(
         "email" => 'test.account@email.com',
@@ -36,7 +36,7 @@ RSpec.describe 'User API', type: :request do
 
     subject { post '/oauth/token', params: valid_params }
 
-    it 'should respond' do
+    it 'should respond with token' do
       subject
       expect( json ).to include(
         'access_token',
@@ -44,6 +44,25 @@ RSpec.describe 'User API', type: :request do
         'expires_in',
       )
       expect(response).to have_http_status(200)
+    end
+
+    context 'when credentials are invalid' do
+      let(:valid_params) {
+        {
+          username: user.username,
+          password: 'wrong_password',
+          grant_type: 'password',
+        }
+      }
+
+      it 'should respond with error' do
+        subject
+        expect( json ).to include(
+          'error',
+          'error_description',
+        )
+        expect(response).to have_http_status(401)
+      end
     end
   end
 end
