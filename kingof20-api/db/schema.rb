@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_13_032240) do
+ActiveRecord::Schema.define(version: 2019_09_03_035107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "games", force: :cascade do |t|
+    t.integer "board", array: true
+    t.integer "initiator_score"
+    t.integer "initiator_rack", array: true
+    t.integer "opponent_score"
+    t.integer "opponent_rack", array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "initiator_id"
+    t.bigint "opponent_id"
+    t.bigint "current_player_id"
+    t.index ["current_player_id"], name: "index_games_on_current_player_id"
+    t.index ["initiator_id"], name: "index_games_on_initiator_id"
+    t.index ["opponent_id"], name: "index_games_on_opponent_id"
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.bigint "resource_owner_id", null: false
@@ -71,6 +87,9 @@ ActiveRecord::Schema.define(version: 2019_08_13_032240) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "games", "users", column: "current_player_id"
+  add_foreign_key "games", "users", column: "initiator_id"
+  add_foreign_key "games", "users", column: "opponent_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
 end
