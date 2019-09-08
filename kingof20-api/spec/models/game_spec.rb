@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Game, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should validate_presence_of(:board) }
+  it { should validate_presence_of(:initiator_score) }
+  it { should validate_presence_of(:initiator_rack) }
+  it { should validate_presence_of(:opponent_score) }
+  it { should validate_presence_of(:opponent_rack) }
+  it { should validate_presence_of(:initiator_id) }
+  it { should validate_presence_of(:current_player_id) }
 end
