@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_035107) do
+ActiveRecord::Schema.define(version: 2019_09_08_232934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 2019_09_03_035107) do
     t.bigint "initiator_id"
     t.bigint "opponent_id"
     t.bigint "current_player_id"
+    t.integer "available_tiles", array: true
+    t.boolean "complete", default: false
     t.index ["current_player_id"], name: "index_games_on_current_player_id"
     t.index ["initiator_id"], name: "index_games_on_initiator_id"
     t.index ["opponent_id"], name: "index_games_on_opponent_id"

@@ -19,7 +19,7 @@ RSpec.describe User, type: :model do
     }
     let(:user_games) { initiating_user.games }
 
-    it 'works' do
+    it 'is possible to find their games' do
       expect(user_games.size).to eq(1)
       expect(user_games.first.initiator_rack).to eq(
         [7,6,5,4,3,2,1],
