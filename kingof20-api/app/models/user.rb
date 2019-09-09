@@ -4,8 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id
-  has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id
+  has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id, dependent: :destroy
+  has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id, dependent: :destroy
+
+  has_many :moves, dependent: :destroy
 
   validates :email, presence: true
   validates :encrypted_password, presence: true

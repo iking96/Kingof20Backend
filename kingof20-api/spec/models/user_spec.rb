@@ -11,9 +11,8 @@ RSpec.describe User, type: :model do
     let(:initiating_user) { create(:user) }
     let(:opposing_user) { create(:user) }
     let!(:game) { create(:game,
-      initiator_id: initiating_user.id,
-      opponent_id: opposing_user.id,
-      current_player_id: initiating_user.id,
+      initiator: initiating_user,
+      current_player: initiating_user,
       initiator_rack: [7,6,5,4,3,2,1],
       )
     }
@@ -24,6 +23,15 @@ RSpec.describe User, type: :model do
       expect(user_games.first.initiator_rack).to eq(
         [7,6,5,4,3,2,1],
       )
+    end
+
+    context 'and the game has moves' do
+      let!(:move1) { create(:move, game: game, user: initiating_user) }
+      let!(:move2) { create(:move, game: game, user: initiating_user) }
+
+      it 'possible users involved in game' do
+        expect(initiating_user.moves.size).to eq(2)
+      end
     end
   end
 end

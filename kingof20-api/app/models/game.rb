@@ -32,14 +32,17 @@ class Game < ApplicationRecord
   }
   belongs_to :initiator, class_name: 'User', required: true
   belongs_to :opponent, class_name: 'User', required: false
+  belongs_to :current_player, class_name: 'User', required: false
+
+  has_many :moves, dependent: :destroy
 
   validates :board, presence: true
   validates :initiator_score, presence: true
   validates :initiator_rack, presence: true
   validates :opponent_score, presence: true
   validates :opponent_rack, presence: true
-  validates :initiator_id, presence: true
-  validates :current_player_id, presence: true
+  validates :initiator, presence: true
+  validates :current_player, presence: true
   validates_inclusion_of :complete, in: [true, false]
   validates :available_tiles, presence: true
 
