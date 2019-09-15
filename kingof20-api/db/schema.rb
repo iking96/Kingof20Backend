@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_004816) do
+ActiveRecord::Schema.define(version: 2019_09_15_033811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "game_queues", force: :cascade do |t|
+    t.bigint "game_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_game_queues_on_game_id"
+    t.index ["user_id"], name: "index_game_queues_on_user_id"
+  end
 
   create_table "games", force: :cascade do |t|
     t.integer "board", array: true
@@ -34,9 +43,9 @@ ActiveRecord::Schema.define(version: 2019_09_09_004816) do
   end
 
   create_table "moves", force: :cascade do |t|
-    t.integer "row_num"
-    t.integer "col_num"
-    t.integer "tile_value"
+    t.integer "row_num", array: true
+    t.integer "col_num", array: true
+    t.integer "tile_value", array: true
     t.bigint "user_id"
     t.bigint "game_id"
     t.datetime "created_at", null: false
@@ -102,6 +111,8 @@ ActiveRecord::Schema.define(version: 2019_09_09_004816) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "game_queues", "games"
+  add_foreign_key "game_queues", "users"
   add_foreign_key "games", "users", column: "current_player_id"
   add_foreign_key "games", "users", column: "initiator_id"
   add_foreign_key "games", "users", column: "opponent_id"
