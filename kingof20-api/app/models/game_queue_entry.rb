@@ -1,4 +1,4 @@
-class GameQueue < ApplicationRecord
+class GameQueueEntry < ApplicationRecord
   belongs_to :game
   belongs_to :user
 

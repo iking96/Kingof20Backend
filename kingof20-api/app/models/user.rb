@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id, dependent: :destroy
   has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id, dependent: :destroy
+  has_many :waiting_games, class_name: 'Game', foreign_key: :current_player_id
 
   has_many :moves, dependent: :destroy
 
