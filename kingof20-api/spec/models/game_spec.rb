@@ -27,7 +27,7 @@ RSpec.describe Game, type: :model do
     }
     let(:user_games) { initiating_user.games }
 
-    it 'possible users involved in game' do
+    it 'is possible to find users involved in game' do
       expect(game.initiator).to eq(initiating_user)
       expect(game.current_player).to eq(initiating_user)
     end
@@ -43,7 +43,7 @@ RSpec.describe Game, type: :model do
     let!(:move1) { create(:move, game: game, user: initiating_user) }
     let!(:move2) { create(:move, game: game, user: initiating_user) }
 
-    it 'possible users involved in game' do
+    it 'is possible find moves from game' do
       expect(game.moves.size).to eq(2)
     end
   end

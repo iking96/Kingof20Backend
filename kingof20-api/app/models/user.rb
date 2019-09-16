@@ -6,9 +6,12 @@ class User < ApplicationRecord
 
   has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id, dependent: :destroy
   has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id, dependent: :destroy
-  has_many :waiting_games, class_name: 'Game', foreign_key: :current_player_id
+  has_many :current_player_games, class_name: 'Game', foreign_key: :current_player_id
 
   has_many :moves, dependent: :destroy
+
+  has_many :game_queue_entries
+  has_many :waiting_games, class_name: 'Game', through: :game_queue_entries, source: :game 
 
   validates :email, presence: true
   validates :encrypted_password, presence: true

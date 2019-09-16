@@ -9,7 +9,6 @@ RSpec.describe User, type: :model do
 
   context 'when the user is involved in a game' do
     let(:initiating_user) { create(:user) }
-    let(:opposing_user) { create(:user) }
     let!(:game) { create(:game,
       initiator: initiating_user,
       current_player: initiating_user,
@@ -19,6 +18,9 @@ RSpec.describe User, type: :model do
     let(:user_games) { initiating_user.games }
 
     it 'is possible to find their games' do
+      expect(initiating_user.initiated_games.size).to eq(1)
+      expect(initiating_user.opposing_games.size).to eq(0)
+      expect(initiating_user.current_player_games.size).to eq(1)
       expect(user_games.size).to eq(1)
       expect(user_games.first.initiator_rack).to eq(
         [7,6,5,4,3,2,1],
@@ -29,8 +31,20 @@ RSpec.describe User, type: :model do
       let!(:move1) { create(:move, game: game, user: initiating_user) }
       let!(:move2) { create(:move, game: game, user: initiating_user) }
 
-      it 'possible users involved in game' do
+      it 'is possible to find all a players moves' do
         expect(initiating_user.moves.size).to eq(2)
+      end
+    end
+
+    context 'which is in a game queue entry' do
+      let!(:game_queue_entry) { GameQueueEntry.create!(user: initiating_user, game: game) }
+
+      it 'is possible find a users game queue entries' do
+        expect(initiating_user.game_queue_entries.size).to eq(1)
+      end
+
+      it 'is possible find a users waiting games' do
+        expect(initiating_user.waiting_games).to eq([game])
       end
     end
   end
