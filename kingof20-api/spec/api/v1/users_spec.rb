@@ -58,8 +58,8 @@ RSpec.describe 'User API', type: :request do
       it 'should respond with error' do
         subject
         expect( json ).to include(
-          'error',
-          'error_description',
+          'status_code',
+          'message',
         )
         expect(response).to have_http_status(401)
       end
