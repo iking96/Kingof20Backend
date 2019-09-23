@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include Response
 
@@ -15,8 +17,8 @@ class ApplicationController < ActionController::API
   # Authentication key(:username) and password field will be added automatically by devise.
   def configure_permitted_parameters
     added_attrs = [:email, :username, :first_name, :last_name]
-    devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
-    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
+    devise_parameter_sanitizer.permit(:sign_up, keys: added_attrs)
+    devise_parameter_sanitizer.permit(:account_update, keys: added_attrs)
   end
 
   # Doorkeeper methods

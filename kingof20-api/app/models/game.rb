@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 class Game < ApplicationRecord
   BOARD_SIZE = 12
-  INITIAL_AVAILABLE_TILES = [1,1,1,1,
-    2,2,2,2,2,
-    3,3,3,3,
-    4,4,4,4,4,4,
-    5,5,5,5,5,
-    6,6,6,6,6,6,
-    7,7,7,7,7,
-    8,8,8,8,8,8,
-    9,9,9,9,
-    10,10,10,10,10,10,10,10,
-    11,11,11,11,11,11,11,11,
-    12,12,12,12,12,12,12,12,
-    13,13,13,13,13,
-  ]
+  INITIAL_AVAILABLE_TILES = [1, 1, 1, 1,
+                             2, 2, 2, 2, 2,
+                             3, 3, 3, 3,
+                             4, 4, 4, 4, 4, 4,
+                             5, 5, 5, 5, 5,
+                             6, 6, 6, 6, 6, 6,
+                             7, 7, 7, 7, 7,
+                             8, 8, 8, 8, 8, 8,
+                             9, 9, 9, 9,
+                             10, 10, 10, 10, 10, 10, 10, 10,
+                             11, 11, 11, 11, 11, 11, 11, 11,
+                             12, 12, 12, 12, 12, 12, 12, 12,
+                             13, 13, 13, 13, 13]
 
   TILES_MAPPING = {
     1 => "1",
@@ -45,6 +46,11 @@ class Game < ApplicationRecord
   validates :current_player, presence: true
   validates_inclusion_of :complete, in: [true, false]
   validates :available_tiles, presence: true
+
+  validate :check_initiator_and_opponent
+  def check_initiator_and_opponent
+    errors.add(:initiator, "can't be the same as opponent") if initiator == opponent
+  end
 
   # Class methods
   def self.board_size
