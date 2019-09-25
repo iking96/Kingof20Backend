@@ -12,6 +12,14 @@ module Api
         json_response(@games)
       end
 
+      def show
+        @game = GameLogic::GameManager.get_user_game(
+          game_id: params[:id]
+        )
+
+        json_response(@game)
+      end
+
       def create
         @game = GameLogic::GameManager.create_game_or_enqueue_for_user(
           user: current_resource_owner,

@@ -56,6 +56,44 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
+  describe 'GET /api/games/$id' do
+    subject { get "/api/games/#{game_id}" }
+
+    context 'when the user has games' do
+      let!(:game) do
+        create(:game,
+        initiator: user,
+        current_player: user,
+        initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
+      end
+      let(:game_id) { game.id }
+
+      it 'responds with a users games' do
+        subject
+        expect(response).to(have_http_status(200))
+        expect(json).to(include(
+          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "initiator_id" => user.id,
+          "opponent_id" => nil,
+        ))
+      end
+
+      context 'when the game id does not exist' do
+        let(:game_id) { -1 }
+
+        it 'responds with a users games' do
+          subject
+          expect(response).to(have_http_status(200))
+          expect(json).to(include(
+            "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+            "initiator_id" => user.id,
+            "opponent_id" => nil,
+          ))
+        end
+      end
+    end
+  end
+
   describe 'POST /api/games' do
     subject { post '/api/games' }
 

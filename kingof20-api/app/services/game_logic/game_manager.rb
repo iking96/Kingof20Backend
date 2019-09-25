@@ -7,6 +7,11 @@ module GameLogic
         user.games
       end
 
+      def get_user_game(game_id:)
+        # TODO: check that the user actually owns this game
+        Game.find_by!(id: game_id)
+      end
+
       def create_game_or_enqueue_for_user(user:)
         paired_game = GameLogic::GameQueueEntryManager.pair_user(user: user)
         return paired_game if paired_game
