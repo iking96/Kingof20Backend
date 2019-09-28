@@ -81,13 +81,13 @@ RSpec.describe('Game API', type: :request) do
       context 'when the game id does not exist' do
         let(:game_id) { -1 }
 
-        it 'responds with a users games' do
+        it 'responds with an error' do
           subject
-          expect(response).to(have_http_status(200))
+          expect(response).to(have_http_status(404))
           expect(json).to(include(
-            "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-            "initiator_id" => user.id,
-            "opponent_id" => nil,
+            "error" => "record_not_found",
+            "message" => "Couldn't find Game",
+            "status" => 404,
           ))
         end
       end
