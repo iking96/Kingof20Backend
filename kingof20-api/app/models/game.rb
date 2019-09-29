@@ -35,7 +35,10 @@ class Game < ApplicationRecord
   belongs_to :opponent, class_name: 'User', required: false
   belongs_to :current_player, class_name: 'User', required: false
 
-  has_many :moves, dependent: :destroy
+  # Here I do delete because the move/gqe don't have any
+  # clean-up unto themselves
+  has_many :moves, dependent: :delete_all
+  has_many :game_queue_entries, dependent: :delete_all
 
   validates :board, presence: true
   validates :initiator_score, presence: true

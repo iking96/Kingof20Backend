@@ -12,7 +12,8 @@ RSpec.describe('Game API', type: :request) do
   end
 
   describe 'GET /api/games' do
-    subject { get '/api/games' }
+    subject { get "/api/games#{params}" }
+    let(:params) { "" }
 
     context 'when the user has games' do
       let!(:game) do
@@ -53,6 +54,41 @@ RSpec.describe('Game API', type: :request) do
           ))
         end
       end
+
+      context 'when there are params' do
+        let(:user2) { create(:user) }
+        let!(:game2) do
+          create(:game,
+            initiator: user2,
+            opponent: user,
+          current_player: user2,
+          initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
+        end
+
+        context 'and its the "initiator" param' do
+          let(:params) { "?initiator=true" }
+          it 'should respond with games where the user is the initiator' do
+            subject
+            expect(json.first).to(include(
+              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+              "initiator_id" => user.id,
+              "opponent_id" => nil,
+            ))
+          end
+        end
+
+        context 'and its the "opponent" param' do
+          let(:params) { "?opponent=true" }
+          it 'should respond with games where the user is the initiator' do
+            subject
+            expect(json.first).to(include(
+              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+              "initiator_id" => user2.id,
+              "opponent_id" => user.id,
+            ))
+          end
+        end
+      end
     end
   end
 
@@ -62,11 +98,12 @@ RSpec.describe('Game API', type: :request) do
     context 'when the user has games' do
       let!(:game) do
         create(:game,
-        initiator: user,
-        current_player: user,
+        initiator: owning_user,
+        current_player: owning_user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
       let(:game_id) { game.id }
+      let(:owning_user) { user }
 
       it 'responds with a users games' do
         subject
@@ -86,9 +123,24 @@ RSpec.describe('Game API', type: :request) do
           expect(response).to(have_http_status(404))
           expect(json).to(include(
             "error" => "record_not_found",
-            "message" => "Couldn't find Game",
             "status" => 404,
           ))
+          expect(json["message"]).to(include("Couldn't find Game"))
+        end
+      end
+
+      context 'when the game does not belong to the user' do
+        let(:user2) { create(:user) }
+        let(:owning_user) { user2 }
+
+        it 'responds with an error' do
+          subject
+          expect(response).to(have_http_status(404))
+          expect(json).to(include(
+            "error" => "record_not_found",
+            "status" => 404,
+          ))
+          expect(json["message"]).to(include("Couldn't find Game"))
         end
       end
     end
@@ -191,6 +243,64 @@ RSpec.describe('Game API', type: :request) do
           it 'removes a game to the game queue' do
             expect { subject }.to(change { GameQueueEntry.count }.by(-1))
           end
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /api/games/$id' do
+    subject { delete "/api/games/#{game_id}" }
+
+    context 'when the user has games' do
+      let!(:game) do
+        create(:game,
+        initiator: owning_user,
+        current_player: owning_user,
+        initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
+      end
+      let(:game_id) { game.id }
+      let(:owning_user) { user }
+
+      it 'responds with a users games' do
+        subject
+        expect(response).to(have_http_status(200))
+        expect(json).to(include(
+          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "initiator_id" => user.id,
+          "opponent_id" => nil,
+        ))
+      end
+
+      it 'removes a the game' do
+        expect { subject }.to(change { Game.count }.by(-1))
+      end
+
+      context 'when the game id does not exist' do
+        let(:game_id) { -1 }
+
+        it 'responds with an error' do
+          subject
+          expect(response).to(have_http_status(404))
+          expect(json).to(include(
+            "error" => "record_not_found",
+            "status" => 404,
+          ))
+          expect(json["message"]).to(include("Couldn't find Game"))
+        end
+      end
+
+      context 'when the game does not belong to the user' do
+        let(:user2) { create(:user) }
+        let(:owning_user) { user2 }
+
+        it 'responds with an error' do
+          subject
+          expect(response).to(have_http_status(404))
+          expect(json).to(include(
+            "error" => "record_not_found",
+            "status" => 404,
+          ))
+          expect(json["message"]).to(include("Couldn't find Game"))
         end
       end
     end
