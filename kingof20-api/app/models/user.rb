@@ -9,7 +9,6 @@ class User < ApplicationRecord
   # Here I do destory because the games may have clean-up to do
   has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id, dependent: :destroy
   has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id, dependent: :destroy
-  has_many :current_player_games, class_name: 'Game', foreign_key: :current_player_id
 
   has_many :moves, dependent: :destroy
   has_many :game_queue_entries, dependent: :destroy
@@ -24,5 +23,9 @@ class User < ApplicationRecord
 
   def games
     Game.where('initiator_id = ? or opponent_id = ?', id, id)
+  end
+
+  def current_player_games
+    games.initiator + games.opponent
   end
 end
