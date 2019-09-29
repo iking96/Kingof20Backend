@@ -9,5 +9,6 @@ FactoryBot.define do
     opponent_rack { [1, 2, 3, 4, 5, 6, 7] }
     complete { false }
     available_tiles { Game.initial_available_tiles }
+    current_player { "initiator" }
   end
 end

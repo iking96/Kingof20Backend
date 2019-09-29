@@ -33,7 +33,6 @@ class Game < ApplicationRecord
   }
   belongs_to :initiator, class_name: 'User', required: true
   belongs_to :opponent, class_name: 'User', required: false
-  belongs_to :current_player, class_name: 'User', required: false
 
   # Here I do delete because the move/gqe don't have any
   # clean-up unto themselves
@@ -46,7 +45,13 @@ class Game < ApplicationRecord
   validates :opponent_score, presence: true
   validates :opponent_rack, presence: true
   validates :initiator, presence: true
+  
   validates :current_player, presence: true
+  enum current_player: {
+    initiator: "initiator",
+    opponent: "opponent",
+  }
+
   validates_inclusion_of :complete, in: [true, false]
   validates :available_tiles, presence: true
 

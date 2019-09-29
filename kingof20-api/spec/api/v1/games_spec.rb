@@ -19,7 +19,6 @@ RSpec.describe('Game API', type: :request) do
       let!(:game) do
         create(:game,
         initiator: user,
-        current_player: user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
 
@@ -39,7 +38,6 @@ RSpec.describe('Game API', type: :request) do
         let!(:game2) do
           create(:game,
           initiator: user2,
-          current_player: user2,
           initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
         end
 
@@ -61,8 +59,7 @@ RSpec.describe('Game API', type: :request) do
           create(:game,
             initiator: user2,
             opponent: user,
-          current_player: user2,
-          initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
+            initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
         end
 
         context 'and its the "initiator" param' do
@@ -99,7 +96,6 @@ RSpec.describe('Game API', type: :request) do
       let!(:game) do
         create(:game,
         initiator: owning_user,
-        current_player: owning_user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
       let(:game_id) { game.id }
@@ -176,7 +172,6 @@ RSpec.describe('Game API', type: :request) do
       let!(:waiting_game) do
         create(:game,
         initiator: user2,
-        current_player: user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
       let(:user2) { create(:user) }
@@ -224,7 +219,6 @@ RSpec.describe('Game API', type: :request) do
           let!(:waiting_game2) do
             create(:game,
             initiator: user3,
-            current_player: user,
             initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
           end
           let(:user3) { create(:user) }
@@ -255,7 +249,6 @@ RSpec.describe('Game API', type: :request) do
       let!(:game) do
         create(:game,
         initiator: owning_user,
-        current_player: owning_user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
       let(:game_id) { game.id }
