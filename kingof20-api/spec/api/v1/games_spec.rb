@@ -298,4 +298,22 @@ RSpec.describe('Game API', type: :request) do
       end
     end
   end
+
+  describe 'PATCH /api/games/$id' do
+    subject { patch "/api/games/#{game_id}" }
+
+    it 'should respond with 404 error' do
+      subject
+      expect(response).to(have_http_status(404))
+    end
+  end
+
+  describe 'PUT /api/games/$id' do
+    subject { put "/api/games/#{game_id}" }
+
+    it 'should respond with 404 error' do
+      subject
+      expect(response).to(have_http_status(404))
+    end
+  end
 end
