@@ -26,7 +26,7 @@ module GameLogic
         return paired_game if paired_game
 
         Game.transaction do
-          new_game = mock_to_game_create(game_mock: GameLogic::Data::GameMock.new(user: user))
+          new_game = Game.create!(initiator: user)
           GameLogic::GameQueueEntryManager.enqueue_game(game: new_game)
           new_game
         end
@@ -43,32 +43,12 @@ module GameLogic
 
       def reduce_by_param(games:, user:, key:, _value:)
         case key
-        when "initiator"
+        when 'initiator'
           games = games.select { |g| g.initiator == user }
-        when "opponent"
+        when 'opponent'
           games = games.select { |g| g.opponent == user }
         end
         games
-      end
-
-      def game_to_mock(game:)
-      end
-
-      def mock_to_game_update(game_mock:, game_to_update:)
-      end
-
-      def mock_to_game_create(game_mock:)
-        Game.create!(
-          board: game_mock.board,
-          initiator_score:  game_mock.initiator_score,
-          initiator_rack:  game_mock.initiator_rack,
-          opponent_score:  game_mock.opponent_score,
-          opponent_rack:  game_mock.opponent_rack,
-          initiator:  game_mock.initiator,
-          current_player:  game_mock.current_player,
-          complete:  game_mock.complete,
-          available_tiles:  game_mock.available_tiles,
-        )
       end
     end
   end

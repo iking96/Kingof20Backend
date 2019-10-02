@@ -9,7 +9,18 @@ module GameLogic
         params.each do |key, value|
           moves = reduce_by_param(
             moves: moves,
-            user: user,
+            key: key,
+            _value: value
+          )
+        end
+        games
+      end
+
+      def create_move_and_update_game(game:, user:)
+        moves = user.moves.to_a
+        params.each do |key, value|
+          moves = reduce_by_param(
+            moves: moves,
             key: key,
             _value: value
           )
@@ -19,10 +30,10 @@ module GameLogic
 
       private
 
-      def reduce_by_param(moves:, user:, key:, _value:)
+      def reduce_by_param(moves:, key:, _value:)
         case key
-        when "perfect_twenty"
-          moves = moves.select { |g| g.initiator == user }
+        when 'perfect_twenty'
+          moves = moves.select { |m| m.result == 20 }
         end
         moves
       end

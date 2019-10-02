@@ -3,15 +3,37 @@
 require 'rails_helper'
 
 RSpec.describe(Game, type: :model) do
-  it { should validate_presence_of(:board) }
-  it { should validate_presence_of(:initiator_score) }
-  it { should validate_presence_of(:initiator_rack) }
-  it { should validate_presence_of(:opponent_score) }
-  it { should validate_presence_of(:opponent_rack) }
+  context 'on creation' do
+    let!(:user) { create(:user) }
+
+    context 'when game information is not supplied' do
+      it 'fills them in' do
+        game = create(
+          :game,
+          initiator: user,
+          board: nil,
+          available_tiles: nil,
+          initiator_score: nil,
+          initiator_rack: nil,
+          opponent_score: nil,
+          opponent_rack: nil,
+          current_player: nil,
+        )
+        expect(game.board).to(be_a(Array))
+        expect(game.initiator_score).to(eq(0))
+        expect(game.opponent_score).to(eq(0))
+        expect(
+          (game.available_tiles +
+          game.initiator_rack +
+          game.opponent_rack).sort
+        ).to(eq(Game.initial_available_tiles.sort))
+        expect(game.current_player).to(eq('initiator'))
+      end
+    end
+  end
+
   it { should validate_presence_of(:initiator) }
-  it { should validate_presence_of(:current_player) }
-  # Complete: using validate_inclusion_of with boolean columns is discuraged
-  it { should validate_presence_of(:available_tiles) }
+  # Complete: using validate_inclusion_of with boolean columns is discouraged
 
   it 'returns correct tile mappings' do
     expect(Game.available_tiles_string_value(index: 1)).to(eq("1"))

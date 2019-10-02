@@ -14,8 +14,6 @@ module GameLogic
           oldest_waiting_game.update!(opponent: user)
           oldest_waiting_game
         end
-      rescue ActiveRecord::RecordNotFound
-        retry
       end
 
       def enqueue_game(game:)

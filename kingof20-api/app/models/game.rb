@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Game < ApplicationRecord
+  before_validation :setup_game, on: :create
+
   BOARD_SIZE = 12
   INITIAL_AVAILABLE_TILES = [1, 1, 1, 1,
                              2, 2, 2, 2, 2,
@@ -45,11 +47,11 @@ class Game < ApplicationRecord
   validates :opponent_score, presence: true
   validates :opponent_rack, presence: true
   validates :initiator, presence: true
-  
+
   validates :current_player, presence: true
   enum current_player: {
-    initiator: "initiator",
-    opponent: "opponent",
+    initiator: 'initiator',
+    opponent: 'opponent',
   }
 
   validates_inclusion_of :complete, in: [true, false]
@@ -72,4 +74,18 @@ class Game < ApplicationRecord
   def self.available_tiles_string_value(index:)
     TILES_MAPPING[index]
   end
+
+  private
+
+  def setup_game
+    self.board ||= Array.new(Game.board_size) { Array.new(Game.board_size) { 0 } }
+    self.available_tiles ||= Game.initial_available_tiles.shuffle
+    self.initiator_score ||= 0
+    self.initiator_rack ||= available_tiles.shift(7)
+    self.opponent_score ||= 0
+    self.opponent_rack ||= available_tiles.shift(7)
+    self.complete ||= false if complete.nil?
+    self.current_player ||= 'initiator'
+  end
+
 end
