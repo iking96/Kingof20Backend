@@ -48,7 +48,14 @@ RSpec.describe(Game, type: :model) do
     end
 
     it 'does not allow unrecognized current_player values' do
-      expect { game.current_player = "some_string" }.to(raise_error ArgumentError)
+      expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
+    end
+
+    it 'does not allow initiator == opponent' do
+      expect do
+        game.opponent = initiating_user
+        game.save!
+      end.to(raise_error ActiveRecord::RecordInvalid)
     end
   end
 
@@ -70,8 +77,8 @@ RSpec.describe(Game, type: :model) do
     let(:game) do
       create(:game, initiator: initiating_user)
     end
-    let!(:move1) { create(:move, game: game, user: initiating_user) }
-    let!(:move2) { create(:move, game: game, user: initiating_user) }
+    let!(:move1) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
+    let!(:move2) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
 
     it 'is possible find moves from game' do
       expect(game.moves.size).to(eq(2))

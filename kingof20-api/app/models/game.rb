@@ -4,6 +4,7 @@ class Game < ApplicationRecord
   before_validation :setup_game, on: :create
 
   BOARD_SIZE = 12
+  RACK_SIZE = 7
   INITIAL_AVAILABLE_TILES = [1, 1, 1, 1,
                              2, 2, 2, 2, 2,
                              3, 3, 3, 3,
@@ -59,12 +60,16 @@ class Game < ApplicationRecord
 
   validate :check_initiator_and_opponent
   def check_initiator_and_opponent
-    errors.add(:initiator, "can't be the same as opponent") if initiator == opponent
+    errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
   end
 
   # Class methods
   def self.board_size
     BOARD_SIZE
+  end
+
+  def self.rack_size
+    RACK_SIZE
   end
 
   def self.initial_available_tiles
@@ -81,9 +86,9 @@ class Game < ApplicationRecord
     self.board ||= Array.new(Game.board_size) { Array.new(Game.board_size) { 0 } }
     self.available_tiles ||= Game.initial_available_tiles.shuffle
     self.initiator_score ||= 0
-    self.initiator_rack ||= available_tiles.shift(7)
+    self.initiator_rack ||= available_tiles.shift(RACK_SIZE)
     self.opponent_score ||= 0
-    self.opponent_rack ||= available_tiles.shift(7)
+    self.opponent_rack ||= available_tiles.shift(RACK_SIZE)
     self.complete ||= false if complete.nil?
     self.current_player ||= 'initiator'
   end

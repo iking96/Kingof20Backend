@@ -29,8 +29,8 @@ RSpec.describe(User, type: :model) do
     end
 
     context 'and the game has moves' do
-      let!(:move1) { create(:move, game: game, user: initiating_user) }
-      let!(:move2) { create(:move, game: game, user: initiating_user) }
+      let!(:move1) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
+      let!(:move2) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
 
       it 'is possible to find all a players moves' do
         expect(initiating_user.moves.size).to(eq(2))
