@@ -16,7 +16,7 @@ module Error
 
     def respond(error, status, message)
       json = Concerns::Render.json(error, status, message)
-      render json: json, status: status
+      json_response(json, status)
     end
   end
 end
