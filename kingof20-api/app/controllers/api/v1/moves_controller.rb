@@ -18,7 +18,7 @@ module Api
       def create
         @move = GameLogic::MoveManager.create_move_and_update_game(
           game: GameLogic::GameManager.get_user_game(
-            game_id: @permitted_params[:game_info][:id],
+            game_id: @permitted_params[:move_info][:game_id],
             user: current_resource_owner,
           ),
           user: current_resource_owner,
@@ -32,7 +32,12 @@ module Api
       end
 
       def create_params
-        @permitted_params = params.require(:game_info).permit(:id).to_h
+        @permitted_params = params.require(:move_info).permit(
+          :game_id,
+          :row_num,
+          :col_num,
+          :tile_value,
+        ).to_h
       end
     end
   end

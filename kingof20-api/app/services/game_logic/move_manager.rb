@@ -17,7 +17,7 @@ module GameLogic
       end
 
       def create_move_and_update_game(game:, user:)
-        moves = user.moves.to_a
+        new_move = Move.new(game: game, user: user)
         params.each do |key, value|
           moves = reduce_by_param(
             moves: moves,

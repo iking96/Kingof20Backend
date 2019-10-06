@@ -87,5 +87,4 @@ class Game < ApplicationRecord
     self.complete ||= false if complete.nil?
     self.current_player ||= 'initiator'
   end
-
 end
