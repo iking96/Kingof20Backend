@@ -47,6 +47,10 @@ RSpec.describe(Game, type: :model) do
       create(:game, initiator: initiating_user)
     end
 
+    it 'can return current user' do
+      expect(game.current_user).to(eq(initiating_user))
+    end
+
     it 'does not allow unrecognized current_player values' do
       expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
     end
@@ -77,8 +81,8 @@ RSpec.describe(Game, type: :model) do
     let(:game) do
       create(:game, initiator: initiating_user)
     end
-    let!(:move1) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
-    let!(:move2) { create(:move, game: game, user: initiating_user, type: 'tile_placement') }
+    let!(:move1) { create(:move, game: game, user: initiating_user, move_type: 'tile_placement') }
+    let!(:move2) { create(:move, game: game, user: initiating_user, move_type: 'tile_placement') }
 
     it 'is possible find moves from game' do
       expect(game.moves.size).to(eq(2))

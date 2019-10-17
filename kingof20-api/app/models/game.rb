@@ -29,11 +29,12 @@ class Game < ApplicationRecord
     7 => "7",
     8 => "8",
     9 => "9",
-    10 => "10",
-    11 => "11",
+    10 => "Plus",
+    11 => "Times",
     12 => "Minus",
     13 => "Over",
   }
+
   belongs_to :initiator, class_name: 'User', required: true
   belongs_to :opponent, class_name: 'User', required: false
 
@@ -61,6 +62,16 @@ class Game < ApplicationRecord
   validate :check_initiator_and_opponent
   def check_initiator_and_opponent
     errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
+  end
+
+  def current_user
+    if current_player == 'initiator'
+      return initiator
+    end
+
+    if current_player == 'opponent'
+      return opponent
+    end
   end
 
   # Class methods

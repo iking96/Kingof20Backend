@@ -16,3 +16,8 @@ module Error
     end
   end
 end
+
+# Error classes
+# Move:
+#  PreProcessingError - move-1
+#  ProcessingError - move-2

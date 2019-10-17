@@ -17,11 +17,7 @@ module Api
 
       def create
         @move = GameLogic::MoveManager.create_move_and_update_game(
-          game: GameLogic::GameManager.get_user_game(
-            game_id: @permitted_params[:move_info][:game_id],
-            user: current_resource_owner,
-          ),
-          user: current_resource_owner,
+          move_info: @permitted_params[:move_info],
         )
 
         json_response(@move)
@@ -37,6 +33,8 @@ module Api
           :row_num,
           :col_num,
           :tile_value,
+        ).merge(
+          user_id: current_resource_owner.id
         ).to_h
       end
     end

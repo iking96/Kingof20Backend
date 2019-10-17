@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_06_214629) do
+ActiveRecord::Schema.define(version: 2019_10_16_035529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,8 +51,8 @@ ActiveRecord::Schema.define(version: 2019_10_06_214629) do
     t.datetime "updated_at", null: false
     t.integer "move_number"
     t.integer "result"
-    t.string "type"
     t.integer "returned_tiles", array: true
+    t.string "move_type"
     t.index ["game_id"], name: "index_moves_on_game_id"
     t.index ["user_id"], name: "index_moves_on_user_id"
   end
