@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe(PlayLogic::MoveManager) do
+RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
   describe 'create_move_and_update_game' do
     subject { described_class.create_move_and_update_game(move_info: move_info) }
 

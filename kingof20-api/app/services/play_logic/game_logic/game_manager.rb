@@ -23,12 +23,12 @@ module PlayLogic
         end
 
         def create_game_or_enqueue_for_user(user:)
-          paired_game = PlayLogic::GameQueueEntryManager.pair_user(user: user)
+          paired_game = PlayLogic::GameQueueEntryLogic::GameQueueEntryManager.pair_user(user: user)
           return paired_game if paired_game
 
           Game.transaction do
             new_game = Game.create!(initiator: user)
-            PlayLogic::GameQueueEntryManager.enqueue_game(game: new_game)
+            PlayLogic::GameQueueEntryLogic::GameQueueEntryManager.enqueue_game(game: new_game)
             new_game
           end
         end

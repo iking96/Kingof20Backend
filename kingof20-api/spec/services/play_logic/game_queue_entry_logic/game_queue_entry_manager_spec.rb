@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe(PlayLogic::GameQueueEntryManager) do
+RSpec.describe(PlayLogic::GameQueueEntryLogic::GameQueueEntryManager) do
   describe 'pair_user' do
     subject { described_class.pair_user(user: user) }
 
