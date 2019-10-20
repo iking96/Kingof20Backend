@@ -25,7 +25,7 @@ module PlayLogic
 
           Game.transaction do
             move_game = new_move.game
-            PlayLogic::Helpers.add_move_to_board(
+            PlayLogic::GameLogic::GameHelpers.add_move_to_board(
               board: move_game.board,
               rows: new_move.row_num,
               cols: new_move.col_num,
