@@ -17,6 +17,7 @@ module Api
 
       def create
         @move = PlayLogic::MoveLogic::MoveManager.create_move_and_update_game(
+          user: current_resource_owner,
           move_info: @permitted_params[:move_info],
         )
 

@@ -74,6 +74,16 @@ class Game < ApplicationRecord
     end
   end
 
+  def current_user_rack
+    if current_player == 'initiator'
+      return initiator_rack
+    end
+
+    if current_player == 'opponent'
+      return opponent_rack
+    end
+  end
+
   # Class methods
   def self.board_size
     BOARD_SIZE

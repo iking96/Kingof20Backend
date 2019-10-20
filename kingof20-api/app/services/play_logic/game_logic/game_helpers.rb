@@ -34,6 +34,28 @@ module PlayLogic
 
           board
         end
+
+        def remove_tiles_from_rack(tiles:, rack:)
+          if tiles.count > 3
+            if block_given?
+              yield("Attempting to remove #{tiles.count} from rack; max is 3")
+            else
+              raise ArgumentError, "Attempting to remove #{tiles.count} from rack; max is 3"
+            end
+            return nil
+          end
+
+          unless tiles.subtract_once(rack).empty?
+            if block_given?
+              yield("Tiles (#{tiles}) not all in rack (#{rack})")
+            else
+              raise ArgumentError, "Tiles (#{tiles}) not all in rack (#{rack})"
+            end
+            return nil
+          end
+
+          rack.subtract_once(tiles)
+        end
       end
     end
   end

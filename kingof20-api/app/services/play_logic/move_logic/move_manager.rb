@@ -17,7 +17,7 @@ module PlayLogic
           games
         end
 
-        def create_move_and_update_game(move_info:)
+        def create_move_and_update_game(user:, move_info:)
           new_move = Move.new(move_info)
           raise Error::Move::PreProcessingError.new(
             message: new_move.errors.to_a
@@ -25,6 +25,25 @@ module PlayLogic
 
           Game.transaction do
             move_game = new_move.game
+
+            # Check that user is current player
+            unless move_game.current_user == user
+              raise Error::Move::ProcessingError.new(
+                message: 'User is not current player',
+              )
+            end
+
+            # Check that rack can supply tiles
+            PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
+              tiles: new_move.tile_value,
+              rack: move_game.current_user_rack,
+            ) do |message|
+              raise Error::Move::ProcessingError.new(
+                message: message
+              )
+            end
+
+            # Check that move is not blocked
             PlayLogic::GameLogic::GameHelpers.add_move_to_board(
               board: move_game.board,
               rows: new_move.row_num,
@@ -37,7 +56,6 @@ module PlayLogic
             end
 
             # TODO: Check game validity
-            # TODO: Check rack validity
 
             # move_game.save!
             # new_move.save!
