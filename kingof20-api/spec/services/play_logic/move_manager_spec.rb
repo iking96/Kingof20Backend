@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe(GameLogic::MoveManager) do
+RSpec.describe(PlayLogic::MoveManager) do
   describe 'create_move_and_update_game' do
     subject { described_class.create_move_and_update_game(move_info: move_info) }
 
@@ -43,6 +43,24 @@ RSpec.describe(GameLogic::MoveManager) do
       end
       it 'raises an error' do
         expect { subject }.to(raise_error Error::Move::ProcessingError)
+      end
+    end
+
+    context 'move is valid' do
+      let(:move_info) do
+        {
+          game_id: game.id,
+          user_id: game.initiator.id,
+          move_type: :tile_placement,
+          row_num: [0, 1],
+          col_num: [2, 2],
+          tile_value: [4, 11],
+        }
+      end
+
+      it 'returns the created move' do
+        # TODO: Complete test
+        expect(subject).to(be_a(Move))
       end
     end
   end

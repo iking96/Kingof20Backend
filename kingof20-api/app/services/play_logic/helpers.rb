@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GameLogic
+module PlayLogic
   class Helpers
     class << self
       def add_move_to_board(board:, rows:, cols:, tile_values:)

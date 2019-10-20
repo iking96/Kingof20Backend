@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GameLogic
+module PlayLogic
   class MoveManager
     USER_MOVE_QUERY_PARAMS = [:perfect_twenty].freeze
     class << self
@@ -24,7 +24,7 @@ module GameLogic
 
         Game.transaction do
           move_game = new_move.game
-          GameLogic::Helpers.add_move_to_board(
+          PlayLogic::Helpers.add_move_to_board(
             board: move_game.board,
             rows: new_move.row_num,
             cols: new_move.col_num,

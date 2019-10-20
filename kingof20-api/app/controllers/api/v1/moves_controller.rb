@@ -7,7 +7,7 @@ module Api
       before_action :create_params, only: [:create]
 
       def index
-        @moves = GameLogic::MoveManager.get_user_moves_with_params(
+        @moves = PlayLogic::MoveManager.get_user_moves_with_params(
           user: current_resource_owner,
           params: @permitted_params
         )
@@ -16,7 +16,7 @@ module Api
       end
 
       def create
-        @move = GameLogic::MoveManager.create_move_and_update_game(
+        @move = PlayLogic::MoveManager.create_move_and_update_game(
           move_info: @permitted_params[:move_info],
         )
 
@@ -24,7 +24,7 @@ module Api
       end
 
       def index_params
-        @permitted_params = params.permit(GameLogic::GameManager::USER_MOVE_QUERY_PARAMS).to_h
+        @permitted_params = params.permit(PlayLogic::GameManager::USER_MOVE_QUERY_PARAMS).to_h
       end
 
       def create_params

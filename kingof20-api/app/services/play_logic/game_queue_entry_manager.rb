@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GameLogic
+module PlayLogic
   class GameQueueEntryManager
     class << self
       def pair_user(user:)
