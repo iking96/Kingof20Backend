@@ -84,6 +84,16 @@ class Game < ApplicationRecord
     end
   end
 
+  def set_current_user_rack(new_rack:) # rubocop:disable Naming/AccessorMethodName
+    if current_player == 'initiator'
+      self.initiator_rack = new_rack
+    end
+
+    if current_player == 'opponent'
+      self.opponent_rack = new_rack
+    end
+  end
+
   # Class methods
   def self.board_size
     BOARD_SIZE

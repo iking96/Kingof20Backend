@@ -22,9 +22,22 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
     let(:col_num) { [2, 2] }
     let(:tile_value) { [4, 11] }
 
+    let(:expected_board) do
+      expected_board = Array.new(Game.board_size) { Array.new(Game.board_size) { 0 } }
+      expected_board[2][2] = 5
+      expected_board[2][3] = 11
+      expected_board[2][4] = 4
+      expected_board[0][2] = 4
+      expected_board[1][2] = 11
+      expected_board
+    end
+    let(:expected_initator_rack) { [1, 2, 3, 5, 6] }
+
     it 'returns the created move' do
       # TODO: Complete test
       expect(subject).to(be_a(Move))
+      expect(Game.first.board).to(eq(expected_board))
+      expect(Game.first.initiator_rack).to(eq(expected_initator_rack))
     end
 
     context 'there is no move_info' do
@@ -78,7 +91,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         }
       end
       it 'raises an error' do
-        expect { subject }.to(raise_error Error::Move::ProcessingError, /already occupied on board/)
+        expect { subject }.to(raise_error(Error::Move::ProcessingError, /already occupied on board/))
       end
     end
   end

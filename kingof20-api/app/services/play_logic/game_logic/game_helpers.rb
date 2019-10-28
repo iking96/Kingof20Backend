@@ -56,6 +56,15 @@ module PlayLogic
 
           rack.subtract_once(tiles)
         end
+
+        def check_board_legality(board:)
+          # TODO: [self onStarting]
+          # [self countIslands]
+          # [self findScore]
+        end
+
+        private
+
       end
     end
   end

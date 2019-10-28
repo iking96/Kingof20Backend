@@ -34,7 +34,7 @@ module PlayLogic
             end
 
             # Check that rack can supply tiles
-            PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
+            new_rack = PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
               tiles: new_move.tile_value,
               rack: move_game.current_user_rack,
             ) do |message|
@@ -42,6 +42,8 @@ module PlayLogic
                 message: message
               )
             end
+
+            move_game.set_current_user_rack(new_rack: new_rack)
 
             # Check that move is not blocked
             PlayLogic::GameLogic::GameHelpers.add_move_to_board(
@@ -57,7 +59,7 @@ module PlayLogic
 
             # TODO: Check game validity
 
-            # move_game.save!
+            move_game.save!
             # new_move.save!
           end
 

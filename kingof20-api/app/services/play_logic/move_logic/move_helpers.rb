@@ -35,6 +35,9 @@ module PlayLogic
               unless move.tile_value.all? { |tile| Game::TILES_MAPPING.keys.include?(tile) }
                 errors << "tile values must be in: #{Game::TILES_MAPPING.keys}"
               end
+              unless move.row_num.same_values? || move.col_num.same_values?
+                errors << 'move must be in a stright line'
+              end
             end
           elsif move.swap?
             if !move.returned_tiles.present?

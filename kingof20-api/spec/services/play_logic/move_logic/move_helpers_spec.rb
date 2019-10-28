@@ -52,12 +52,14 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
             'tile_value size input must be less than or equal 3',
           ))
         end
+
         it do
           move.row_num = [1]
           move.col_num = [1]
           move.tile_value = [1, 2]
           expect(subject).to(include('row, col and tile_value input must be same length'))
         end
+
         it do
           move.row_num = [100]
           move.col_num = [100]
@@ -68,12 +70,22 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
             'tile values must be in: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]',
           ))
         end
+
         it do
           move.row_num = [1, 2, 1]
           move.col_num = [1, 3, 1]
           move.tile_value = [1, 2, 3]
           expect(subject).to(include(
             'row and col cannot contain duplicates',
+          ))
+        end
+
+        it do
+          move.row_num = [1, 2, 3]
+          move.col_num = [1, 3, 2]
+          move.tile_value = [1, 2, 3]
+          expect(subject).to(include(
+            'move must be in a stright line',
           ))
         end
       end
@@ -86,12 +98,14 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         it do
           expect(subject).to(include('missing arguments for pre-processing'))
         end
+
         it do
           move.returned_tiles = [100]
           expect(subject).to(include(
             'returned tiles values must be in: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]'
           ))
         end
+
         it do
           move.returned_tiles = [1, 2, 3, 4, 5, 6, 7, 8]
           expect(subject).to(include('returned tiles size must be less than or equal 7'))
@@ -109,7 +123,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         end
       end
 
-      context 'when game us not owned by user' do
+      context 'when game is not owned by user' do
         let(:user2) { create(:user) }
         before do
           move.user = user2

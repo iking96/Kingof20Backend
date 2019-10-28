@@ -10,4 +10,8 @@ class Array
     counts = values.each_with_object(Hash.new(0)) { |v, h| h[v] += 1; }
     reject { |e| counts[e] -= 1 unless counts[e].zero? }
   end
+
+  def same_values?
+    self.uniq.length == 1
+  end
 end
