@@ -73,4 +73,32 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
     end
   end
+
+  describe 'check_board_legality' do
+    subject do
+      described_class.check_board_legality(
+        board: game.board,
+      )
+    end
+
+    let!(:game) { build(:game, :with_first_move) }
+
+    it 'returns correct value' do
+      expect(subject).to(be_truthy)
+    end
+
+    context 'when there are no tiles on the starting space' do
+      let!(:game) { build(:game) }
+
+      before do
+        game.board[4][2] = 5
+        game.board[4][3] = 11
+        game.board[4][4] = 4
+      end
+
+      it 'returns correct value' do
+        expect(subject).to(be_falsey)
+      end
+    end
+  end
 end
