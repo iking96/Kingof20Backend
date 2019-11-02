@@ -29,7 +29,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         end
 
         it do
-          expect(subject).to(include('missing arguments for pre-processing'))
+          expect(subject.errors).to(include(:move_missing_arguments))
         end
       end
 
@@ -39,17 +39,15 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         end
 
         it do
-          expect(subject).to(include('missing arguments for pre-processing'))
+          expect(subject.errors).to(include(:move_missing_arguments))
         end
 
         it do
           move.row_num = [1, 2, 3, 4]
           move.col_num = [1, 2, 3, 4]
           move.tile_value = [1, 2, 3, 4]
-          expect(subject).to(include(
-            'row input size must be less than or equal 3',
-            'col input size must be less than or equal 3',
-            'tile_value size input must be less than or equal 3',
+          expect(subject.errors).to(include(
+            :move_input_to_long,
           ))
         end
 
@@ -57,17 +55,16 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
           move.row_num = [1]
           move.col_num = [1]
           move.tile_value = [1, 2]
-          expect(subject).to(include('row, col and tile_value input must be same length'))
+          expect(subject.errors).to(include(:move_input_mismatch))
         end
 
         it do
           move.row_num = [100]
           move.col_num = [100]
           move.tile_value = [100]
-          expect(subject).to(include(
-            'row numbers must be in: [0..12]',
-            'col numbers must be in: [0..12]',
-            'tile values must be in: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]',
+          expect(subject.errors).to(include(
+            :move_row_col_invalid,
+            :move_tile_value_invalid,
           ))
         end
 
@@ -75,8 +72,8 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
           move.row_num = [1, 2, 1]
           move.col_num = [1, 3, 1]
           move.tile_value = [1, 2, 3]
-          expect(subject).to(include(
-            'row and col cannot contain duplicates',
+          expect(subject.errors).to(include(
+            :move_input_duplicate,
           ))
         end
 
@@ -84,8 +81,8 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
           move.row_num = [1, 2, 3]
           move.col_num = [1, 3, 2]
           move.tile_value = [1, 2, 3]
-          expect(subject).to(include(
-            'move must be in a stright line',
+          expect(subject.errors).to(include(
+            :move_strightness,
           ))
         end
       end
@@ -96,30 +93,32 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         end
 
         it do
-          expect(subject).to(include('missing arguments for pre-processing'))
+          expect(subject.errors).to(include(:move_missing_arguments))
         end
 
         it do
           move.returned_tiles = [100]
-          expect(subject).to(include(
-            'returned tiles values must be in: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]'
+          expect(subject.errors).to(include(
+            :move_tile_value_invalid,
           ))
         end
 
         it do
           move.returned_tiles = [1, 2, 3, 4, 5, 6, 7, 8]
-          expect(subject).to(include('returned tiles size must be less than or equal 7'))
+          expect(subject.errors).to(include(:move_swap_input_to_long))
         end
       end
 
-      context 'when game does not exist' do
+      context 'when game or user does not exist' do
         before do
           move.move_type = 'tile_placement'
           move.game_id = -1
+          move.user_id = -1
         end
 
         it do
-          expect(subject).to(include('id -1 does not exist in Game'))
+          expect(subject.errors).to(include(:move_user_does_not_exist))
+          expect(subject.errors).to(include(:move_game_does_not_exist))
         end
       end
 
@@ -134,7 +133,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
         end
 
         it do
-          expect(subject).to(include("Game id #{game.id} does not belong to User #{user2.id}"))
+          expect(subject.errors).to(include(:move_user_does_not_own_game))
         end
       end
     end

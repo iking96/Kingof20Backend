@@ -24,7 +24,7 @@ class Move < ApplicationRecord
 
   validate :pre_processing_valid?, on: :pre_processing
   def pre_processing_valid?
-    unless PlayLogic::MoveLogic::MoveHelpers.move_pre_processor(move: self).empty?
+    unless PlayLogic::MoveLogic::MoveHelpers.move_pre_processor(move: self).success?
       errors.add(:base, 'move preprocesses returned false')
     end
   end

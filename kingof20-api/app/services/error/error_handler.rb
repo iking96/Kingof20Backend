@@ -19,6 +19,14 @@ module Error
             message: e.to_s
           )
         end
+        rescue_from ArgumentError do |e|
+          respond(
+            error: :argument_error,
+            error_code: 'system',
+            status: 500,
+            message: e.to_s
+          )
+        end
         rescue_from CustomError do |e|
           respond(
             error: e.error,

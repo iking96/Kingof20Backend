@@ -57,7 +57,6 @@ module PlayLogic
           rack.subtract_once(tiles)
         end
 
-        # TODO: Use result object
         def check_board_legality(board:)
           unless check_board_on_starting(board: board)
             return false

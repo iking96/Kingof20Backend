@@ -19,9 +19,11 @@ module PlayLogic
 
         def create_move_and_update_game(user:, move_info:)
           new_move = Move.new(move_info)
+
+          pre_processor_result = MoveLogic::MoveHelpers.move_pre_processor(move: new_move)
           raise Error::Move::PreProcessingError.new(
-            message: new_move.errors.to_a
-          ) unless MoveLogic::MoveHelpers.move_pre_processor(move: new_move).empty?
+            error_code: pre_processor_result.errors.first
+          ) unless pre_processor_result.success?
 
           Game.transaction do
             move_game = new_move.game
