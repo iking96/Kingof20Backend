@@ -87,7 +87,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
     let!(:game) { build(:game, :with_first_move) }
 
     it 'returns correct value' do
-      expect(subject).to(be_truthy)
+      expect(subject.success?).to(eq(true))
     end
 
     context 'when there are no tiles on the starting space' do
@@ -100,7 +100,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
 
       it 'returns correct value' do
-        expect(subject.success?).to(be_falsey)
+        expect(subject.success?).to(eq(false))
       end
     end
   end
