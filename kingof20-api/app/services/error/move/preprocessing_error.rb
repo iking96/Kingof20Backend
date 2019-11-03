@@ -4,7 +4,7 @@ module Error
   module Move
     class PreProcessingError < CustomError
       PRE_PROCESSING_ERRORS = {
-        move_error: 'unable to pre-process move',
+        move_pre_processing_error: 'unable to pre-process move',
         move_missing_arguments: 'missing arguments for pre-processing',
         move_input_to_long: 'move input size must be less than or equal 3',
         move_input_mismatch: 'row, col and tile_value input must be same length',

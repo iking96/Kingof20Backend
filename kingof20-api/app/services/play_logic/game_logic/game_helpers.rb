@@ -17,12 +17,10 @@ module PlayLogic
           end
 
           unless moves_causing_error.empty?
-            if block_given?
-              yield("Spaces #{moves_causing_error} already occupied on board")
-            else
-              raise ArgumentError, "Space #{moves_causing_error} already occupied on board"
-            end
-            return nil
+            return Utilities::CheckResult.new(
+              success: false,
+              error_codes: [:game_space_taken],
+            )
           end
 
           (0...tiles_placed).each do |index|
@@ -32,29 +30,33 @@ module PlayLogic
             board[row][col] = tile_value
           end
 
-          board
+          Utilities::CheckResult.new(
+            success: true,
+            value: board,
+          )
         end
 
         def remove_tiles_from_rack(tiles:, rack:)
           if tiles.count > 3
-            if block_given?
-              yield("Attempting to remove #{tiles.count} from rack; max is 3")
-            else
-              raise ArgumentError, "Attempting to remove #{tiles.count} from rack; max is 3"
-            end
-            return nil
+            return Utilities::CheckResult.new(
+              success: false,
+              error_codes: [:game_rack_requrest_to_long],
+            )
           end
 
           unless tiles.subtract_once(rack).empty?
-            if block_given?
-              yield("Tiles (#{tiles}) not all in rack (#{rack})")
-            else
-              raise ArgumentError, "Tiles (#{tiles}) not all in rack (#{rack})"
-            end
-            return nil
+            return Utilities::CheckResult.new(
+              success: false,
+              error_codes: [:game_tiles_not_on_rack],
+            )
           end
 
-          rack.subtract_once(tiles)
+          rack = rack.subtract_once(tiles)
+
+          Utilities::CheckResult.new(
+            success: true,
+            value: rack,
+          )
         end
 
         def check_board_legality(board:)

@@ -18,7 +18,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
     let(:cols) { [1] }
 
     it 'adds the move to the board' do
-      new_board = subject
+      new_board = subject.value
       expect(new_board[1][1]).to(eq(1))
     end
 
@@ -27,7 +27,8 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       let(:cols) { [2] }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error ArgumentError)
+        expect(subject.success?).to(be_falsey)
+        expect(subject.errors.first).to(eq(:game_space_taken))
       end
     end
   end
@@ -44,7 +45,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
     let!(:rack) { [1, 2, 3, 4, 5, 6, 7] }
 
     it 'removes the tiles from the rack' do
-      new_rack = subject
+      new_rack = subject.value
       expect(new_rack).to(eq([4, 5, 6, 7]))
     end
 
@@ -52,7 +53,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       let!(:rack) { [1, 2, 3, 3, 5, 6, 7] }
 
       it 'raises an error' do
-        new_rack = subject
+        new_rack = subject.value
         expect(new_rack).to(eq([3, 5, 6, 7]))
       end
     end
@@ -61,7 +62,8 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       let!(:tiles) { [1, 2, 3, 4] }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error ArgumentError)
+        expect(subject.success?).to(be_falsey)
+        expect(subject.errors.first).to(eq(:game_rack_requrest_to_long))
       end
     end
 
@@ -69,7 +71,8 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       let!(:tiles) { [1, 2, 9] }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error ArgumentError)
+        expect(subject.success?).to(be_falsey)
+        expect(subject.errors.first).to(eq(:game_tiles_not_on_rack))
       end
     end
   end

@@ -31,31 +31,35 @@ module PlayLogic
             # Check that user is current player
             unless move_game.current_user == user
               raise Error::Move::ProcessingError.new(
-                message: 'User is not current player',
+                error_code: :move_not_current_player,
               )
             end
 
             # Check that rack can supply tiles
-            new_rack = PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
+            remove_tiles_result = PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
               tiles: new_move.tile_value,
               rack: move_game.current_user_rack,
-            ) do |message|
+            )
+            if remove_tiles_result.success?
+              new_rack = remove_tiles_result.value
+            else
               raise Error::Move::ProcessingError.new(
-                message: message
+                error_code: remove_tiles_result.errors.first
               )
             end
 
             move_game.set_current_user_rack(new_rack: new_rack)
 
-            # Check that move is not blocked
-            PlayLogic::GameLogic::GameHelpers.add_move_to_board(
+            add_move_result = PlayLogic::GameLogic::GameHelpers.add_move_to_board(
               board: move_game.board,
               rows: new_move.row_num,
               cols: new_move.col_num,
               tile_values: new_move.tile_value,
-            ) do |message|
+            )
+
+            unless add_move_result.success?
               raise Error::Move::ProcessingError.new(
-                message: message
+                error_code: add_move_result.errors.first,
               )
             end
 
