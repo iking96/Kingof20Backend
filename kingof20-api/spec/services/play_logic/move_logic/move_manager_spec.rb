@@ -73,7 +73,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       let(:tile_value) { [4, 10] }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error(Error::Move::ProcessingError, /not all in rack/))
+        expect { subject }.to(raise_error(Error::Game::ProcessingError, /not all in rack/))
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         }
       end
       it 'raises an error' do
-        expect { subject }.to(raise_error(Error::Move::ProcessingError, /already occupied on board/))
+        expect { subject }.to(raise_error(Error::Game::ProcessingError, /already occupied on board/))
       end
     end
   end

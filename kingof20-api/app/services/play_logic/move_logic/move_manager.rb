@@ -43,7 +43,7 @@ module PlayLogic
             if remove_tiles_result.success?
               new_rack = remove_tiles_result.value
             else
-              raise Error::Move::ProcessingError.new(
+              raise Error::Game::ProcessingError.new(
                 error_code: remove_tiles_result.errors.first
               )
             end
@@ -58,7 +58,7 @@ module PlayLogic
             )
 
             unless add_move_result.success?
-              raise Error::Move::ProcessingError.new(
+              raise Error::Game::ProcessingError.new(
                 error_code: add_move_result.errors.first,
               )
             end

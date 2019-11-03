@@ -61,14 +61,22 @@ module PlayLogic
 
         def check_board_legality(board:)
           unless check_board_on_starting(board: board)
-            return false
+            return Utilities::CheckResult.new(
+              success: false,
+              error_codes: [:game_no_tile_on_starting],
+            )
           end
 
           unless check_board_for_islands(board: board)
-            return false
+            return Utilities::CheckResult.new(
+              success: false,
+              error_codes: [:game_board_contains_islands],
+            )
           end
 
-          true
+          Utilities::CheckResult.new(
+            success: true,
+          )
         end
 
         def check_board_with_move_legality(board:, move:)

@@ -100,7 +100,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
 
       it 'returns correct value' do
-        expect(subject).to(be_falsey)
+        expect(subject.success?).to(be_falsey)
       end
     end
   end
