@@ -36,64 +36,81 @@ module PlayLogic
           )
         end
 
+        # TODO: Change to return all errors!!!
         def remove_tiles_from_rack(tiles:, rack:)
+          errors = []
           if tiles.count > 3
-            return Utilities::CheckResult.new(
-              success: false,
-              error_codes: [:game_rack_requrest_to_long],
-            )
+            errors << :game_rack_requrest_to_long
           end
 
           unless tiles.subtract_once(rack).empty?
-            return Utilities::CheckResult.new(
-              success: false,
-              error_codes: [:game_tiles_not_on_rack],
-            )
+            errors << :game_tiles_not_on_rack
           end
 
           rack = rack.subtract_once(tiles)
 
-          Utilities::CheckResult.new(
-            success: true,
-            value: rack,
-          )
+          if errors.present?
+            Utilities::CheckResult.new(
+              success: false,
+              error_codes: errors.uniq,
+            )
+          else
+            Utilities::CheckResult.new(
+              success: true,
+              value: rack,
+            )
+          end
         end
 
         def check_board_legality(board:)
+          errors = []
+
           unless check_board_on_starting(board: board)
-            return Utilities::CheckResult.new(
-              success: false,
-              error_codes: [:game_no_tile_on_starting],
-            )
+            errors << :game_no_tile_on_starting
           end
 
           unless check_board_for_islands(board: board)
-            return Utilities::CheckResult.new(
-              success: false,
-              error_codes: [:game_board_contains_islands],
-            )
+            errors << :game_board_contains_islands
           end
 
-          Utilities::CheckResult.new(
-            success: true,
-          )
+          if errors.present?
+            Utilities::CheckResult.new(
+              success: false,
+              error_codes: errors.uniq,
+            )
+          else
+            Utilities::CheckResult.new(
+              success: true,
+            )
+          end
         end
 
         def check_board_with_move_legality(board:, move:)
+          errors = []
+
           unless check_move_not_double_digit(
             board: board,
             rows: move.row_num,
             cols: move.col_num,
             values: move.tile_value,
           )
-            return false
+            errors << :move_creates_double_digit
           end
 
           unless check_move_not_double_expression(board: board)
-            return false
+            errors << :move_creates_double_expression
           end
 
-          true
+          if errors.present?
+            Utilities::CheckResult.new(
+              success: false,
+              error_codes: errors.uniq,
+            )
+          else
+            Utilities::CheckResult.new(
+              success: true,
+            )
+          end
         end
 
         private
@@ -152,7 +169,7 @@ module PlayLogic
         end
 
         def check_move_not_double_expression(board:)
-          return true
+          true
         end
 
         def in_bounds?(row:, col:)
