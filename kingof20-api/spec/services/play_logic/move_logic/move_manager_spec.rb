@@ -3,6 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
+  describe 'get_user_moves_with_params' do
+    it "Tests are covered by Move controller; would be nice to add test here though."
+  end
+
+  describe 'get_user_move' do
+    it "Tests are covered by Move controller; would be nice to add test here though."
+  end
+
   describe 'create_move_and_update_game' do
     subject { described_class.create_move_and_update_game(user: user, move_info: move_info) }
 
@@ -21,15 +29,21 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
     let(:row_num) { [0, 1] }
     let(:col_num) { [2, 2] }
     let(:tile_value) { [4, 11] }
-
     let(:expected_board) do
-      expected_board = Array.new(Game.board_size) { Array.new(Game.board_size) { 0 } }
-      expected_board[2][2] = 5
-      expected_board[2][3] = 11
-      expected_board[2][4] = 4
-      expected_board[0][2] = 4
-      expected_board[1][2] = 11
-      expected_board
+      [
+        [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ]
     end
     let(:expected_initator_rack) { [1, 2, 3, 5, 6] }
 
@@ -92,6 +106,28 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       end
       it 'raises an error' do
         expect { subject }.to(raise_error(Error::Game::ProcessingError, /already occupied on board/))
+      end
+    end
+
+    context 'board is not legal after move' do
+      let!(:game) { create(:game_with_user) }
+      let(:row_num) { [0, 0, 0] }
+      let(:col_num) { [0, 1, 2] }
+      let(:tile_value) { [4, 11, 5] }
+
+      it 'raises an error' do
+        expect { subject }.to(raise_error(Error::Game::ProcessingError, /game board has no tiles on starting space/))
+      end
+    end
+
+    context 'board with move is not legal' do
+      # Create double digit
+      let(:row_num) { [2] }
+      let(:col_num) { [1] }
+      let(:tile_value) { [4] }
+
+      it 'raises an error' do
+        expect { subject }.to(raise_error(Error::Game::ProcessingError, /move on board created double digit/))
       end
     end
   end

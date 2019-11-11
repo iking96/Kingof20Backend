@@ -39,6 +39,8 @@ module PlayLogic
               )
             end
 
+            # TODO: Check game is not over
+
             # Check that rack can supply tiles
             remove_tiles_result = PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
               tiles: new_move.tile_value,
@@ -54,6 +56,7 @@ module PlayLogic
 
             move_game.set_current_user_rack(new_rack: new_rack)
 
+            # Check that move can be added to board
             add_move_result = PlayLogic::GameLogic::GameHelpers.add_move_to_board(
               board: move_game.board,
               move: new_move,
@@ -65,7 +68,27 @@ module PlayLogic
               )
             end
 
-            # TODO: Check game validity
+            # Check that board and move are legal
+            board_legality_result = PlayLogic::GameLogic::GameHelpers.check_board_legality(
+              board: move_game.board,
+            )
+            board_with_move_legality_result = PlayLogic::GameLogic::GameHelpers.check_board_with_move_legality(
+              board: move_game.board,
+              move: new_move,
+            )
+
+            unless board_legality_result.success?
+              raise Error::Game::ProcessingError.new(
+                error_code: board_legality_result.errors.first,
+              )
+            end
+            unless board_with_move_legality_result.success?
+              raise Error::Game::ProcessingError.new(
+                error_code: board_with_move_legality_result.errors.first,
+              )
+            end
+
+            # TODO: Update move game to progress with game
 
             move_game.save!
             # new_move.save!

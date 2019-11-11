@@ -8,6 +8,10 @@ module Error
         game_rack_requrest_to_long: 'attempt to remove more than 3 tiles during turn',
         game_tiles_not_on_rack: 'tiles to remove not all in rack',
         game_space_taken: 'space already occupied on board',
+        game_no_tile_on_starting: 'game board has no tiles on starting space',
+        game_board_contains_islands: 'game board contains islands',
+        move_creates_double_digit: 'move on board created double digit',
+        move_creates_double_expression: 'move on board created double expression',
       }.freeze
 
       def initialize(error_code: :game_processing_error)
