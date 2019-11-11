@@ -15,6 +15,15 @@ module Api
         json_response(@moves)
       end
 
+      def show
+        @move = PlayLogic::MoveLogic::MoveManager.get_user_move(
+          move_id: params[:id],
+          user: current_resource_owner,
+        )
+
+        json_response(@move)
+      end
+
       def create
         @move = PlayLogic::MoveLogic::MoveManager.create_move_and_update_game(
           user: current_resource_owner,

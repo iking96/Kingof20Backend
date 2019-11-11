@@ -17,6 +17,10 @@ module PlayLogic
           games
         end
 
+        def get_user_move(move_id:, user:)
+          user.moves.find_by!(id: move_id)
+        end
+
         def create_move_and_update_game(user:, move_info:)
           new_move = Move.new(move_info)
 
