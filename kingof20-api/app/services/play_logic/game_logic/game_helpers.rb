@@ -4,7 +4,11 @@ module PlayLogic
   module GameLogic
     class GameHelpers
       class << self
-        def add_move_to_board(board:, rows:, cols:, tile_values:)
+        def add_move_to_board(board:, move:)
+          rows = move.row_num
+          cols = move.col_num
+          tile_values = move.tile_value
+
           tiles_placed = rows.count
 
           moves_causing_error = []
@@ -36,7 +40,6 @@ module PlayLogic
           )
         end
 
-        # TODO: Change to return all errors!!!
         def remove_tiles_from_rack(tiles:, rack:)
           errors = []
           if tiles.count > 3
@@ -85,6 +88,13 @@ module PlayLogic
           end
         end
 
+        # Checks legality of a game board with the context of
+        # last move to be played
+        # Params:
+        # +board+:: A Board object
+        # +move+:: A Move object
+        # Returns:
+        # A CheckResult object with success status and optional errors
         def check_board_with_move_legality(board:, move:)
           errors = []
 
@@ -97,7 +107,12 @@ module PlayLogic
             errors << :move_creates_double_digit
           end
 
-          unless check_move_not_double_expression(board: board)
+          unless check_move_not_double_expression(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+            values: move.tile_value,
+          )
             errors << :move_creates_double_expression
           end
 
@@ -158,9 +173,10 @@ module PlayLogic
         end
 
         def check_move_not_double_digit(board:, rows:, cols:, values:)
-          rows.zip(cols, values).all do |row, col, value|
-            [[1, 0], [-1, 0], [0, 1], [0, -1]].all do |row_delta, col_delta|
-              next unless in_bounds?(row: row, col: col)
+          rows.zip(cols, values).all? do |row, col, value|
+            [[1, 0], [-1, 0], [0, 1], [0, -1]].all? do |row_delta, col_delta|
+              next true unless in_bounds?(row: row + row_delta, col: col + col_delta)
+              next true unless board[row + row_delta][col + col_delta] != 0
 
               (number_tile?(board[row + row_delta][col + col_delta]) && operation_tile?(value)) ||
               (operation_tile?(board[row + row_delta][col + col_delta]) && number_tile?(value))
@@ -168,8 +184,53 @@ module PlayLogic
           end
         end
 
-        def check_move_not_double_expression(board:)
-          true
+        def check_move_not_double_expression(board:, rows:, cols:, values:)
+          rows.zip(cols, values).all? do |row, col, value|
+            orientations = []
+
+            if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
+              orientations << :down_one
+            end
+
+            if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
+              orientations << :up_one
+            end
+
+            if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
+              orientations << :right_one
+            end
+
+            if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
+              orientations << :left_one
+            end
+
+            if operation_tile?(value)
+              return orientations.size != 4
+            end
+
+            if in_bounds?(row: row + 2, col: col) && board[row + 2][col] != 0
+              orientations << :down_two
+            end
+
+            if in_bounds?(row: row - 2, col: col) && board[row - 2][col] != 0
+              orientations << :up_two
+            end
+
+            if in_bounds?(row: row, col: col + 2) && board[row][col + 2] != 0
+              orientations << :right_two
+            end
+
+            if in_bounds?(row: row, col: col - 2) && board[row][col - 2] != 0
+              orientations << :left_two
+            end
+
+            expression_up = orientations.include?(:up_one) && orientations.include?(:up_two)
+            expression_down = orientations.include?(:down_one) && orientations.include?(:down_two)
+            expression_left = orientations.include?(:left_one) && orientations.include?(:left_two)
+            expression_right = orientations.include?(:right_one) && orientations.include?(:right_two)
+
+            !((expression_up || expression_down) && (expression_left || expression_right))
+          end
         end
 
         def in_bounds?(row:, col:)
@@ -177,11 +238,11 @@ module PlayLogic
           (0...Game.board_size).include?(col)
         end
 
-        def number_tile?(value:)
+        def number_tile?(value)
           (1..9).include?(value)
         end
 
-        def operation_tile?(value:)
+        def operation_tile?(value)
           (10..13).include?(value)
         end
       end

@@ -52,9 +52,7 @@ module PlayLogic
 
             add_move_result = PlayLogic::GameLogic::GameHelpers.add_move_to_board(
               board: move_game.board,
-              rows: new_move.row_num,
-              cols: new_move.col_num,
-              tile_values: new_move.tile_value,
+              move: new_move,
             )
 
             unless add_move_result.success?

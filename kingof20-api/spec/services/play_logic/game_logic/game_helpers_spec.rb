@@ -7,13 +7,20 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
     subject do
       described_class.add_move_to_board(
         board: game.board,
-        rows: rows,
-        cols: cols,
-        tile_values: [1],
+        move: move,
       )
     end
-
     let!(:game) { create(:game_with_user, :with_first_move) }
+    let!(:move) do
+      build(
+        :move,
+        row_num: rows,
+        col_num: cols,
+        tile_value: [1],
+        game: game,
+        user: game.initiator,
+      )
+    end
     let(:rows) { [1] }
     let(:cols) { [1] }
 
@@ -91,16 +98,97 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
     end
 
     context 'when there are no tiles on the starting space' do
-      let!(:game) { build(:game) }
-
-      before do
-        game.board[4][2] = 5
-        game.board[4][3] = 11
-        game.board[4][4] = 4
-      end
+      let!(:game) { build(:game, :nothing_on_starting_space) }
 
       it 'returns correct value' do
-        expect(subject.success?).to(eq(false))
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:game_no_tile_on_starting))
+      end
+    end
+
+    context 'when there are islands' do
+      let!(:game) { build(:game, :with_islands) }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:game_board_contains_islands))
+      end
+    end
+  end
+
+  describe 'check_board_with_move_legality' do
+    before do
+      PlayLogic::GameLogic::GameHelpers.add_move_to_board(
+        board: board,
+        move: move,
+      )
+    end
+
+    subject do
+      described_class.check_board_with_move_legality(
+        board: game.board,
+        move: move,
+      )
+    end
+
+    let(:board) do
+      [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0],
+        [0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ]
+    end
+    let!(:game) { build(:game, board: board) }
+    let!(:move) do
+      build(
+        :move,
+        row_num: rows,
+        col_num: cols,
+        tile_value: tile_values,
+        game: game,
+        user: game.initiator,
+      )
+    end
+    let(:rows) { [3] }
+    let(:cols) { [3] }
+    let(:tile_values) { [4] }
+
+    it 'returns correct value' do
+      expect(subject.success?).to(eq(true))
+    end
+
+    context 'when a move would create a double digit' do
+      let(:rows) { [1] }
+      let(:cols) { [2] }
+      let(:tile_values) { [5] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_creates_double_digit))
+      end
+    end
+
+    context 'when a move would create a double expression' do
+      let(:rows) { [3, 3] }
+      let(:cols) { [1, 3] }
+      let(:tile_values) { [5, 4] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_creates_double_expression))
       end
     end
   end
