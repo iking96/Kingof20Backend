@@ -102,7 +102,6 @@ module PlayLogic
             board: board,
             rows: move.row_num,
             cols: move.col_num,
-            values: move.tile_value,
           )
             errors << :move_creates_double_digit
           end
@@ -111,7 +110,6 @@ module PlayLogic
             board: board,
             rows: move.row_num,
             cols: move.col_num,
-            values: move.tile_value,
           )
             errors << :move_creates_double_expression
           end
@@ -120,7 +118,6 @@ module PlayLogic
             board: board,
             rows: move.row_num,
             cols: move.col_num,
-            values: move.tile_value,
           )
             errors << :move_creates_dangling_operation
           end
@@ -181,8 +178,9 @@ module PlayLogic
           end
         end
 
-        def check_move_not_double_digit(board:, rows:, cols:, values:)
-          rows.zip(cols, values).all? do |row, col, value|
+        def check_move_not_double_digit(board:, rows:, cols:)
+          rows.zip(cols).all? do |row, col|
+            value = board[row][col]
             [[1, 0], [-1, 0], [0, 1], [0, -1]].all? do |row_delta, col_delta|
               next true unless in_bounds?(row: row + row_delta, col: col + col_delta)
               next true unless board[row + row_delta][col + col_delta] != 0
@@ -193,82 +191,95 @@ module PlayLogic
           end
         end
 
-        def check_move_not_double_expression(board:, rows:, cols:, values:)
-          rows.zip(cols, values).all? do |row, col, value|
-            orientations = []
+        def check_move_not_double_expression(board:, rows:, cols:)
+          rows.zip(cols).all? do |row, col|
+            orientation_result = check_expression_orientation(
+              board: board,
+              row: row,
+              col: col,
+            )
 
-            if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
-              orientations << :down_one
-            end
-
-            if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
-              orientations << :up_one
-            end
-
-            if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
-              orientations << :right_one
-            end
-
-            if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
-              orientations << :left_one
-            end
-
-            if operation_tile?(value)
-              return orientations.size != 4
-            end
-
-            if in_bounds?(row: row + 2, col: col) && board[row + 2][col] != 0
-              orientations << :down_two
-            end
-
-            if in_bounds?(row: row - 2, col: col) && board[row - 2][col] != 0
-              orientations << :up_two
-            end
-
-            if in_bounds?(row: row, col: col + 2) && board[row][col + 2] != 0
-              orientations << :right_two
-            end
-
-            if in_bounds?(row: row, col: col - 2) && board[row][col - 2] != 0
-              orientations << :left_two
-            end
-
-            expression_up = orientations.include?(:up_one) && orientations.include?(:up_two)
-            expression_down = orientations.include?(:down_one) && orientations.include?(:down_two)
-            expression_left = orientations.include?(:left_one) && orientations.include?(:left_two)
-            expression_right = orientations.include?(:right_one) && orientations.include?(:right_two)
-
-            !((expression_up || expression_down) && (expression_left || expression_right))
+            !(orientation_result.value.include?(:vertical) &&
+            orientation_result.value.include?(:horizontal))
           end
         end
 
-        def check_move_not_dangling_operation(board:, rows:, cols:, values:)
-          rows.zip(cols, values).all? do |row, col, value|
-            next true if number_tile?(value)
+        def check_move_not_dangling_operation(board:, rows:, cols:)
+          rows.zip(cols).all? do |row, col|
+            next true if number_tile?(board[row][col])
 
-            orientations = []
+            orientation_result = check_expression_orientation(
+              board: board,
+              row: row,
+              col: col,
+            )
 
-            if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
-              orientations << :down_one
-            end
-
-            if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
-              orientations << :up_one
-            end
-
-            if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
-              orientations << :right_one
-            end
-
-            if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
-              orientations << :left_one
-            end
-
-            expression_horz = orientations.include?(:up_one) && orientations.include?(:down_one)
-            expression_vert = orientations.include?(:left_one) && orientations.include?(:right_one)
-
-            expression_horz || expression_vert
+            orientation_result.value.include?(:vertical) ||
+            orientation_result.value.include?(:horizontal)
           end
+        end
+
+        def check_expression_orientation(board:, row:, col:)
+          orientations = []
+          directions = []
+
+          if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
+            directions << :down_one
+          end
+
+          if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
+            directions << :up_one
+          end
+
+          if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
+            directions << :right_one
+          end
+
+          if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
+            directions << :left_one
+          end
+
+          if operation_tile?(board[row][col])
+            expression_horz = directions.include?(:up_one) && directions.include?(:down_one)
+            expression_vert = directions.include?(:left_one) && directions.include?(:right_one)
+
+            orientations << :horizontal if expression_horz
+            orientations << :vertical if expression_vert
+
+            return Utilities::CheckResult.new(
+              success: true,
+              value: orientations,
+            )
+          end
+
+          if in_bounds?(row: row + 2, col: col) && board[row + 2][col] != 0
+            directions << :down_two
+          end
+
+          if in_bounds?(row: row - 2, col: col) && board[row - 2][col] != 0
+            directions << :up_two
+          end
+
+          if in_bounds?(row: row, col: col + 2) && board[row][col + 2] != 0
+            directions << :right_two
+          end
+
+          if in_bounds?(row: row, col: col - 2) && board[row][col - 2] != 0
+            directions << :left_two
+          end
+
+          expression_left = directions.include?(:left_one) && directions.include?(:left_two)
+          expression_right = directions.include?(:right_one) && directions.include?(:right_two)
+          expression_up = directions.include?(:up_one) && directions.include?(:up_two)
+          expression_down = directions.include?(:down_one) && directions.include?(:down_two)
+
+          orientations << :horizontal if expression_left || expression_right
+          orientations << :vertical if expression_up || expression_down
+
+          Utilities::CheckResult.new(
+            success: true,
+            value: orientations,
+          )
         end
 
         def in_bounds?(row:, col:)
