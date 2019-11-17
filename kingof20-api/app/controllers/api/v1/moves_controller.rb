@@ -27,7 +27,7 @@ module Api
       def create
         @move = PlayLogic::MoveLogic::MoveManager.create_move_and_update_game(
           user: current_resource_owner,
-          move_info: @permitted_params[:move_info],
+          move_info: @permitted_params,
         )
 
         json_response(@move)
@@ -40,9 +40,11 @@ module Api
       def create_params
         @permitted_params = params.require(:move_info).permit(
           :game_id,
-          :row_num,
-          :col_num,
-          :tile_value,
+          :returned_tiles,
+          :move_type,
+          row_num: [],
+          col_num: [],
+          tile_value: [],
         ).merge(
           user_id: current_resource_owner.id
         ).to_h

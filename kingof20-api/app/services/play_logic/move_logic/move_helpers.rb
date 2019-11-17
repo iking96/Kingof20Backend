@@ -18,7 +18,7 @@ module PlayLogic
               unless move.row_num.count == move.col_num.count && move.col_num.count == move.tile_value.count
                 errors << :move_input_mismatch
               end
-              unless [move.row_num, move.col_num].transpose.uniq!.nil?
+              unless !errors.include?(:move_input_mismatch) && [move.row_num, move.col_num].transpose.uniq!.nil?
                 errors << :move_input_duplicate
               end
               unless move.row_num.all? { |row| (0..Game.board_size).include?(row) }

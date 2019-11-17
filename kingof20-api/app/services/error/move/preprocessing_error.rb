@@ -18,7 +18,7 @@ module Error
         move_user_does_not_own_game: 'Game id did not belong to User',
       }.freeze
 
-      def initialize(error_code: :move_error)
+      def initialize(error_code: :move_pre_processing_error)
         error_message = PRE_PROCESSING_ERRORS[error_code]
 
         raise ArgumentError, "No PreProcessingError for #{error_code}" if error_message.nil?

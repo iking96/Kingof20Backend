@@ -191,5 +191,17 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
         expect(result_vo.errors).to(include(:move_creates_double_expression))
       end
     end
+
+    context 'when a move would create a dangling operation' do
+      let(:rows) { [5] }
+      let(:cols) { [2] }
+      let(:tile_values) { [11] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_creates_dangling_operation))
+      end
+    end
   end
 end

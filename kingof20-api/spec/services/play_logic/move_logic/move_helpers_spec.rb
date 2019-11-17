@@ -53,7 +53,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveHelpers) do
 
         it do
           move.row_num = [1]
-          move.col_num = [1]
+          move.col_num = [1, 2]
           move.tile_value = [1, 2]
           expect(subject.errors).to(include(:move_input_mismatch))
         end

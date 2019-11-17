@@ -2,7 +2,7 @@
 
 module Error
   class CustomError < StandardError
-    attr_reader :status, :error, :message
+    attr_reader :status, :error, :error_code, :message
 
     def initialize(error: nil, error_code: nil, status: nil, message: nil)
       @error = error || :unprocessable_entity

@@ -116,6 +116,15 @@ module PlayLogic
             errors << :move_creates_double_expression
           end
 
+          unless check_move_not_dangling_operation(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+            values: move.tile_value,
+          )
+            errors << :move_creates_dangling_operation
+          end
+
           if errors.present?
             Utilities::CheckResult.new(
               success: false,
@@ -230,6 +239,35 @@ module PlayLogic
             expression_right = orientations.include?(:right_one) && orientations.include?(:right_two)
 
             !((expression_up || expression_down) && (expression_left || expression_right))
+          end
+        end
+
+        def check_move_not_dangling_operation(board:, rows:, cols:, values:)
+          rows.zip(cols, values).all? do |row, col, value|
+            next true if number_tile?(value)
+
+            orientations = []
+
+            if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
+              orientations << :down_one
+            end
+
+            if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
+              orientations << :up_one
+            end
+
+            if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
+              orientations << :right_one
+            end
+
+            if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
+              orientations << :left_one
+            end
+
+            expression_horz = orientations.include?(:up_one) && orientations.include?(:down_one)
+            expression_vert = orientations.include?(:left_one) && orientations.include?(:right_one)
+
+            expression_horz || expression_vert
           end
         end
 

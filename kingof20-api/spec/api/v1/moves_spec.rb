@@ -11,108 +11,87 @@ RSpec.describe('Move API', type: :request) do
     stub_current_user(user)
   end
 
-  # describe 'GET /api/moves' do
-  #   subject { get "/api/moves#{params}" }
-  #   let(:params) { "" }
-  #
-  #   context 'when the user has games' do
-  #     let!(:game) do
-  #       create(:game,
-  #       initiator: user,
-  #       initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #     end
-  #
-  #     it 'responds with a users games' do
-  #       subject
-  #       expect(response).to(have_http_status(200))
-  #       expect(json.size).to(eq(1))
-  #       expect(json.first).to(include(
-  #         "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-  #         "initiator_id" => user.id,
-  #         "opponent_id" => nil,
-  #       ))
-  #     end
-  #
-  #     context 'when there are other games' do
-  #       let(:user2) { create(:user) }
-  #       let!(:game2) do
-  #         create(:game,
-  #         initiator: user2,
-  #         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #       end
-  #
-  #       it 'responds with only a users games' do
-  #         subject
-  #         expect(response).to(have_http_status(200))
-  #         expect(json.size).to(eq(1))
-  #         expect(json.first).to(include(
-  #           "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-  #           "initiator_id" => user.id,
-  #           "opponent_id" => nil,
-  #         ))
-  #       end
-  #
-  #       context 'which the user is a part of' do
-  #         let!(:game2) do
-  #           create(:game,
-  #             initiator: user2,
-  #             opponent: user,
-  #             initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #         end
-  #
-  #         it 'responds with a users games' do
-  #           subject
-  #           expect(response).to(have_http_status(200))
-  #           expect(json.size).to(eq(2))
-  #           expect(json.last).to(include(
-  #             "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-  #             "initiator_id" => user2.id,
-  #             "opponent_id" => user.id,
-  #           ))
-  #         end
-  #       end
-  #     end
-  #
-  #     context 'when there are params' do
-  #       let(:user2) { create(:user) }
-  #       let!(:game2) do
-  #         create(:game,
-  #           initiator: user2,
-  #           opponent: user,
-  #           initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #       end
-  #
-  #       context 'and its the "initiator" param' do
-  #         let(:params) { "?initiator=true" }
-  #         it 'should respond with games where the user is the initiator' do
-  #           subject
-  #           expect(json.first).to(include(
-  #             "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-  #             "initiator_id" => user.id,
-  #             "opponent_id" => nil,
-  #           ))
-  #         end
-  #       end
-  #
-  #       context 'and its the "opponent" param' do
-  #         let(:params) { "?opponent=true" }
-  #         it 'should respond with games where the user is the initiator' do
-  #           subject
-  #           expect(json.first).to(include(
-  #             "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-  #             "initiator_id" => user2.id,
-  #             "opponent_id" => user.id,
-  #           ))
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
+  describe 'GET /api/moves' do
+    subject { get '/api/moves', params: params }
+    let(:params) { nil }
+
+    context 'when the user has moves' do
+      let!(:move) { create(:move, user: owning_user) }
+      let!(:move2) { create(:move, user: owning_user) }
+      let(:owning_user) { user }
+
+      it 'responds with a users moves' do
+        subject
+        expect(response).to(have_http_status(200))
+        expect(json.first).to(include(
+          "user_id" => user.id,
+        ))
+        expect(json.second).to(include(
+          "user_id" => user.id,
+        ))
+      end
+
+      context 'when there are other moves' do
+        let(:user2) { create(:user) }
+        let!(:move3) do
+          create(
+            :move,
+            user: user2,
+          )
+        end
+
+        it 'responds with only a users games' do
+          subject
+          expect(response).to(have_http_status(200))
+          expect(json.first).to(include(
+            "user_id" => user.id,
+          ))
+          expect(json.second).to(include(
+            "user_id" => user.id,
+          ))
+        end
+      end
+
+      context 'when there are params' do
+        context 'and its the "result" param' do
+          let!(:move) { create(:move, user: owning_user, result: move_result) }
+          let!(:move2) { create(:move, user: owning_user, result: move2_result) }
+
+          let(:move_result) { 20 }
+          let(:move2_result) { 20 }
+          let(:search_result) { 20 }
+
+          let(:params) { { result: search_result } }
+
+          it 'responds with moves which match the result' do
+            subject
+            expect(response).to(have_http_status(200))
+            expect(json.first).to(include(
+              "user_id" => user.id,
+            ))
+            expect(json.second).to(include(
+              "user_id" => user.id,
+            ))
+          end
+
+          context 'the search returns does not match any moves' do
+            let(:search_result) { 19 }
+
+            it 'responds with moves which match the result' do
+              subject
+              expect(response).to(have_http_status(200))
+              expect(json).to(be_empty)
+            end
+          end
+        end
+      end
+    end
+  end
 
   describe 'GET /api/moves/$id' do
     subject { get "/api/moves/#{move_id}" }
 
-    context 'when the user has games' do
+    context 'when the user has moves' do
       let!(:move) do
         create(
           :move,
@@ -161,105 +140,150 @@ RSpec.describe('Move API', type: :request) do
     end
   end
 
-  # describe 'POST /api/games' do
-  #   subject { post '/api/games' }
-  #
-  #   context 'there are no games in the game queue' do
-  #     it 'responds with a new game' do
-  #       subject
-  #       expect(response).to(have_http_status(200))
-  #       expect(json).to(include(
-  #         "initiator_id" => user.id,
-  #         "opponent_id" => nil,
-  #       ))
-  #       expect(
-  #         (json["initiator_rack"] +
-  #         json["opponent_rack"] +
-  #         json["available_tiles"]).sort
-  #       ).to(eq(
-  #         Game.initial_available_tiles.sort
-  #       ))
-  #       expect(json["complete"]).to(eq(false))
-  #     end
-  #
-  #     it 'adds a game to the game queue' do
-  #       expect { subject }.to(change { GameQueueEntry.count }.by(1))
-  #     end
-  #   end
-  #
-  #   context 'there are games in the game queue' do
-  #     let!(:waiting_game) do
-  #       create(:game,
-  #       initiator: user2,
-  #       initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #     end
-  #     let(:user2) { create(:user) }
-  #     let!(:game_queue_entry) { GameQueueEntry.create!(user: user2, game: waiting_game) }
-  #
-  #     it 'responds with the waiting game' do
-  #       subject
-  #       expect(response).to(have_http_status(200))
-  #       expect(json).to(include(
-  #         "initiator_id" => user2.id,
-  #         "opponent_id" => user.id,
-  #       ))
-  #       expect(json["complete"]).to(eq(false))
-  #     end
-  #
-  #     it 'removes a game to the game queue' do
-  #       expect { subject }.to(change { GameQueueEntry.count }.by(-1))
-  #     end
-  #
-  #     context 'when waiting user and creating user are the same' do
-  #       let(:user2) { user }
-  #
-  #       it 'responds with a new game' do
-  #         subject
-  #         expect(response).to(have_http_status(200))
-  #         expect(json).to(include(
-  #           "initiator_id" => user.id,
-  #           "opponent_id" => nil,
-  #         ))
-  #         expect(
-  #           (json["initiator_rack"] +
-  #           json["opponent_rack"] +
-  #           json["available_tiles"]).sort
-  #         ).to(eq(
-  #           Game.initial_available_tiles.sort
-  #         ))
-  #         expect(json["complete"]).to(eq(false))
-  #       end
-  #
-  #       it 'adds a game to the game queue' do
-  #         expect { subject }.to(change { GameQueueEntry.count }.by(1))
-  #       end
-  #
-  #       context 'when there is another waiting game' do
-  #         let!(:waiting_game2) do
-  #           create(:game,
-  #           initiator: user3,
-  #           initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-  #         end
-  #         let(:user3) { create(:user) }
-  #         let!(:game_queue_entry) { GameQueueEntry.create!(user: user3, game: waiting_game2) }
-  #
-  #         it 'should respond with the waiting game' do
-  #           subject
-  #           expect(response).to(have_http_status(200))
-  #           expect(json).to(include(
-  #             "initiator_id" => user3.id,
-  #             "opponent_id" => user.id,
-  #           ))
-  #           expect(json["complete"]).to(eq(false))
-  #         end
-  #
-  #         it 'removes a game to the game queue' do
-  #           expect { subject }.to(change { GameQueueEntry.count }.by(-1))
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
+  describe 'POST /api/moves' do
+    subject { post '/api/moves', params: params }
+
+    let!(:game) do
+      create(
+        :game_with_user,
+        :with_first_move,
+        opponent: opponent,
+        initiator_rack: rack,
+      )
+    end
+
+    let(:user) { game.initiator }
+    let(:rack) { [1, 2, 3, 4, 5, 6, 11] }
+    let(:opponent) { create(:user) }
+
+    let(:game_url_query) { "move_info[game_id]=#{game_id}" }
+    let(:game_id) { game.id }
+    let(:row_num) { [1, 3] }
+    let(:col_num) { [3, 3] }
+    let(:tile_value) { [5, 4] }
+
+    let(:move_info_data) do
+      {
+        game_id: game_id,
+        row_num: row_num,
+        col_num: col_num,
+        tile_value: tile_value,
+        move_type: 'tile_placement',
+      }
+    end
+
+    let(:params) { { move_info: move_info_data } }
+
+    context 'when the required move_info param is missing' do
+      let(:params) { {} }
+
+      it 'responds with an error' do
+        subject
+        expect(response).to(have_http_status(500))
+        expect(json).to(include(
+          "error" => "standard_error",
+          "status" => 500,
+        ))
+        expect(json["message"]).to(include("param is missing or the value is empty: move_info"))
+      end
+    end
+
+    context 'when move_info param is not correct' do
+      let(:params) { { move_info: { dummy: 'temp' } } }
+
+      it 'responds with an error' do
+        subject
+        expect(response).to(have_http_status(422))
+        expect(json).to(include(
+          "error" => "unprocessable_entity",
+          "error_code" => "move_missing_arguments",
+          "status" => 422,
+        ))
+        expect(json["message"]).to(include("missing arguments for pre-processing"))
+      end
+    end
+
+    context 'when move_info fails pre_processing' do
+      let(:row_num) { [1] }
+
+      it 'responds with an error' do
+        subject
+        expect(response).to(have_http_status(422))
+        expect(json).to(include(
+          "error" => "unprocessable_entity",
+          "error_code" => "move_input_mismatch",
+          "status" => 422,
+        ))
+        expect(json["message"]).to(include("row, col and tile_value input must be same length"))
+      end
+    end
+
+    context 'when current user is not current player' do
+      let(:user) { opponent }
+
+      it 'responds with an error' do
+        subject
+        expect(response).to(have_http_status(422))
+        expect(json).to(include(
+          "error" => "unprocessable_entity",
+          "error_code" => "move_not_current_player",
+          "status" => 422,
+        ))
+        expect(json["message"]).to(include("User is not current player"))
+      end
+    end
+
+    context 'when the game rack cannot provide the required tiles' do
+      let(:rack) { [1, 1, 1, 1, 1, 1, 11] }
+
+      it 'responds with an error' do
+        subject
+        expect(response).to(have_http_status(422))
+        expect(json).to(include(
+          "error" => "unprocessable_entity",
+          "error_code" => "game_tiles_not_on_rack",
+          "status" => 422,
+        ))
+        expect(json["message"]).to(include("tiles to remove not all in rack"))
+      end
+    end
+
+    context 'when the move is invalid' do
+      context 'due to its interaction with placed tiles' do
+        let(:row_num) { [1] }
+        let(:col_num) { [2] }
+        let(:tile_value) { [5] }
+
+        it 'responds with an error' do
+          subject
+          expect(response).to(have_http_status(422))
+          expect(json).to(include(
+            "error" => "unprocessable_entity",
+            "error_code" => "move_creates_double_digit",
+            "status" => 422,
+          ))
+          expect(json["message"]).to(include("move on board created double digit"))
+        end
+      end
+
+      context 'due to its effect on the game-state' do
+        let(:row_num) { [1] }
+        let(:col_num) { [1] }
+        let(:tile_value) { [5] }
+
+        it 'responds with an error' do
+          subject
+          expect(response).to(have_http_status(422))
+          expect(json).to(include(
+            "error" => "unprocessable_entity",
+            "error_code" => "game_board_contains_islands",
+            "status" => 422,
+          ))
+          expect(json["message"]).to(include("game board contains islands"))
+        end
+      end
+    end
+  end
   #
   # describe 'DELETE /api/games/$id' do
   #   subject { delete "/api/games/#{game_id}" }

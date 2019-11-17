@@ -12,6 +12,7 @@ module Error
         game_board_contains_islands: 'game board contains islands',
         move_creates_double_digit: 'move on board created double digit',
         move_creates_double_expression: 'move on board created double expression',
+        move_creates_dangling_operation: 'move on board created dangling operation',
       }.freeze
 
       def initialize(error_code: :game_processing_error)

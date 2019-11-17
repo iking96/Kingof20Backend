@@ -3,7 +3,7 @@
 module PlayLogic
   module MoveLogic
     class MoveManager
-      USER_MOVE_QUERY_PARAMS = [:perfect_twenty].freeze
+      USER_MOVE_QUERY_PARAMS = [:result].freeze
       class << self
         def get_user_moves_with_params(user:, params:)
           moves = user.moves.to_a
@@ -11,10 +11,10 @@ module PlayLogic
             moves = reduce_by_param(
               moves: moves,
               key: key,
-              _value: value
+              value: value
             )
           end
-          games
+          moves
         end
 
         def get_user_move(move_id:, user:)
@@ -99,10 +99,10 @@ module PlayLogic
 
         private
 
-        def reduce_by_param(moves:, key:, _value:)
+        def reduce_by_param(moves:, key:, value:)
           case key
-          when 'perfect_twenty'
-            moves = moves.select { |m| m.result == 20 }
+          when 'result'
+            moves = moves.select { |move| move.result == value.to_i }
           end
           moves
         end
