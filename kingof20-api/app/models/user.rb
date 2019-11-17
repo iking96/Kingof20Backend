@@ -26,6 +26,6 @@ class User < ApplicationRecord
   end
 
   def current_player_games
-    games.initiator + games.opponent
+    games.select { |game| game.current_user == self }
   end
 end

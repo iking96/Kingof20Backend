@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe(GameLogic::GameQueueEntryManager) do
+RSpec.describe(PlayLogic::GameQueueEntryLogic::GameQueueEntryManager) do
   describe 'pair_user' do
     subject { described_class.pair_user(user: user) }
 
-    let(:user) { create(:user) }
+    let!(:user) { create(:user) }
 
     context 'there are no games in the game queue' do
       it 'returns nil' do
@@ -18,7 +18,6 @@ RSpec.describe(GameLogic::GameQueueEntryManager) do
       let!(:waiting_game) do
         create(:game,
         initiator: user2,
-        current_player: user,
         initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
       end
       let(:user2) { create(:user) }
@@ -39,7 +38,7 @@ RSpec.describe(GameLogic::GameQueueEntryManager) do
               described_class.pair_user(user: user)
             end
           end
-          threads.map(&:join)
+          threads.each(&:join)
         end
 
         it 'blocks duplicate requests' do
@@ -50,7 +49,6 @@ RSpec.describe(GameLogic::GameQueueEntryManager) do
           let!(:waiting_game2) do
             create(:game,
             initiator: user2,
-            current_player: user,
             initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
           end
           let!(:game_queue_entry2) { GameQueueEntry.create!(user: user2, game: waiting_game2) }
@@ -63,7 +61,6 @@ RSpec.describe(GameLogic::GameQueueEntryManager) do
             let!(:waiting_game3) do
               create(:game,
               initiator: user2,
-              current_player: user,
               initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
             end
             let!(:game_queue_entry3) { GameQueueEntry.create!(user: user2, game: waiting_game3) }
@@ -82,7 +79,6 @@ RSpec.describe(GameLogic::GameQueueEntryManager) do
     let!(:game) do
       create(:game,
       initiator: user,
-      current_player: user,
       initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
     end
     let(:user) { create(:user) }

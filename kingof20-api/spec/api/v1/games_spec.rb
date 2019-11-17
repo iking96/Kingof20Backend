@@ -12,7 +12,7 @@ RSpec.describe('Game API', type: :request) do
   end
 
   describe 'GET /api/games' do
-    subject { get "/api/games#{params}" }
+    subject { get '/api/games', :params => params }
     let(:params) { "" }
 
     context 'when the user has games' do
@@ -41,7 +41,7 @@ RSpec.describe('Game API', type: :request) do
           initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
         end
 
-        it 'should respond with unauthorized' do
+        it 'responds with only a users games' do
           subject
           expect(response).to(have_http_status(200))
           expect(json.size).to(eq(1))
@@ -50,6 +50,26 @@ RSpec.describe('Game API', type: :request) do
             "initiator_id" => user.id,
             "opponent_id" => nil,
           ))
+        end
+
+        context 'which the user is a part of' do
+          let!(:game2) do
+            create(:game,
+              initiator: user2,
+              opponent: user,
+              initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
+          end
+
+          it 'responds with a users games' do
+            subject
+            expect(response).to(have_http_status(200))
+            expect(json.size).to(eq(2))
+            expect(json.last).to(include(
+              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+              "initiator_id" => user2.id,
+              "opponent_id" => user.id,
+            ))
+          end
         end
       end
 
@@ -63,7 +83,7 @@ RSpec.describe('Game API', type: :request) do
         end
 
         context 'and its the "initiator" param' do
-          let(:params) { "?initiator=true" }
+          let(:params) { { :initiator => true } }
           it 'should respond with games where the user is the initiator' do
             subject
             expect(json.first).to(include(
@@ -75,7 +95,8 @@ RSpec.describe('Game API', type: :request) do
         end
 
         context 'and its the "opponent" param' do
-          let(:params) { "?opponent=true" }
+          let(:params) { { :opponent => true } }
+
           it 'should respond with games where the user is the initiator' do
             subject
             expect(json.first).to(include(
@@ -298,4 +319,10 @@ RSpec.describe('Game API', type: :request) do
       end
     end
   end
+
+  # describe 'PATCH /api/games/$id' do
+  # end
+  #
+  # describe 'PUT /api/games/$id' do
+  # end
 end

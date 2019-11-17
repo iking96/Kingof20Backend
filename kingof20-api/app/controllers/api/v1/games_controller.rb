@@ -6,7 +6,7 @@ module Api
       before_action :index_params, only: [:index]
 
       def index
-        @games = GameLogic::GameManager.get_user_games_with_params(
+        @games = PlayLogic::GameLogic::GameManager.get_user_games_with_params(
           user: current_resource_owner,
           params: @permitted_params
         )
@@ -15,7 +15,7 @@ module Api
       end
 
       def show
-        @game = GameLogic::GameManager.get_user_game(
+        @game = PlayLogic::GameLogic::GameManager.get_user_game(
           game_id: params[:id],
           user: current_resource_owner,
         )
@@ -24,7 +24,7 @@ module Api
       end
 
       def create
-        @game = GameLogic::GameManager.create_game_or_enqueue_for_user(
+        @game = PlayLogic::GameLogic::GameManager.create_game_or_enqueue_for_user(
           user: current_resource_owner,
         )
 
@@ -32,7 +32,7 @@ module Api
       end
 
       def destroy
-        @game = GameLogic::GameManager.delete_user_game(
+        @game = PlayLogic::GameLogic::GameManager.delete_user_game(
           game_id: params[:id],
           user: current_resource_owner,
         )
@@ -41,7 +41,7 @@ module Api
       end
 
       def index_params
-        @permitted_params = params.permit(GameLogic::GameManager::USER_GAME_QUERY_PARAMS).to_h
+        @permitted_params = params.permit(PlayLogic::GameLogic::GameManager::USER_GAME_QUERY_PARAMS).to_h
       end
     end
   end

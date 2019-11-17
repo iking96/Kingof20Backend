@@ -3,15 +3,37 @@
 require 'rails_helper'
 
 RSpec.describe(Game, type: :model) do
-  it { should validate_presence_of(:board) }
-  it { should validate_presence_of(:initiator_score) }
-  it { should validate_presence_of(:initiator_rack) }
-  it { should validate_presence_of(:opponent_score) }
-  it { should validate_presence_of(:opponent_rack) }
+  context 'on creation' do
+    let!(:user) { create(:user) }
+
+    context 'when game information is not supplied' do
+      it 'fills them in' do
+        game = create(
+          :game,
+          initiator: user,
+          board: nil,
+          available_tiles: nil,
+          initiator_score: nil,
+          initiator_rack: nil,
+          opponent_score: nil,
+          opponent_rack: nil,
+          current_player: nil,
+        )
+        expect(game.board).to(be_a(Array))
+        expect(game.initiator_score).to(eq(0))
+        expect(game.opponent_score).to(eq(0))
+        expect(
+          (game.available_tiles +
+          game.initiator_rack +
+          game.opponent_rack).sort
+        ).to(eq(Game.initial_available_tiles.sort))
+        expect(game.current_player).to(eq('initiator'))
+      end
+    end
+  end
+
   it { should validate_presence_of(:initiator) }
-  it { should validate_presence_of(:current_player) }
-  # Complete: using validate_inclusion_of with boolean columns is discuraged
-  it { should validate_presence_of(:available_tiles) }
+  # Complete: using validate_inclusion_of with boolean columns is discouraged
 
   it 'returns correct tile mappings' do
     expect(Game.available_tiles_string_value(index: 1)).to(eq("1"))
@@ -25,8 +47,19 @@ RSpec.describe(Game, type: :model) do
       create(:game, initiator: initiating_user)
     end
 
+    it 'can return current user' do
+      expect(game.current_user).to(eq(initiating_user))
+    end
+
     it 'does not allow unrecognized current_player values' do
-      expect { game.current_player = "some_string" }.to(raise_error ArgumentError)
+      expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
+    end
+
+    it 'does not allow initiator == opponent' do
+      expect do
+        game.opponent = initiating_user
+        game.save!
+      end.to(raise_error ActiveRecord::RecordInvalid)
     end
   end
 
@@ -48,8 +81,8 @@ RSpec.describe(Game, type: :model) do
     let(:game) do
       create(:game, initiator: initiating_user)
     end
-    let!(:move1) { create(:move, game: game, user: initiating_user) }
-    let!(:move2) { create(:move, game: game, user: initiating_user) }
+    let!(:move1) { create(:move, game: game, user: initiating_user, move_type: 'tile_placement') }
+    let!(:move2) { create(:move, game: game, user: initiating_user, move_type: 'tile_placement') }
 
     it 'is possible find moves from game' do
       expect(game.moves.size).to(eq(2))
