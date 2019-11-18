@@ -5,6 +5,7 @@ class Game < ApplicationRecord
 
   BOARD_SIZE = 12
   RACK_SIZE = 7
+  TWENTY = 20
   INITIAL_AVAILABLE_TILES = [1, 1, 1, 1,
                              2, 2, 2, 2, 2,
                              3, 3, 3, 3,

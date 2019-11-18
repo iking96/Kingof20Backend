@@ -13,6 +13,8 @@ module Error
         move_creates_double_digit: 'move on board created double digit',
         move_creates_double_expression: 'move on board created double expression',
         move_creates_dangling_operation: 'move on board created dangling operation',
+        move_creates_lone_integer: 'move on board created lone integer',
+        move_spans_expressions: 'move on board spans expressions',
       }.freeze
 
       def initialize(error_code: :game_processing_error)

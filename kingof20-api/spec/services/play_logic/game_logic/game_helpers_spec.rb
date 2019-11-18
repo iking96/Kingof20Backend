@@ -203,5 +203,129 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
         expect(result_vo.errors).to(include(:move_creates_dangling_operation))
       end
     end
+
+    context 'when a move causes lone number' do
+      let(:board) do
+        [
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+      end
+
+      let(:rows) { [2] }
+      let(:cols) { [2] }
+      let(:tile_values) { [5] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_creates_lone_integer))
+      end
+    end
+
+    context 'when a move spans expressions' do
+      let(:board) do
+        [
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 9, 10, 9, 10, 2, 12, 2, 0, 0, 0, 0],
+          [1, 11, 5, 11, 4, 0, 5, 11, 4, 0, 0, 0],
+          [0, 2, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+      end
+
+      let(:rows) { [2, 2, 2] }
+      let(:cols) { [0, 6, 8] }
+      let(:tile_values) { [1, 5, 4] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_spans_expressions))
+      end
+    end
+  end
+
+  describe 'score_board_with_move' do
+    before do
+      PlayLogic::GameLogic::GameHelpers.add_move_to_board(
+        board: board,
+        move: move,
+      )
+    end
+
+    subject do
+      described_class.score_board_with_move(
+        board: game.board,
+        move: move,
+      )
+    end
+
+    let(:board) do
+      [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ]
+    end
+    let!(:game) { build(:game, board: board) }
+    let!(:move) do
+      build(
+        :move,
+        row_num: rows,
+        col_num: cols,
+        tile_value: tile_values,
+        game: game,
+        user: game.initiator,
+      )
+    end
+
+    context 'when move is horizontal' do
+      let(:rows) { [2, 2] }
+      let(:cols) { [5, 6] }
+      let(:tile_values) { [10, 3] }
+
+      it 'returns correct value' do
+        expect(subject.success?).to(eq(true))
+        expect(subject.value).to(eq(3))
+      end
+    end
+
+    context 'when move is vertical' do
+      let(:rows) { [1, 3] }
+      let(:cols) { [3, 3] }
+      let(:tile_values) { [6, 3] }
+
+      it 'returns correct value' do
+        expect(subject.success?).to(eq(true))
+        expect(subject.value).to(eq(2))
+      end
+    end
   end
 end

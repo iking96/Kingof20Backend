@@ -122,6 +122,24 @@ module PlayLogic
             errors << :move_creates_dangling_operation
           end
 
+          unless check_move_not_lone_integer(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+          )
+            errors << :move_creates_lone_integer
+          end
+
+          unless check_move_not_separate_expressions(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+          )
+            errors << :move_spans_expressions
+          end
+
+          # TODO: Move does not build of existing stuff
+
           if errors.present?
             Utilities::CheckResult.new(
               success: false,
@@ -132,6 +150,42 @@ module PlayLogic
               success: true,
             )
           end
+        end
+
+        # Checks score of a game board with the context of
+        # last move to be played
+        # Params:
+        # +board+:: A Board object
+        # +move+:: A Move object
+        # Returns:
+        # A CheckResult object with success status and optional errors
+        def score_board_with_move(board:, move:)
+          move_row = move.row_num.first
+          move_col = move.col_num.first
+
+          # Move orientation can be determined by one tile
+          orientation_result = check_expression_orientation(
+            board: board,
+            row: move_row,
+            col: move_col,
+          )
+
+          if orientation_result.value.include?(:horizontal)
+            PlayLogic::ScoreHelpers.score_board_slice(
+              board_slice: board[move_row],
+              start: move_col,
+            )
+          else
+            PlayLogic::ScoreHelpers.score_board_slice(
+              board_slice: board.transpose[move_col],
+              start: move_row,
+            )
+          end
+        end
+
+        def in_bounds?(row:, col:)
+          (0...Game.board_size).include?(row) &&
+          (0...Game.board_size).include?(col)
         end
 
         private
@@ -185,8 +239,8 @@ module PlayLogic
               next true unless in_bounds?(row: row + row_delta, col: col + col_delta)
               next true unless board[row + row_delta][col + col_delta] != 0
 
-              (number_tile?(board[row + row_delta][col + col_delta]) && operation_tile?(value)) ||
-              (operation_tile?(board[row + row_delta][col + col_delta]) && number_tile?(value))
+              (board[row + row_delta][col + col_delta].number_tile? && value.operation_tile?) ||
+              (board[row + row_delta][col + col_delta].operation_tile? && value.number_tile?)
             end
           end
         end
@@ -206,7 +260,7 @@ module PlayLogic
 
         def check_move_not_dangling_operation(board:, rows:, cols:)
           rows.zip(cols).all? do |row, col|
-            next true if number_tile?(board[row][col])
+            next true if board[row][col].number_tile?
 
             orientation_result = check_expression_orientation(
               board: board,
@@ -216,6 +270,43 @@ module PlayLogic
 
             orientation_result.value.include?(:vertical) ||
             orientation_result.value.include?(:horizontal)
+          end
+        end
+
+        def check_move_not_lone_integer(board:, rows:, cols:)
+          rows.zip(cols).all? do |row, col|
+            next true if board[row][col].operation_tile?
+
+            orientation_result = check_expression_orientation(
+              board: board,
+              row: row,
+              col: col,
+            )
+
+            orientation_result.value.include?(:vertical) ||
+            orientation_result.value.include?(:horizontal)
+          end
+        end
+
+        def check_move_not_separate_expressions(board:, rows:, cols:)
+          move_row = rows.first
+          move_col = cols.first
+
+          # Move orientation can be determined by one tile
+          orientation_result = check_expression_orientation(
+            board: board,
+            row: move_row,
+            col: move_col,
+          )
+
+          if orientation_result.value.include?(:horizontal)
+            (cols.min..cols.max).none? do |index|
+              board[move_row][index].zero?
+            end
+          else
+            (rows.min..rows.max).none? do |index|
+              board[index][move_col].zero?
+            end
           end
         end
 
@@ -239,9 +330,9 @@ module PlayLogic
             directions << :left_one
           end
 
-          if operation_tile?(board[row][col])
-            expression_horz = directions.include?(:up_one) && directions.include?(:down_one)
-            expression_vert = directions.include?(:left_one) && directions.include?(:right_one)
+          if board[row][col].operation_tile?
+            expression_vert = directions.include?(:up_one) && directions.include?(:down_one)
+            expression_horz = directions.include?(:left_one) && directions.include?(:right_one)
 
             orientations << :horizontal if expression_horz
             orientations << :vertical if expression_vert
@@ -280,19 +371,6 @@ module PlayLogic
             success: true,
             value: orientations,
           )
-        end
-
-        def in_bounds?(row:, col:)
-          (0...Game.board_size).include?(row) &&
-          (0...Game.board_size).include?(col)
-        end
-
-        def number_tile?(value)
-          (1..9).include?(value)
-        end
-
-        def operation_tile?(value)
-          (10..13).include?(value)
         end
       end
     end

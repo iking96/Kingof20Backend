@@ -12,6 +12,16 @@ class Array
   end
 
   def same_values?
-    self.uniq.length == 1
+    uniq.length == 1
+  end
+end
+
+class Integer
+  def number_tile?
+    (1..9).include?(self)
+  end
+
+  def operation_tile?
+    (10..13).include?(self)
   end
 end
