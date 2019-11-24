@@ -261,6 +261,45 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
         expect(result_vo.errors).to(include(:move_spans_expressions))
       end
     end
+
+    context 'when a move does not include already placed tiles' do
+      let(:rows) { [3, 4, 5] }
+      let(:cols) { [1, 1, 1] }
+      let(:tile_values) { [5, 11, 4] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_not_building))
+      end
+
+      context 'when the move is the first move' do
+        let(:board) do
+          [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ]
+        end
+        let(:rows) { [2, 2, 2] }
+        let(:cols) { [2, 3, 4] }
+        let(:tile_values) { [5, 11, 4] }
+
+        it 'returns correct value' do
+          result_vo = subject
+          expect(result_vo.success?).to(eq(true))
+        end
+      end
+    end
   end
 
   describe 'score_board_with_move' do

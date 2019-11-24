@@ -138,7 +138,13 @@ module PlayLogic
             errors << :move_spans_expressions
           end
 
-          # TODO: Move does not build of existing stuff
+          unless check_move_builds_from_placed_tiles(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+          )
+            errors << :move_not_building
+          end
 
           if errors.present?
             Utilities::CheckResult.new(
@@ -308,6 +314,43 @@ module PlayLogic
               board[index][move_col].zero?
             end
           end
+        end
+
+        def check_move_builds_from_placed_tiles(board:, rows:, cols:)
+          first_move = board.sum { |row| row.count { |cell| !cell.zero? } } <= 3
+          return true if first_move
+
+          move_row = rows.first
+          move_col = cols.first
+
+          # Move orientation can be determined by one tile
+          orientation_result = check_expression_orientation(
+            board: board,
+            row: move_row,
+            col: move_col,
+          )
+
+          expression_coordinates = []
+          if orientation_result.value.include?(:horizontal)
+            board_slice = board[move_row]
+            move_col -= 1 while move_col - 1 > 0 && !board_slice[move_col - 1].zero?
+            move_col += 1 while move_col < Game.board_size && board_slice[move_col].operation_tile?
+            until board_slice[move_col].zero?
+              expression_coordinates << [move_row, move_col]
+              move_col += 1
+            end
+          else
+            board_slice = board.transpose[move_col]
+            move_row -= 1 while move_row - 1 > 0 && !board_slice[move_row - 1].zero?
+            move_row += 1 while move_row < Game.board_size && board_slice[move_row].operation_tile?
+            until board_slice[move_row].zero?
+              expression_coordinates << [move_row, move_col]
+              move_row += 1
+            end
+          end
+
+          move_coordinates = rows.zip(cols)
+          !(expression_coordinates - move_coordinates).empty?
         end
 
         def check_expression_orientation(board:, row:, col:)
