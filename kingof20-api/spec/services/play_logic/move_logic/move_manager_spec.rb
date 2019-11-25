@@ -59,9 +59,8 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
 
     it 'updates the game appropriately' do
       # TODO: Complete test
-      subject
+      expect { subject }.to(change { game.moves.count }.by(1))
       game.reload
-      # expect { subject }.to(change { game.moves.count }.by(1))
       expect(game.board).to(eq(expected_board))
       expect(game.initiator_rack).to(eq(expected_initator_rack))
       expect(game.initiator_score).to(eq(2))
