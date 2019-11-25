@@ -85,6 +85,20 @@ class Game < ApplicationRecord
     end
   end
 
+  def current_user_score
+    if current_player == 'initiator'
+      return initiator_score
+    end
+
+    if current_player == 'opponent'
+      return opponent_score
+    end
+  end
+
+  def toggle_current_user
+    self.current_player = current_player == 'initiator' ? 'opponent' : 'initiator'
+  end
+
   def set_current_user_rack(new_rack:) # rubocop:disable Naming/AccessorMethodName
     if current_player == 'initiator'
       self.initiator_rack = new_rack
@@ -92,6 +106,16 @@ class Game < ApplicationRecord
 
     if current_player == 'opponent'
       self.opponent_rack = new_rack
+    end
+  end
+
+  def set_current_user_score(new_score:) # rubocop:disable Naming/AccessorMethodName
+    if current_player == 'initiator'
+      self.initiator_score = new_score
+    end
+
+    if current_player == 'opponent'
+      self.opponent_score = new_score
     end
   end
 

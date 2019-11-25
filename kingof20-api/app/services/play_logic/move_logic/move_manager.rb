@@ -88,6 +88,25 @@ module PlayLogic
               )
             end
 
+            # Update score for approprite user
+            score_result = PlayLogic::GameLogic::GameHelpers.score_board_with_move(
+              board: move_game.board,
+              move: new_move,
+            )
+            if add_move_result.success?
+              score_delta = score_result.value
+            else
+              raise Error::ScoringError.new(
+                error_code: score_result.errors.first,
+              )
+            end
+
+            current_score = move_game.current_user_score
+            move_game.set_current_user_score(new_score: current_score + score_delta)
+
+            # Toggle current player
+            move_game.toggle_current_user
+
             # TODO: Update move game to progress with game
 
             move_game.save!

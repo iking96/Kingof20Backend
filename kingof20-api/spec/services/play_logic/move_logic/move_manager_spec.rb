@@ -14,7 +14,13 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
   describe 'create_move_and_update_game' do
     subject { described_class.create_move_and_update_game(user: user, move_info: move_info) }
 
-    let!(:game) { create(:game_with_user, :with_first_move) }
+    let!(:game) do
+      create(
+        :game_with_user,
+        :with_first_move,
+        initiator_rack: [1, 2, 3, 4, 5, 6, 11],
+      )
+    end
     let(:user) { game.initiator }
     let(:move_info) do
       {
@@ -26,15 +32,15 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         tile_value: tile_value,
       }
     end
-    let(:row_num) { [0, 1] }
-    let(:col_num) { [2, 2] }
-    let(:tile_value) { [4, 11] }
+    let(:row_num) { [1, 3] }
+    let(:col_num) { [3, 3] }
+    let(:tile_value) { [3, 6] }
     let(:expected_board) do
       [
-        [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -45,13 +51,21 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       ]
     end
-    let(:expected_initator_rack) { [1, 2, 3, 5, 6] }
+    let(:expected_initator_rack) { [1, 2, 4, 5, 11] }
 
     it 'returns the created move' do
-      # TODO: Complete test
       expect(subject).to(be_a(Move))
-      expect(Game.first.board).to(eq(expected_board))
-      expect(Game.first.initiator_rack).to(eq(expected_initator_rack))
+    end
+
+    it 'updates the game appropriately' do
+      # TODO: Complete test
+      subject
+      game.reload
+      # expect { subject }.to(change { game.moves.count }.by(1))
+      expect(game.board).to(eq(expected_board))
+      expect(game.initiator_rack).to(eq(expected_initator_rack))
+      expect(game.initiator_score).to(eq(2))
+      expect(game.current_player).to(eq('opponent'))
     end
 
     context 'there is no move_info' do
