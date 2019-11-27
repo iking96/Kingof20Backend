@@ -148,11 +148,11 @@ RSpec.describe('Move API', type: :request) do
         :game_with_user,
         :with_first_move,
         opponent: opponent,
-        initiator_rack: rack,
+        opponent_rack: rack,
       )
     end
 
-    let(:user) { game.initiator }
+    let(:user) { game.opponent }
     let(:rack) { [1, 2, 3, 4, 5, 6, 11] }
     let(:opponent) { create(:user) }
 
@@ -219,7 +219,7 @@ RSpec.describe('Move API', type: :request) do
     end
 
     context 'when current user is not current player' do
-      let(:user) { opponent }
+      let(:user) { game.initiator }
 
       it 'responds with an error' do
         subject

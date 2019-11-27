@@ -18,10 +18,11 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       create(
         :game_with_user,
         :with_first_move,
+        opponent: user,
         initiator_rack: [1, 2, 3, 4, 5, 6, 11],
       )
     end
-    let(:user) { game.initiator }
+    let(:user) { create(:user) }
     let(:move_info) do
       {
         game_id: game.id,
@@ -51,7 +52,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       ]
     end
-    let(:expected_initator_rack) { [1, 2, 4, 5, 11] }
+    let(:expected_opponent_rack) { [1, 2, 4, 5, 11] }
 
     it 'returns the created move' do
       expect(subject).to(be_a(Move))
@@ -62,9 +63,9 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       expect { subject }.to(change { game.moves.count }.by(1))
       game.reload
       expect(game.board).to(eq(expected_board))
-      expect(game.initiator_rack).to(eq(expected_initator_rack))
-      expect(game.initiator_score).to(eq(2))
-      expect(game.current_player).to(eq('opponent'))
+      expect(game.opponent_rack).to(eq(expected_opponent_rack))
+      expect(game.opponent_score).to(eq(2))
+      expect(game.current_player).to(eq('initiator'))
     end
 
     context 'there is no move_info' do
@@ -77,7 +78,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
 
     context 'it is not the users turn' do
       before do
-        game.current_player = 'opponent'
+        game.current_player = 'initiator'
         game.save!
       end
 
@@ -124,6 +125,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
 
     context 'board is not legal after move' do
       let!(:game) { create(:game_with_user) }
+      let(:user) { game.initiator }
       let(:row_num) { [0, 0, 0] }
       let(:col_num) { [0, 1, 2] }
       let(:tile_value) { [4, 11, 5] }

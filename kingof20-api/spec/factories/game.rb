@@ -9,10 +9,10 @@ FactoryBot.define do
     opponent_rack { [1, 2, 3, 4, 5, 6, 11] }
     complete { false }
     available_tiles { Game.initial_available_tiles }
-    current_player { "initiator" }
+    current_player { 'initiator' }
 
     trait(:with_user) do
-      initiator { build(:user) }
+      initiator { create(:user) }
     end
 
     trait(:with_first_move) do
@@ -31,6 +31,17 @@ FactoryBot.define do
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
+      end
+
+      current_player { 'opponent' }
+
+      after(:create) do |game|
+        create(
+          :move,
+          game: game,
+          user: game.initiator,
+          move_type: 'tile_placement'
+        )
       end
     end
 
