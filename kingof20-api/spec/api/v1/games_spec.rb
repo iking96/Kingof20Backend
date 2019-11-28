@@ -181,7 +181,7 @@ RSpec.describe('Game API', type: :request) do
         ).to(eq(
           Game.initial_available_tiles.sort
         ))
-        expect(json["complete"]).to(eq(false))
+        expect(json["stage"]).to(eq('in_play'))
       end
 
       it 'adds a game to the game queue' do
@@ -205,7 +205,7 @@ RSpec.describe('Game API', type: :request) do
           "initiator_id" => user2.id,
           "opponent_id" => user.id,
         ))
-        expect(json["complete"]).to(eq(false))
+        expect(json["stage"]).to(eq('in_play'))
       end
 
       it 'removes a game to the game queue' do
@@ -229,7 +229,7 @@ RSpec.describe('Game API', type: :request) do
           ).to(eq(
             Game.initial_available_tiles.sort
           ))
-          expect(json["complete"]).to(eq(false))
+          expect(json["stage"]).to(eq('in_play'))
         end
 
         it 'adds a game to the game queue' do
@@ -252,7 +252,7 @@ RSpec.describe('Game API', type: :request) do
               "initiator_id" => user3.id,
               "opponent_id" => user.id,
             ))
-            expect(json["complete"]).to(eq(false))
+            expect(json["stage"]).to(eq('in_play'))
           end
 
           it 'removes a game to the game queue' do

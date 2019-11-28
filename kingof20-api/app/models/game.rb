@@ -57,7 +57,14 @@ class Game < ApplicationRecord
     opponent: 'opponent',
   }
 
-  validates_inclusion_of :complete, in: [true, false]
+  validates :stage, presence: true
+  enum stage: {
+    in_play: 'in_play',
+    end_round_one: 'end_round_one',
+    end_round_two: 'end_round_two',
+    complete: 'complete',
+  }
+
   validates :available_tiles, presence: true
 
   validate :check_initiator_and_opponent
@@ -155,7 +162,7 @@ class Game < ApplicationRecord
     self.initiator_rack ||= available_tiles.shift(RACK_SIZE)
     self.opponent_score ||= 0
     self.opponent_rack ||= available_tiles.shift(RACK_SIZE)
-    self.complete ||= false if complete.nil?
+    self.stage ||= 'in_play'
     self.current_player ||= 'initiator'
   end
 end
