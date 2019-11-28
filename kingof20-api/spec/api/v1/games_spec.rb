@@ -12,7 +12,7 @@ RSpec.describe('Game API', type: :request) do
   end
 
   describe 'GET /api/games' do
-    subject { get '/api/games', :params => params }
+    subject { get '/api/games', params: params }
     let(:params) { "" }
 
     context 'when the user has games' do
@@ -83,7 +83,7 @@ RSpec.describe('Game API', type: :request) do
         end
 
         context 'and its the "initiator" param' do
-          let(:params) { { :initiator => true } }
+          let(:params) { { initiator: true } }
           it 'should respond with games where the user is the initiator' do
             subject
             expect(json.first).to(include(
@@ -95,7 +95,7 @@ RSpec.describe('Game API', type: :request) do
         end
 
         context 'and its the "opponent" param' do
-          let(:params) { { :opponent => true } }
+          let(:params) { { opponent: true } }
 
           it 'should respond with games where the user is the initiator' do
             subject
