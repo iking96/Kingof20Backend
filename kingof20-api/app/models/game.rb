@@ -99,6 +99,16 @@ class Game < ApplicationRecord
     self.current_player = current_player == 'initiator' ? 'opponent' : 'initiator'
   end
 
+  def refill_current_user_rack
+    if current_player == 'initiator'
+      self.initiator_rack += available_tiles.shift(RACK_SIZE - initiator_rack.size)
+    end
+
+    if current_player == 'opponent'
+      self.opponent_rack += available_tiles.shift(RACK_SIZE - opponent_rack.size)
+    end
+  end
+
   def set_current_user_rack(new_rack:) # rubocop:disable Naming/AccessorMethodName
     if current_player == 'initiator'
       self.initiator_rack = new_rack

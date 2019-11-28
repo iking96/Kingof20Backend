@@ -39,9 +39,6 @@ module PlayLogic
               )
             end
 
-            # Update move number
-            new_move.move_number = move_game.moves.count + 1
-
             # TODO: Check game is not over
 
             # Check that rack can supply tiles
@@ -104,12 +101,15 @@ module PlayLogic
               )
             end
 
+            # Update game state
             current_score = move_game.current_user_score
             new_move.result = score_delta
             move_game.set_current_user_score(new_score: current_score + score_delta)
-
-            # Toggle current player
+            move_game.refill_current_user_rack
             move_game.toggle_current_user
+
+            # Update move state
+            new_move.move_number = move_game.moves.count + 1
 
             # TODO: Update move game to progress with game
 
