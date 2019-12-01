@@ -10,6 +10,7 @@ module Error
         game_space_taken: 'space already occupied on board',
         game_no_tile_on_starting: 'game board has no tiles on starting space',
         game_board_contains_islands: 'game board contains islands',
+        game_already_complete: 'move cannot be posted to complete game',
         move_creates_double_digit: 'move on board created double digit',
         move_creates_double_expression: 'move on board created double expression',
         move_creates_dangling_operation: 'move on board created dangling operation',

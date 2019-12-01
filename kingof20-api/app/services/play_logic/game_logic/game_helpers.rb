@@ -189,6 +189,25 @@ module PlayLogic
           end
         end
 
+        def evaluate_end_game(game:)
+          return unless game.available_tiles.empty?
+          return if game.complete?
+
+          if game.stage == 'in_play'
+            game.stage = 'end_round_one'
+            return
+          end
+
+          return unless game.current_player == 'opponent'
+
+          case game.stage
+          when 'end_round_one'
+            game.stage = 'end_round_two'
+          when 'end_round_two'
+            game.stage = 'complete'
+          end
+        end
+
         def in_bounds?(row:, col:)
           (0...Game.board_size).include?(row) &&
           (0...Game.board_size).include?(col)

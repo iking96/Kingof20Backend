@@ -63,13 +63,20 @@ class Game < ApplicationRecord
     end_round_one: 'end_round_one',
     end_round_two: 'end_round_two',
     complete: 'complete',
+    initiator_forfit: 'initiator_forfit',
+    opponent_forfit: 'opponent_forfit',
   }
 
-  validates :available_tiles, presence: true
+  # validates .. presence: true will not allow empty array
+  validates :available_tiles, exclusion: { in: [nil] }
 
   validate :check_initiator_and_opponent
   def check_initiator_and_opponent
     errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
+  end
+
+  def complete?
+    stage == 'complete' || stage == 'initiator_forfit' || stage == 'opponent_forfit'
   end
 
   def current_user

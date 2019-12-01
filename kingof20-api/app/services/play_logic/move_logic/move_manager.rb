@@ -39,7 +39,12 @@ module PlayLogic
               )
             end
 
-            # TODO: Check game is not over
+            # Check game is not over
+            if move_game.complete?
+              raise Error::Game::ProcessingError.new(
+                error_code: :game_already_complete,
+              )
+            end
 
             # Check that rack can supply tiles
             remove_tiles_result = PlayLogic::GameLogic::GameHelpers.remove_tiles_from_rack(
@@ -106,12 +111,11 @@ module PlayLogic
             new_move.result = score_delta
             move_game.set_current_user_score(new_score: current_score + score_delta)
             move_game.refill_current_user_rack
+            PlayLogic::GameLogic::GameHelpers.evaluate_end_game(game: move_game)
             move_game.toggle_current_user
 
             # Update move state
             new_move.move_number = move_game.moves.count + 1
-
-            # TODO: Update move game to progress with game
 
             move_game.save!
             new_move.save!

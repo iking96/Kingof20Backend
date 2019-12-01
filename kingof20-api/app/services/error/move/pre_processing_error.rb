@@ -12,7 +12,7 @@ module Error
         move_row_col_invalid: "row and col numbers must be in: [0..#{::Game.board_size}]",
         move_tile_value_invalid: "tile values must be in: #{::Game::TILES_MAPPING.keys}",
         move_strightness: 'move must be in a stright line',
-        move_swap_input_to_long: "returned tiles size must be less than or equal #{Game.rack_size}",
+        move_swap_input_to_long: "returned tiles size must be less than or equal #{::Game.rack_size}",
         move_user_does_not_exist: 'id did not exist in User',
         move_game_does_not_exist: 'id did not exist in Game',
         move_user_does_not_own_game: 'Game id did not belong to User',
