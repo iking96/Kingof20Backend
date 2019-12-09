@@ -45,6 +45,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       described_class.remove_tiles_from_rack(
         tiles: tiles,
         rack: rack,
+        max: 3,
       )
     end
 
@@ -65,12 +66,12 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
     end
 
-    context 'when tiles.count >3' do
+    context 'when tiles.count > max' do
       let!(:tiles) { [1, 2, 3, 4] }
 
       it 'raises an error' do
         expect(subject.success?).to(be_falsey)
-        expect(subject.errors.first).to(eq(:game_rack_requrest_to_long))
+        expect(subject.errors.first).to(eq(:game_rack_request_to_long))
       end
     end
 

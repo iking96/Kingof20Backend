@@ -40,10 +40,10 @@ module PlayLogic
           )
         end
 
-        def remove_tiles_from_rack(tiles:, rack:)
+        def remove_tiles_from_rack(tiles:, rack:, max:)
           errors = []
-          if tiles.count > 3
-            errors << :game_rack_requrest_to_long
+          if tiles.count > max
+            errors << :game_rack_request_to_long
           end
 
           unless tiles.subtract_once(rack).empty?
@@ -63,6 +63,16 @@ module PlayLogic
               value: rack,
             )
           end
+        end
+
+        def return_tiles_to_available_tiles(tiles:, available_tiles:)
+          available_tiles.push(*tiles)
+          available_tiles.shuffle
+
+          Utilities::CheckResult.new(
+            success: true,
+            value: available_tiles,
+          )
         end
 
         def check_board_legality(board:)
