@@ -156,11 +156,10 @@ RSpec.describe('Move API', type: :request) do
     let(:rack) { [1, 2, 3, 4, 5, 6, 11] }
     let(:opponent) { create(:user) }
 
-    let(:game_url_query) { "move_info[game_id]=#{game_id}" }
     let(:game_id) { game.id }
     let(:row_num) { [1, 3] }
     let(:col_num) { [3, 3] }
-    let(:tile_value) { [5, 4] }
+    let(:tile_value) { [6, 4] }
 
     let(:move_info_data) do
       {
@@ -173,6 +172,19 @@ RSpec.describe('Move API', type: :request) do
     end
 
     let(:params) { { move_info: move_info_data } }
+
+    it 'responds with the new moves' do
+      subject
+      expect(response).to(have_http_status(200))
+      expect(json).to(include(
+        "user_id" => user.id,
+        "game_id" => game_id,
+        "row_num" => row_num,
+        "col_num" => col_num,
+        "tile_value" => tile_value,
+        "result" => 4
+      ))
+    end
 
     context 'when the required move_info param is missing' do
       let(:params) { {} }
@@ -280,6 +292,59 @@ RSpec.describe('Move API', type: :request) do
             "status" => 422,
           ))
           expect(json["message"]).to(include("game board contains islands"))
+        end
+      end
+    end
+
+    context 'the game is in the end-game' do
+      before do
+        game.available_tiles = []
+        game.save!
+      end
+
+      it 'responds with the new moves' do
+        subject
+        expect(response).to(have_http_status(200))
+        expect(json).to(include(
+          "user_id" => user.id,
+          "game_id" => game_id,
+          "row_num" => row_num,
+          "col_num" => col_num,
+          "tile_value" => tile_value,
+          "result" => 4
+        ))
+      end
+
+      it 'moves the game to the next stage' do
+        subject
+        game.reload
+        expect(game.stage).to(eq('end_round_one'))
+      end
+
+      context 'and it is the initiators turn' do
+        let!(:game) { create(:game_with_user) }
+        let(:user) { game.initiator }
+        let(:row_num) { [2, 2, 2] }
+        let(:col_num) { [3, 4, 5] }
+        let(:tile_value) { [4, 11, 5] }
+
+        it 'responds with the new moves' do
+          subject
+          expect(response).to(have_http_status(200))
+          expect(json).to(include(
+            "user_id" => user.id,
+            "game_id" => game_id,
+            "row_num" => row_num,
+            "col_num" => col_num,
+            "tile_value" => tile_value,
+            "result" => 0
+          ))
+        end
+
+        it 'moves the game to the next stage' do
+          subject
+          game.reload
+          expect(game.stage).to(eq('end_round_one'))
         end
       end
     end

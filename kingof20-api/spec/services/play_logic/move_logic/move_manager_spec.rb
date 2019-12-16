@@ -160,10 +160,30 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         end
       end
 
-      context 'the the game is in the end-game' do
+      context 'the game is in the end-game' do
         before do
           game.available_tiles = []
           game.save!
+        end
+
+        it 'moves the game to end_round_one' do
+          subject
+          game.reload
+          expect(game.stage).to(eq('end_round_one'))
+        end
+
+        context 'and it is the initiators turn' do
+          let!(:game) { create(:game_with_user) }
+          let(:move_user) { initiator_user }
+          let(:row_num) { [2, 2, 2] }
+          let(:col_num) { [3, 4, 5] }
+          let(:tile_value) { [4, 11, 5] }
+
+          it 'moves the game to end_round_one' do
+            subject
+            game.reload
+            expect(game.stage).to(eq('end_round_one'))
+          end
         end
 
         context 'and it is in the end_round_one stage and it is the opponents turn' do
@@ -185,7 +205,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
             let(:col_num) { [3, 4, 5] }
             let(:tile_value) { [4, 11, 5] }
 
-            it 'does not move the game to end_round_one' do
+            it 'does not move the game to end_round_two' do
               subject
               game.reload
               expect(game.stage).to(eq('end_round_one'))
