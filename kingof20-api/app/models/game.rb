@@ -75,6 +75,14 @@ class Game < ApplicationRecord
     errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
   end
 
+  def as_json(options = {})
+    super options.merge(methods: [:allow_swap?])
+  end
+
+  def allow_swap?
+    available_tiles.empty?
+  end
+
   def complete?
     stage == 'complete' || stage == 'initiator_forfit' || stage == 'opponent_forfit'
   end
