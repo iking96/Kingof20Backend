@@ -151,6 +151,14 @@ class Game < ApplicationRecord
     end
   end
 
+  def forfit_user(user:)
+    self.stage = if user == initiator
+      'initiator_forfit'
+    else
+      'opponent_forfit'
+    end
+  end
+
   # Class methods
   def self.board_size
     BOARD_SIZE

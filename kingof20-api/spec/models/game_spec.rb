@@ -43,8 +43,13 @@ RSpec.describe(Game, type: :model) do
 
   context 'a game' do
     let(:initiating_user) { create(:user) }
+    let(:opposing_user) { create(:user) }
     let!(:game) do
-      create(:game, initiator: initiating_user)
+      create(
+        :game,
+        initiator: initiating_user,
+        opponent: opposing_user,
+      )
     end
 
     it 'can return current user' do
@@ -53,6 +58,36 @@ RSpec.describe(Game, type: :model) do
 
     it 'does not allow unrecognized current_player values' do
       expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
+    end
+
+    it 'does not allow unrecognized current_player stage' do
+      expect { game.stage = 'some_string' }.to(raise_error ArgumentError)
+    end
+
+    context 'when a user forfits' do
+      subject do
+        game.forfit_user(user: forfiting_user)
+        game.save!
+        game.reload
+      end
+
+      context 'the initating user' do
+        let(:forfiting_user) { initiating_user }
+
+        it 'move the game to the correct stage' do
+          subject
+          expect(game.stage).to(eq('initiator_forfit'))
+        end
+      end
+
+      context 'the opposing user' do
+        let(:forfiting_user) { opposing_user }
+
+        it 'move the game to the correct stage' do
+          subject
+          expect(game.stage).to(eq('opponent_forfit'))
+        end
+      end
     end
 
     it 'does not allow initiator == opponent' do
