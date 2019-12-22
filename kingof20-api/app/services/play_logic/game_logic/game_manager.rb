@@ -35,9 +35,10 @@ module PlayLogic
 
         def delete_user_game(game_id:, user:)
           game = get_user_game(game_id: game_id, user: user)
-
-          # TODO: Ensure game is in good state to delete
-          game.destroy
+          game.forfit_user(user: user) unless game.complete?
+          game.hide_from_user(user: user)
+          game.save!
+          game
         end
 
         private

@@ -8,6 +8,7 @@ FactoryBot.define do
     initiator_rack { [1, 2, 3, 4, 5, 6, 11] }
     opponent_rack { [1, 2, 3, 4, 5, 6, 11] }
     stage { 'in_play' }
+    hidden_from { 0 }
     available_tiles { Game.initial_available_tiles }
     current_player { 'initiator' }
 

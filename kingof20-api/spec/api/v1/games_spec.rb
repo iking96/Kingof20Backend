@@ -285,8 +285,8 @@ RSpec.describe('Game API', type: :request) do
         ))
       end
 
-      it 'removes a the game' do
-        expect { subject }.to(change { Game.count }.by(-1))
+      it 'make the deleted game no longer visible' do
+        expect { subject }.to(change { owning_user.visible_games.count }.by(-1))
       end
 
       context 'when the game id does not exist' do
