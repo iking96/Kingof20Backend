@@ -23,6 +23,7 @@ RSpec.describe('Move API', type: :request) do
       it 'responds with a users moves' do
         subject
         expect(response).to(have_http_status(200))
+        expect(response.headers['X-total-count']).to(eq(2))
         expect(json.first).to(include(
           "user_id" => user.id,
         ))

@@ -7,14 +7,11 @@ module PlayLogic
       SWAP_PASS_PENALTY = 10
       class << self
         def get_user_moves_with_params(user:, params:)
+          options = params.keys
           moves = user.moves.to_a
-          params.each do |key, value|
-            moves = reduce_by_param(
-              moves: moves,
-              key: key,
-              value: value
-            )
-          end
+
+          moves = moves.select { |move| move.result == params['result'].to_i } if options.include?('result')
+
           moves
         end
 
@@ -93,14 +90,6 @@ module PlayLogic
         end
 
         private
-
-        def reduce_by_param(moves:, key:, value:)
-          case key
-          when 'result'
-            moves = moves.select { |move| move.result == value.to_i }
-          end
-          moves
-        end
 
         def handle_tile_placement(new_move:, move_game:)
           # Check that rack can supply tiles

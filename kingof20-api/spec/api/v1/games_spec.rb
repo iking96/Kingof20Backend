@@ -25,6 +25,7 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with a users games' do
         subject
         expect(response).to(have_http_status(200))
+        expect(response.headers['X-total-count']).to(eq(1))
         expect(json.size).to(eq(1))
         expect(json.first).to(include(
           "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],

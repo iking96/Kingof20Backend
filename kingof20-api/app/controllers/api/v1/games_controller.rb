@@ -11,6 +11,7 @@ module Api
           params: @permitted_params
         )
 
+        add_resource_count
         json_response(@games)
       end
 
@@ -42,6 +43,10 @@ module Api
 
       def index_params
         @permitted_params = params.permit(PlayLogic::GameLogic::GameManager::USER_GAME_QUERY_PARAMS).to_h
+      end
+
+      def add_resource_count
+        response.set_header('X-total-count', @games.count)
       end
     end
   end
