@@ -165,18 +165,18 @@ class Game < ApplicationRecord
   end
 
   def forfit_user(user:)
-    self.stage = if user == initiator
-      'initiator_forfit'
+    if user == initiator
+      self.stage = 'initiator_forfit'
     else
-      'opponent_forfit'
+      self.stage = 'opponent_forfit'
     end
   end
 
   def hide_from_user(user:)
-    self.hidden_from |= if user == initiator
-      1
+    if user == initiator
+      self.hidden_from |= 1
     else
-      2
+      self.hidden_from |= 2
     end
   end
 
