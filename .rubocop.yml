@@ -121,7 +121,7 @@ Style/CommentAnnotation:
   - REVIEW
 
 Style/ConditionalAssignment:
-  EnforcedStyle: assign_to_condition
+  EnforcedStyle: assign_inside_condition
   SupportedStyles:
   - assign_to_condition
   - assign_inside_condition
