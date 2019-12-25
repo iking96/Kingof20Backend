@@ -3,7 +3,8 @@
 module PlayLogic
   module GameLogic
     class GameManager
-      USER_GAME_QUERY_PARAMS = [:initiator, :opponent, :all].freeze
+      GAME_INDEX_PARAMS = [:initiator, :opponent, :all].freeze
+      GAME_UPDATE_PARAMS = [:forfit].freeze
       class << self
         def get_user_games_with_params(user:, params:)
           options = params.keys
@@ -32,6 +33,20 @@ module PlayLogic
             PlayLogic::GameQueueEntryLogic::GameQueueEntryManager.enqueue_game(game: new_game)
             new_game
           end
+        end
+
+        def update_game(game_id:, user:, params:)
+          options = params.keys
+          game = user.games.find_by!(id: game_id)
+
+          # Check game is not over
+          raise Error::Game::ProcessingError.new(
+            error_code: :game_already_complete
+          ) if game.complete?
+
+          game.forfit_user(user: user) if options.include?('forfit')
+          game.save!
+          game
         end
 
         def delete_user_game(game_id:, user:)

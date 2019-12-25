@@ -35,7 +35,7 @@ module Api
       end
 
       def index_params
-        @permitted_params = params.permit(PlayLogic::MoveLogic::MoveManager::USER_MOVE_QUERY_PARAMS).to_h
+        @permitted_params = params.permit(PlayLogic::MoveLogic::MoveManager::MOVE_INDEX_PARAMS).to_h
       end
 
       def create_params
