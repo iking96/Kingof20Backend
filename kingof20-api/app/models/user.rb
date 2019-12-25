@@ -25,6 +25,18 @@ class User < ApplicationRecord
     Game.where('initiator_id = ? or opponent_id = ?', id, id)
   end
 
+  def visible_games
+    Game
+      .where.not(hidden_from: Game::HIDDEN_FROM_BOTH)
+      .where(
+        '(initiator_id = ? and hidden_from <> ?) or (opponent_id = ? and hidden_from <> ?)',
+        id,
+        Game::HIDDEN_FROM_INITIATOR,
+        id,
+        Game::HIDDEN_FROM_OPPONENT,
+      )
+  end
+
   def current_player_games
     games.select { |game| game.current_user == self }
   end

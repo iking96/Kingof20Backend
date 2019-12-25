@@ -12,6 +12,7 @@ module Api
           params: @permitted_params
         )
 
+        add_resource_count
         json_response(@moves)
       end
 
@@ -34,7 +35,7 @@ module Api
       end
 
       def index_params
-        @permitted_params = params.permit(PlayLogic::MoveLogic::MoveManager::USER_MOVE_QUERY_PARAMS).to_h
+        @permitted_params = params.permit(PlayLogic::MoveLogic::MoveManager::MOVE_INDEX_PARAMS).to_h
       end
 
       def create_params
@@ -48,6 +49,10 @@ module Api
         ).merge(
           user_id: current_resource_owner.id
         ).to_h
+      end
+
+      def add_resource_count
+        response.set_header('X-total-count', @moves.count)
       end
     end
   end

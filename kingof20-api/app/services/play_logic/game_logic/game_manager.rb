@@ -3,18 +3,20 @@
 module PlayLogic
   module GameLogic
     class GameManager
-      USER_GAME_QUERY_PARAMS = [:initiator, :opponent].freeze
+      GAME_INDEX_PARAMS = [:initiator, :opponent, :all].freeze
+      GAME_UPDATE_PARAMS = [:forfit].freeze
       class << self
         def get_user_games_with_params(user:, params:)
-          games = user.games.to_a
-          params.each do |key, value|
-            games = reduce_by_param(
-              games: games,
-              user: user,
-              key: key,
-              _value: value
-            )
+          options = params.keys
+          if options.include?('all')
+            games = user.games.to_a
+          else
+            games = user.visible_games.to_a
           end
+
+          games = games.select { |g| g.initiator == user } if options.include?('initiator')
+          games = games.select { |g| g.opponent == user } if options.include?('opponent')
+
           games
         end
 
@@ -33,23 +35,26 @@ module PlayLogic
           end
         end
 
-        def delete_user_game(game_id:, user:)
-          game = get_user_game(game_id: game_id, user: user)
+        def update_game(game_id:, user:, params:)
+          options = params.keys
+          game = user.games.find_by!(id: game_id)
 
-          # TODO: Ensure game is in good state to delete
-          game.destroy
+          # Check game is not over
+          raise Error::Game::ProcessingError.new(
+            error_code: :game_already_complete
+          ) if game.complete?
+
+          game.forfit_user(user: user) if options.include?('forfit')
+          game.save!
+          game
         end
 
-        private
-
-        def reduce_by_param(games:, user:, key:, _value:)
-          case key
-          when 'initiator'
-            games = games.select { |g| g.initiator == user }
-          when 'opponent'
-            games = games.select { |g| g.opponent == user }
-          end
-          games
+        def delete_user_game(game_id:, user:)
+          game = get_user_game(game_id: game_id, user: user)
+          game.forfit_user(user: user) unless game.complete?
+          game.hide_from_user(user: user)
+          game.save!
+          game
         end
       end
     end

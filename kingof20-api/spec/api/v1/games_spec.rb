@@ -25,6 +25,7 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with a users games' do
         subject
         expect(response).to(have_http_status(200))
+        expect(response.headers['X-total-count']).to(eq(1))
         expect(json.size).to(eq(1))
         expect(json.first).to(include(
           "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
@@ -285,8 +286,8 @@ RSpec.describe('Game API', type: :request) do
         ))
       end
 
-      it 'removes a the game' do
-        expect { subject }.to(change { Game.count }.by(-1))
+      it 'make the deleted game no longer visible' do
+        expect { subject }.to(change { owning_user.visible_games.count }.by(-1))
       end
 
       context 'when the game id does not exist' do
@@ -320,9 +321,58 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  # describe 'PATCH /api/games/$id' do
-  # end
-  #
+  describe 'PATCH /api/games/$id' do
+    subject { patch "/api/games/#{game_id}", params: params }
+    let(:params) { nil }
+
+    context 'when the user has games' do
+      let!(:game) do
+        create(:game,
+        initiator: owning_user,
+        initiator_rack: [7, 6, 5, 4, 3, 2, 1],
+        opponent: opposing_user,)
+      end
+      let(:game_id) { game.id }
+      let(:owning_user) { user }
+      let(:opposing_user) { nil }
+
+      it 'responds with a users games' do
+        subject
+        expect(response).to(have_http_status(200))
+        expect(json).to(include(
+          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "initiator_id" => user.id,
+          "opponent_id" => nil,
+        ))
+      end
+
+      context 'when the game is to be forfited' do
+        let(:params) { { forfit: true } }
+
+        it 'forfits the correct user' do
+          subject
+          expect(response).to(have_http_status(200))
+          expect(json).to(include(
+            "stage" => 'initiator_forfit',
+          ))
+        end
+
+        context 'when the user is the opponent' do
+          let(:owning_user) { create(:user) }
+          let(:opposing_user) { user }
+
+          it 'forfits the correct user' do
+            subject
+            expect(response).to(have_http_status(200))
+            expect(json).to(include(
+              "stage" => 'opponent_forfit',
+            ))
+          end
+        end
+      end
+    end
+  end
+
   # describe 'PUT /api/games/$id' do
   # end
 end

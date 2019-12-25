@@ -60,8 +60,15 @@ RSpec.describe(Game, type: :model) do
       expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
     end
 
-    it 'does not allow unrecognized current_player stage' do
+    it 'does not allow unrecognized stage value' do
       expect { game.stage = 'some_string' }.to(raise_error ArgumentError)
+    end
+
+    it 'does not allow unrecognized hidden_from value' do
+      expect do
+        game.hidden_from = 4
+        game.save!
+      end.to(raise_error ActiveRecord::RecordInvalid)
     end
 
     context 'when a user forfits' do

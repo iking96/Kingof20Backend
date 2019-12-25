@@ -70,6 +70,19 @@ class Game < ApplicationRecord
   # validates .. presence: true will not allow empty array
   validates :available_tiles, exclusion: { in: [nil] }
 
+  HIDDEN_FROM_NEITHER = 0
+  HIDDEN_FROM_INITIATOR = 1
+  HIDDEN_FROM_OPPONENT = 2
+  HIDDEN_FROM_BOTH = 3
+  validates :hidden_from, inclusion: {
+    in: [
+      HIDDEN_FROM_NEITHER,
+      HIDDEN_FROM_INITIATOR,
+      HIDDEN_FROM_OPPONENT,
+      HIDDEN_FROM_BOTH,
+    ],
+  }
+
   validate :check_initiator_and_opponent
   def check_initiator_and_opponent
     errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
@@ -152,10 +165,18 @@ class Game < ApplicationRecord
   end
 
   def forfit_user(user:)
-    self.stage = if user == initiator
-      'initiator_forfit'
+    if user == initiator
+      self.stage = 'initiator_forfit'
     else
-      'opponent_forfit'
+      self.stage = 'opponent_forfit'
+    end
+  end
+
+  def hide_from_user(user:)
+    if user == initiator
+      self.hidden_from |= 1
+    else
+      self.hidden_from |= 2
     end
   end
 
@@ -187,5 +208,6 @@ class Game < ApplicationRecord
     self.opponent_rack ||= available_tiles.shift(RACK_SIZE)
     self.stage ||= 'in_play'
     self.current_player ||= 'initiator'
+    self.hidden_from ||= 0
   end
 end
