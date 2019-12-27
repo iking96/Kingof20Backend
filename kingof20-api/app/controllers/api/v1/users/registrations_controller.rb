@@ -4,7 +4,7 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
   skip_before_action :doorkeeper_authorize!
-  
+
   # GET /resource/sign_up
   # def new
   #   super
@@ -37,11 +37,13 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
+  # TODO: Allow password reset w/ previous password
   # PUT /resource
   # def update
   #   super
   # end
 
+  # TODO: Allow deletion of account
   # DELETE /resource
   # def destroy
   #   super
@@ -77,4 +79,8 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  def authenticate_scope!
+    self.resource = send(:"current_#{resource_name}")
+  end
 end

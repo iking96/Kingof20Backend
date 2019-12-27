@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This module allows overriding of the usual doorkeeper error message when
+# an incorrect password is input
 module CustomTokenErrorResponse
   def body
     {

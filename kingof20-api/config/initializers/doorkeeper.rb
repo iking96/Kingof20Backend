@@ -13,6 +13,7 @@ Doorkeeper.configure do
   resource_owner_from_credentials do |routes|
     user = User.find_for_database_authentication(:username => params[:username])
     if user && user.valid_for_authentication? { user.valid_password?(params[:password]) }
+      request.env['warden'].set_user(user, scope: :user, store: false)
       user
     end
   end
@@ -50,8 +51,8 @@ Doorkeeper.configure do
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
   #
-  access_token_expires_in 2.hours
-
+  access_token_expires_in 1.year
+  
   # Assign custom TTL for access tokens. Will be used instead of access_token_expires_in
   # option if defined. `context` has the following properties available
   #
@@ -81,7 +82,7 @@ Doorkeeper.configure do
   # doesn't updates existing token expiration time, it will create a new token instead.
   # Rationale: https://github.com/doorkeeper-gem/doorkeeper/issues/383
   #
-  # reuse_access_token
+  reuse_access_token
 
   # Issue access tokens with refresh token (disabled by default), you may also
   # pass a block which accepts `context` to customize when to give a refresh
