@@ -43,7 +43,6 @@ RSpec.describe('User API', type: :request) do
       expect(json).to(include(
         'access_token',
         'token_type',
-        'expires_in',
       ))
       expect(response).to(have_http_status(200))
     end
@@ -65,6 +64,34 @@ RSpec.describe('User API', type: :request) do
         ))
         expect(response).to(have_http_status(401))
       end
+    end
+  end
+
+  describe 'Authorized request' do
+    let(:valid_params) do
+      {
+        username: user.username,
+        password: user.password,
+        grant_type: 'password',
+      }
+    end
+
+    let(:valid_headers) do
+      {
+        'Authorization' => "Bearer #{access_token}",
+      }
+    end
+
+    let(:access_token) do
+      post '/oauth/token', params: valid_params
+      json['access_token']
+    end
+
+    subject { get '/api/games', params: {}, headers: valid_headers }
+
+    it 'should respond with authorized' do
+      subject
+      expect(response).to(have_http_status(200))
     end
   end
 
