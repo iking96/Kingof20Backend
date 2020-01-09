@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  app:
+    image: iking/kingapi:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_HOST=pg
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ./:/application
+
+  pg:
+    image: postgres:11-alpine
+    volumes:
+      - pg-data:/var/lib/postgres/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+
+volumes:
+  pg-data:
