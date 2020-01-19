@@ -18,6 +18,7 @@ RUN gem install bundler:2.1.2 \
   && gem install rails \
   && bundle config set deployment 'true' \
   && bundle config set without 'development test' \
+  && bundle update
   && bundle install
 
 # Copy application code

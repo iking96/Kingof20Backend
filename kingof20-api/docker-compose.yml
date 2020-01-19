@@ -16,7 +16,7 @@ services:
   pg:
     image: postgres:11-alpine
     volumes:
-      - pg-data:/var/lib/postgres/data
+      - pg-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
