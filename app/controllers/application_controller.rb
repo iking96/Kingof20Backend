@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
+  #include ActionController::MimeResponds
   include Response
 
   # Devise code

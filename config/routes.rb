@@ -6,8 +6,10 @@ Rails.application.routes.draw do
     skip_controllers :applications, :authorized_applications
   end
 
+  root 'static#index'
+
   scope module: :api, defaults: { format: :json }, path: 'api' do
-    scope module: :v1, constraints: ApiVersion.new(version: 1, default: true) do
+    scope module: :v1, constraints: ApiVersion.new(version: 1, default: true), path: 'v1' do
       devise_for :users, controllers: {
         registrations: 'api/v1/users/registrations',
       }, skip: [:sessions, :password]
