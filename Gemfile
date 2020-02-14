@@ -7,6 +7,10 @@ gem 'pry-rails'
 gem 'pry-byebug'
 gem 'rubocop', require: false
 
+# Webpack and React
+gem 'webpacker'
+gem 'react-rails'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use postgres as the database for Active Record
