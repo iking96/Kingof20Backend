@@ -53,3 +53,6 @@ namespace :deploy do
 end
 
 after "deploy", "deploy:restart"
+
+# Skip deploy:assets:backup_manifest - not using Sprockets
+Rake::Task["deploy:assets:backup_manifest"].clear_actions
