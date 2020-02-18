@@ -69,6 +69,10 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano3-puma (3.1.1)
+      capistrano (~> 3.7)
+      capistrano-bundler
+      puma (~> 3.4)
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
     connection_pool (2.2.2)
@@ -248,6 +252,7 @@ DEPENDENCIES
   capistrano (= 3.11.2)
   capistrano-rails (= 1.4.0)
   capistrano-rvm
+  capistrano3-puma
   database_cleaner
   devise
   doorkeeper
