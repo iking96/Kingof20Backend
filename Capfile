@@ -30,9 +30,14 @@ require "capistrano/rvm"
 # require "capistrano/rbenv"
 # require "capistrano/chruby"
 require "capistrano/bundler"
-# require "capistrano/rails/assets"
+require "capistrano/rails/assets"
 require "capistrano/rails/migrations"
-# require "capistrano/passenger"
+require "capistrano/passenger"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
+
+# Update node location in $PATH
+set :default_env, {
+  'PATH' => "$PATH:/home/deploy/.nvm/versions/node/v13.8.0/bin"
+}

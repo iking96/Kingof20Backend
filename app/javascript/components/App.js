@@ -11,7 +11,7 @@ class App extends React.Component {
       <BrowserRouter>
         <Switch>
           <Route exact path="/" render={() => ("King of 20!")} />
-          <Route path="/hello" render={() => <HelloWorld greeting="potato"/>} />
+          <Route path="/hello" render={() => <HelloWorld greeting="pinapple"/>} />
         </Switch>
       </BrowserRouter>
     );

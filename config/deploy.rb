@@ -24,7 +24,7 @@ set :stages, %w(production staging)
 # set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/master.key", "tmp/restart.txt"
+append :linked_files, "config/master.key"
 
 # Default value for linked_dirs is []
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
@@ -52,4 +52,7 @@ namespace :deploy do
   end
 end
 
-after "deploy", "deploy:restart"
+# after "deploy", "deploy:restart"
+
+# Skip deploy:assets:backup_manifest - not using Sprockets
+Rake::Task["deploy:assets:backup_manifest"].clear_actions
