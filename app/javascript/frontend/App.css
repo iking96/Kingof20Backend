@@ -1,0 +1,66 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,500,700&display=swap");
+:root {
+  --sidebar-flex: 1.5;
+  --condiv-flex: 6;
+  --fontsize-p: 1.2rem;
+  --fontsize-nav: 1.6rem;
+  --typing-font: 3rem;
+}
+
+/* Make whole site full page width */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Nav */
+nav {
+  padding: 20 30px 20px 30px;
+  flex: var(--sidebar-flex);
+  background: rgb(120, 81, 169);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  background-color: #333;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+.highlight {
+  background-color: #4CAF50;
+  color: white;
+}
+
+body {
+  font-family: "Raleway";
+}
+.App {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
+/* .condiv class is for the right side content container*/
+.condiv {
+  padding: 100px;
+  background-color: #f4f5f9;
+  flex: var(--condiv-flex);
+}
