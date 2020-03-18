@@ -80,7 +80,7 @@ const Login = () => {
 
   var errorMessage;
   if (errorString.value) {
-    errorMessage = <h1>{errorString.value}</h1>;
+    errorMessage = <h1 align="center">{errorString.value}</h1>;
   } else {
     errorMessage = null;
   }
