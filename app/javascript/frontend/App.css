@@ -46,8 +46,18 @@ li a:hover {
 }
 
 .highlight {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
+}
+
+/* Form */
+.Login {
+    padding: 60px 0;
+  }
+  
+form {
+  margin: 0 auto;
+  max-width: 320px;
 }
 
 body {
