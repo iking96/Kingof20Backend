@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import useField from "frontend/utils/useField";
 
-function LoginForm(props) {
+const LoginForm = props => {
   return (
     <form onSubmit={props.handleSubmit} className="Login">
       <label>
-        Email:
+        Username:
         <input
           type="username"
           name="username"
           placeholder="Username"
-          value={props.username}
-          onChange={props.handleChange}
+          value={props.username.value}
+          onChange={props.username.handleChange}
           required
         />
       </label>
@@ -21,34 +22,32 @@ function LoginForm(props) {
           type="password"
           name="password"
           placeholder="Password"
-          value={props.password}
-          onChange={props.handleChange}
+          value={props.password.value}
+          onChange={props.password.handleChange}
           required
         />
       </label>
       <input type="submit" value="Login" />
     </form>
   );
-}
+};
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
+const LoggedInMessage = props => {
+  return (
+    <div class="logout">
+      <h1 align="center">You are logged in!</h1>
+      <button class="logout" onClick={props.onClick}>Log Out</button>
+    </div>
+  );
+};
 
-    this.state = {
-      username: "",
-      password: "",
-      token: ""
-    };
+const Login = () => {
+  const [token, setToken] = useState({ value: "" });
+  const [errorString, setErrorString] = useState({ value: "" });
+  const username = useField("");
+  const password = useField("");
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.fetchToken = this.fetchToken.bind(this);
-  }
-
-  fetchToken = async () => {
-    const { username, password } = this.state;
-
+  const fetchToken = async (username, password) => {
     try {
       const response = await fetch(
         `http://localhost:3000/oauth/token?username=${username}&password=${password}&grant_type=password`,
@@ -57,42 +56,58 @@ class Login extends React.Component {
 
       const json = await response.json();
 
-      this.setState({ token: json.access_token });
-      Cookies.set('access_token', json.access_token)
-
+      if (response.status == 200) {
+        setToken({ value: json.access_token });
+        Cookies.set("access_token", json.access_token);
+      } else {
+        setErrorString({ value: json.status_code + " " + json.message });
+      }
     } catch (error) {
-      console.log(error);
-      //return onError(error);
+      console.log("login error", error);
     }
   };
 
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
+    fetchToken(username.value, password.value);
+  };
 
-    this.fetchToken();
+  const handleLogout = e => {
+    e.preventDefault();
+    setToken({ value: '' });
+    Cookies.remove('access_token')
+  };
+
+  var errorMessage;
+  if (errorString.value) {
+    errorMessage = <h1>{errorString.value}</h1>;
+  } else {
+    errorMessage = null;
   }
 
-  handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
+  useEffect(() => {
+    const access_token = Cookies.get("access_token");
+    if (access_token) {
+      setToken({ value: access_token });
+    }
+  }, []);
 
-  render() {
-    return (
-      <div>
-        {this.state.token != "" ? (
-          <h1>`{this.state.token}`</h1>
-        ) : (
+  return (
+    <div>
+      {token.value ? (
+        <LoggedInMessage onClick={handleLogout}/>
+      ) : (
+        <div>
           <LoginForm
-            handleSubmit={this.handleSubmit}
-            handleChange={this.handleChange}
-            username={this.state.username}
-            password={this.state.password}
+            handleSubmit={handleSubmit}
+            username={username}
+            password={password}
           />
-        )}
-      </div>
-    );
-  }
-}
+          {errorMessage}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default Login;
