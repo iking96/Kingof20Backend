@@ -50,7 +50,7 @@ const Login = () => {
   const fetchToken = async (username, password) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/oauth/token?username=${username}&password=${password}&grant_type=password`,
+        `http://54.69.119.37:3000/oauth/token?username=${username}&password=${password}&grant_type=password`,
         { method: "POST" }
       );
 
