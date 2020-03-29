@@ -1,12 +1,12 @@
 import React from "react";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import List from "./List";
 
 export default () => (
   <>
     <Switch>
-      <Route exact path="/" component={Dashboard} />
+      <Route exact path="/" component={List} />
     </Switch>
   </>
 );

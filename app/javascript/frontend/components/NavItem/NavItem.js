@@ -6,7 +6,13 @@ class NavItem extends React.Component {
   render() {
     return (
       <li>
-        <Link to={this.props.tolink}>{this.props.item}</Link>
+        <Link
+          className={this.props.className}
+          onClick={this.props.onclick}
+          to={this.props.tolink}
+        >
+          {this.props.item}
+        </Link>
       </li>
     );
   }
