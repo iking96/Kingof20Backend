@@ -47,7 +47,12 @@ li a:hover {
 
 .highlight {
   background-color: #4caf50;
-  color: white;
+  float: right;
+}
+
+.disabled-link {
+  pointer-events: none;
+  background-color: #444;
 }
 
 /* Form */

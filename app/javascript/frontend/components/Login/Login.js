@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useField from "frontend/utils/useField";
+import { config } from "frontend/utils/constants"
 
 const LoginForm = props => {
   return (
@@ -34,14 +35,14 @@ const LoginForm = props => {
 
 const LoggedInMessage = props => {
   return (
-    <div class="logout">
+    <div className="logout">
       <h1 align="center">You are logged in!</h1>
-      <button class="logout" onClick={props.onClick}>Log Out</button>
+      <button className="logout" onClick={props.onClick}>Log Out</button>
     </div>
   );
 };
 
-const Login = () => {
+const Login = ({setLogin}) => {
   const [token, setToken] = useState({ value: "" });
   const [errorString, setErrorString] = useState({ value: "" });
   const username = useField("");
@@ -50,7 +51,7 @@ const Login = () => {
   const fetchToken = async (username, password) => {
     try {
       const response = await fetch(
-        `http://54.69.119.37:3000/oauth/token?username=${username}&password=${password}&grant_type=password`,
+        `${config.url.API_URL}/oauth/token?username=${username}&password=${password}&grant_type=password`,
         { method: "POST" }
       );
 
@@ -59,6 +60,7 @@ const Login = () => {
       if (response.status == 200) {
         setToken({ value: json.access_token });
         Cookies.set("access_token", json.access_token);
+        setLogin(true);
       } else {
         setErrorString({ value: json.status_code + " " + json.message });
       }
@@ -75,7 +77,8 @@ const Login = () => {
   const handleLogout = e => {
     e.preventDefault();
     setToken({ value: '' });
-    Cookies.remove('access_token')
+    Cookies.remove('access_token');
+    setLogin(false);
   };
 
   var errorMessage;
