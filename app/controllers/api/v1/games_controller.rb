@@ -13,7 +13,7 @@ module Api
         )
 
         add_resource_count
-        json_response(@games)
+        json_response(games: @games)
       end
 
       def show
@@ -22,7 +22,7 @@ module Api
           user: current_resource_owner,
         )
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def create
@@ -30,7 +30,7 @@ module Api
           user: current_resource_owner,
         )
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def update
@@ -40,7 +40,7 @@ module Api
           params: @permitted_params
         )
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def destroy
@@ -49,7 +49,7 @@ module Api
           user: current_resource_owner,
         )
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def index_params

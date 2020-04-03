@@ -51,7 +51,7 @@ const Login = ({setLogin}) => {
   const fetchToken = async (username, password) => {
     try {
       const response = await fetch(
-        `${config.url.API_URL}/oauth/token?username=${username}&password=${password}&grant_type=password`,
+        `/oauth/token?username=${username}&password=${password}&grant_type=password`,
         { method: "POST" }
       );
 

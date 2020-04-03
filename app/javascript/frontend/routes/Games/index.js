@@ -6,7 +6,7 @@ import List from "./List";
 export default () => (
   <>
     <Switch>
-      <Route exact path="/" component={List} />
+      <Route exact path="/games" component={List} />
     </Switch>
   </>
 );
