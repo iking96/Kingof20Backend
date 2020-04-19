@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { getAccessToken } from "frontend/utils/authenticateHelper.js";
 
 // Shamelessly stolen from Jeff
-function useFetch(url, access_token, handleResponse) {
+function useFetch(url, reFetch, handleResponse) {
   const [isFetching, setIsFetching] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
   const [fetchError, setFetchError] = useState(null);
@@ -14,7 +15,7 @@ function useFetch(url, access_token, handleResponse) {
         const opts = {
           headers: {
             AUTHORIZATION:
-              `Bearer ${access_token}`
+              `Bearer ${getAccessToken()}`
           }
         };
         const response = await fetch(url, opts);
@@ -35,7 +36,7 @@ function useFetch(url, access_token, handleResponse) {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, reFetch]);
 
   return {
     isFetching,

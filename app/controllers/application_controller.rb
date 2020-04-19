@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  # CSRF -- does not apply for API
+  # Rational: https://stackoverflow.com/questions/35181340/rails-cant-verify-csrf-token-authenticity-when-making-a-post-request
+  skip_before_action :verify_authenticity_token
+
   #include ActionController::MimeResponds
   include Response
 
