@@ -21,20 +21,32 @@ class User < ApplicationRecord
   validates :username, presence: true
   validates :username, uniqueness: true
 
+  def as_json(options = {})
+    super(options.merge(except: [:email]))
+  end
+
   def games
-    Game.where('initiator_id = ? or opponent_id = ?', id, id)
+    @games ||= begin
+      games = Game.where('initiator_id = ? or opponent_id = ?', id, id)
+      games.each { |g| g.requesting_user_id = id }
+    end
+    @games
   end
 
   def visible_games
-    Game
-      .where.not(hidden_from: Game::HIDDEN_FROM_BOTH)
-      .where(
-        '(initiator_id = ? and hidden_from <> ?) or (opponent_id = ? and hidden_from <> ?)',
-        id,
-        Game::HIDDEN_FROM_INITIATOR,
-        id,
-        Game::HIDDEN_FROM_OPPONENT,
-      )
+    @visible_games ||= begin
+      games = Game
+        .where.not(hidden_from: Game::HIDDEN_FROM_BOTH)
+        .where(
+          '(initiator_id = ? and hidden_from <> ?) or (opponent_id = ? and hidden_from <> ?)',
+          id,
+          Game::HIDDEN_FROM_INITIATOR,
+          id,
+          Game::HIDDEN_FROM_OPPONENT,
+        )
+    end
+    games.each { |g| g.requesting_user_id = id }
+    @visible_games
   end
 
   def current_player_games

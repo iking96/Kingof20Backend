@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import GamesTable from "frontend/components/GamesTable";
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
@@ -7,17 +8,11 @@ import {
   getAccessToken
 } from "frontend/utils/authenticateHelper.js";
 
-const List = () => {
+const List = ({ history }) => {
   const [gameData, setGameData] = useState({});
   const [newGameToggle, setNewGameToggle] = useState(true);
   const access_token = getAccessToken();
   const is_authenticated = isAuthenticated();
-
-  useEffect(() => {
-    if (!is_authenticated) {
-      window.location.replace(`/`);
-    }
-  }, [is_authenticated]);
 
   const { isFetching, hasFetched, fetchError } = useFetch(
     "/api/v1/games",
@@ -28,19 +23,32 @@ const List = () => {
   );
 
   const { isPosting, hasPosted, postError, doPost } = usePost(
-    "/api/v1/games",
-    () => {
-      setNewGameToggle(false);
-    }
+    "/api/v1/games"
   );
-  console.log(gameData)
+
+  useEffect(() => {
+    if (hasPosted) {
+      setNewGameToggle(!newGameToggle);
+    }
+    if (!is_authenticated) {
+      window.location.replace(`/`);
+    }
+  }, [is_authenticated, hasPosted]);
+
+  if(!hasFetched) {
+    return <div/>
+  }
+
+  const handleRowClick = (e, game) => {
+    history.push(`/games/${game.id}`)
+  };
+
   return (
     <div>
-      <button style={{float: 'right'}} onClick={doPost}>New Game</button>
-      <table>
-        <thead></thead>
-        <tbody>'Hello'</tbody>
-      </table>
+      <button style={{ float: "right" }} onClick={doPost}>
+        New Game
+      </button>
+      <GamesTable games={gameData.games} onRowClick={handleRowClick} />
     </div>
   );
 };
