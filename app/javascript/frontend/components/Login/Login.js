@@ -5,7 +5,7 @@ import { config } from "frontend/utils/constants"
 
 const LoginForm = props => {
   return (
-    <form onSubmit={props.handleSubmit} className="Login">
+    <form onSubmit={props.handleSubmit} id="Login">
       <label>
         Username:
         <input
@@ -35,9 +35,9 @@ const LoginForm = props => {
 
 const LoggedInMessage = props => {
   return (
-    <div className="logout">
+    <div id="Logout">
       <h1 align="center">You are logged in!</h1>
-      <button className="logout" onClick={props.onClick}>Log Out</button>
+      <button onClick={props.onClick}>Log Out</button>
     </div>
   );
 };

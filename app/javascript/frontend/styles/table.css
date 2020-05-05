@@ -1,0 +1,19 @@
+/* Table */
+table {
+  margin:10px auto;
+	max-width: 400px;
+	padding: 20px 12px 10px 20px;
+}
+
+td {
+  padding: 15px;
+  text-align: center;
+}
+
+th {
+  padding: 5px;
+  background-color: var(--green-color);
+  color: white;
+}
+
+tr:hover {background-color: var(--vlightgray-color);}
