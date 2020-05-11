@@ -1,0 +1,22 @@
+.tile {
+  width: 40px;
+  height: 40px;
+  background-color: black;
+  border: solid #666 2px;
+  display: inline-block;
+  font: bold 70%/1.5 "Open Sans", sans-serif;
+  text-align: center;
+  color: black;
+}
+.tile.starting {
+  background-color: #888;
+}
+.tile .decal {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  text-align: center;
+  line-height: 40px;
+  text-transform: uppercase;
+  overflow: visible;
+}

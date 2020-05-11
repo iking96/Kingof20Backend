@@ -1,8 +1,20 @@
+/* Colors */
+/* Make whole site full page width */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set global font */
+body {
+  font-family: "Raleway";
+}
+
 /* Table */
 table {
-  margin:10px auto;
-	max-width: 400px;
-	padding: 20px 12px 10px 20px;
+  margin: 10px auto;
+  max-width: 400px;
+  padding: 20px 12px 10px 20px;
 }
 
 td {
@@ -12,8 +24,10 @@ td {
 
 th {
   padding: 5px;
-  background-color: var(--green-color);
+  background-color: #4caf50;
   color: white;
 }
 
-tr:hover {background-color: var(--vlightgray-color);}
+tr:hover {
+  background-color: #999;
+}

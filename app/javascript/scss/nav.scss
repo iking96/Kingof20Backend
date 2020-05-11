@@ -1,20 +1,10 @@
-/* Colors */
-/* Make whole site full page width */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-/* Set global font */
-body {
-  font-family: "Raleway";
-}
+@import 'base.scss';
 
 /* Nav */
 nav {
   padding: 20 30px 20px 30px;
-  flex: 1.5;
-  background: #7851a9;
+  flex: $sidebar-flex;
+  background: $royal-purple;
 }
 
 nav ul {
@@ -34,7 +24,7 @@ nav ul li a {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  background-color: #333;
+  background-color: $lightgray-color;
 }
 
 nav ul li a:hover {
@@ -42,7 +32,7 @@ nav ul li a:hover {
 }
 
 nav .highlight {
-  background-color: #4caf50;
+  background-color: $green-color;
   float: right;
 }
 

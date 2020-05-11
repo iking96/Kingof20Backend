@@ -3,8 +3,12 @@
 @import 'styles/nav.css';
 @import 'styles/form.css';
 @import 'styles/table.css';
+@import 'styles/board.css';
+@import 'styles/rack.css';
+@import 'styles/tile.css';
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,500,700&display=swap");
 
+/* Compile SCSS: sass --no-source-map --watch app/javascript/scss/:app/javascript/frontend/styles/ */
 .App {
   display: flex;
   width: 100vw;

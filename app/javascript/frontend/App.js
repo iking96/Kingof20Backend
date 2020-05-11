@@ -29,8 +29,8 @@ class App extends React.Component {
         <Navbar loggedIn={this.state.loggedIn}/>
         <Switch>
           <Route exact path="/" render={() => <Home />} />
-          <Route exact path="/games" render={() => <Games />} />
-          <Route exact path="/login" render={() => <Login setLogin={this.setLogin}/>} />
+          <Route path="/games" render={() => <Games />} />
+          <Route path="/login" render={() => <Login setLogin={this.setLogin}/>} />
         </Switch>
       </BrowserRouter>
     );

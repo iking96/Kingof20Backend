@@ -1,0 +1,41 @@
+$tw-color: red;
+$dw-color: pink;
+$dl-color: lightcyan;
+$tl-color: skyblue;
+$ct-color: $dw-color;
+
+$tile-num: 12;
+$tile-size: 40px;
+$tile-color: black;
+$starting-tile-color: #888;
+$tile-border-color: #666;
+$tile-border-width: 2px;
+$tile-font: bold 70%/1.5 "Open Sans", sans-serif;
+$decal-font-color: black;
+
+@mixin coloredSquare($size, $color) {
+  width: $size;
+  height: $size;
+  background-color: $color;
+}
+
+.tile {
+  @include coloredSquare($tile-size, $tile-color);
+  border: solid $tile-border-color $tile-border-width;
+  display: inline-block;
+  font: $tile-font;
+  text-align: center;
+  color: $decal-font-color;
+
+  &.starting {
+    background-color: $starting-tile-color;
+  }
+
+  .decal {
+    @include coloredSquare(100%, white);
+    text-align: center;
+    line-height: $tile-size;
+    text-transform: uppercase;
+    overflow: visible;
+  }
+}
