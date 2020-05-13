@@ -11,8 +11,8 @@ RSpec.describe('Game API', type: :request) do
     stub_current_user(user)
   end
 
-  describe 'GET /api/games' do
-    subject { get '/api/games', params: params }
+  describe 'GET /api/v1/games' do
+    subject { get '/api/v1/games', params: params }
     let(:params) { "" }
 
     context 'when the user has games' do
@@ -111,8 +111,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'GET /api/games/$id' do
-    subject { get "/api/games/#{game_id}" }
+  describe 'GET /api/v1/games/$id' do
+    subject { get "/api/v1/games/#{game_id}" }
 
     context 'when the user has games' do
       let!(:game) do
@@ -164,8 +164,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'POST /api/games' do
-    subject { post '/api/games' }
+  describe 'POST /api/v1/games' do
+    subject { post '/api/v1/games' }
 
     context 'there are no games in the game queue' do
       it 'responds with a new game' do
@@ -264,8 +264,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'PATCH /api/games/$id' do
-    subject { patch "/api/games/#{game_id}", params: params }
+  describe 'PATCH /api/v1/games/$id' do
+    subject { patch "/api/v1/games/#{game_id}", params: params }
     let(:params) { nil }
 
     context 'when the user has games' do
@@ -316,8 +316,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'DELETE /api/games/$id' do
-    subject { delete "/api/games/#{game_id}" }
+  describe 'DELETE /api/v1/games/$id' do
+    subject { delete "/api/v1/games/#{game_id}" }
 
     context 'when the user has games' do
       let!(:game) do
