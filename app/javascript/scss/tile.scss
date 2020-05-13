@@ -26,6 +26,7 @@ $decal-font-color: black;
   font: $tile-font;
   text-align: center;
   color: $decal-font-color;
+  position: relative;
 
   &.starting {
     background-color: $starting-tile-color;
@@ -37,5 +38,16 @@ $decal-font-color: black;
     line-height: $tile-size;
     text-transform: uppercase;
     overflow: visible;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  .highlight {
+    @include coloredSquare(100%, yellow);
+    opacity: 0.5;
+    position: absolute;
+    top: 0px;
+    left: 0px;
   }
 }

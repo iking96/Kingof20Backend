@@ -7,6 +7,7 @@
   font: bold 70%/1.5 "Open Sans", sans-serif;
   text-align: center;
   color: black;
+  position: relative;
 }
 .tile.starting {
   background-color: #888;
@@ -19,6 +20,18 @@
   line-height: 40px;
   text-transform: uppercase;
   overflow: visible;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+.tile .highlight {
+  width: 100%;
+  height: 100%;
+  background-color: yellow;
+  opacity: 0.5;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 #js-rack {

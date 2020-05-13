@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Tile from "frontend/components/Tile";
 
 const is_starting_space = (row, col) => {
   return (
@@ -9,16 +10,19 @@ const is_starting_space = (row, col) => {
   );
 };
 
-const BoardSquare = ({ row, col, value }) => (
-  <div
-    className={
-      "tile " +
-      `${is_starting_space(row, col) ? "starting" : ""}` +
-      `${value==0 ? "filled" : ""}`
-    }
-  >
-  { (value==0) ? <></> : <div className='decal'>{value}</div> }
-  </div>
-);
+const BoardSquare = ({ row, col, value, handleBoardSet }) => {
+  return (
+    <Tile
+      row={row}
+      col={col}
+      value={value}
+      styleName={`${is_starting_space(row, col) ? " starting" : ""}`}
+      canDrag={() => true}
+      canDrop={() => value == 0}
+      didDrop={() => handleBoardSet(row, col, 0)}
+      handleDrop={(value) => handleBoardSet(row, col, value)}
+    />
+  );
+};
 
 export default React.memo(BoardSquare);
