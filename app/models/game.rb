@@ -148,16 +148,16 @@ class Game < ApplicationRecord
     response_data = {}
 
     if requesting_user_id == initiator.id
-      response_data[:you] = initiator.as_json
-      response_data[:them] = opponent.as_json
+      response_data[:you] = initiator.as_json&.except('email')
+      response_data[:them] = opponent.as_json&.except('email')
       response_data[:your_rack] = initiator_rack
       response_data[:your_score] = initiator_score
       response_data[:their_score] = opponent_score
     end
 
     if opponent && requesting_user_id == opponent.id
-      response_data[:you] = opponent.as_json
-      response_data[:them] = initiator.as_json
+      response_data[:you] = opponent.as_json&.except('email')
+      response_data[:them] = initiator.as_json&.except('email')
       response_data[:your_rack] = opponent_rack
       response_data[:your_score] = opponent_score
       response_data[:their_score] = initiator_score

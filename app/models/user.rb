@@ -21,10 +21,6 @@ class User < ApplicationRecord
   validates :username, presence: true
   validates :username, uniqueness: true
 
-  def as_json(options = {})
-    super(options.merge(except: [:email]))
-  end
-
   def games
     Game.where('initiator_id = ? or opponent_id = ?', id, id)
   end
