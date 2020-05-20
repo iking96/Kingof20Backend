@@ -1,5 +1,31 @@
 @import 'base.scss';
 
+/* Buttons */
+button {
+  margin: 10px auto;
+  background-color: $green-color;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  font-size: 1.5em;
+
+  &.play-btn {
+    background-color: $royal-purple;
+  }
+}
+
+.btn-group {
+  text-align: center;
+
+  button {
+    margin: 20px 20px;
+    display: inline-block;
+  }
+}
+
 /* Form */
 form {
   margin:10px auto;
@@ -18,17 +44,6 @@ textarea {
   margin-top: 6px; /* Add a top margin */
   margin-bottom: 16px; /* Bottom margin */
   resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-button {
-  width: 100%;
-  background-color: $green-color;
-  color: white;
-  padding: 14px 16px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 #Login {

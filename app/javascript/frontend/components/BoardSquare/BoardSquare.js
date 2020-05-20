@@ -19,7 +19,7 @@ const BoardSquare = ({ row, col, value, tempValue, handleBoardSet }) => {
       is_starting={is_starting_space(row, col) ? " starting" : ""}
       is_temp={tempValue != 0}
       canDrag={() => tempValue != 0}
-      canDrop={() => value == 0}
+      canDrop={() => (value == 0 && tempValue == 0)}
       didDrop={() => handleBoardSet(row, col, 0)}
       handleDrop={value => handleBoardSet(row, col, value)}
     />

@@ -45,7 +45,7 @@ const List = ({ history }) => {
 
   return (
     <div>
-      <button style={{ float: "right" }} onClick={doPost}>
+      <button onClick={doPost}>
         New Game
       </button>
       <GamesTable games={gameData.games} onRowClick={handleRowClick} />

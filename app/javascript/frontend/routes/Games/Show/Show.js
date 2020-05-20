@@ -46,9 +46,9 @@ const Show = ({
     tempBoardValues.forEach((arr, row) => {
       arr.forEach((value, col) => {
         if (value != 0) {
-          row_num.push(row)
-          col_num.push(col)
-          tile_value.push(value)
+          row_num.push(row);
+          col_num.push(col);
+          tile_value.push(value);
         }
       });
     });
@@ -70,9 +70,9 @@ const Show = ({
       }
     },
     ({ response, json }) => {
-      var status = response.status
-      if (status != 200)  {
-        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`)
+      var status = response.status;
+      if (status != 200) {
+        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`);
       }
     }
   );
@@ -101,7 +101,7 @@ const Show = ({
     return (
       <div
         style={{
-          backgroundColor: "saddlebrown",
+          backgroundColor: "#D8BFD8",
           width: "100%",
           height: "100%"
         }}
@@ -111,22 +111,26 @@ const Show = ({
 
   return (
     <DndProvider backend={Backend}>
-      <button style={{ float: "right" }} onClick={doPost}>
-        Something New
-      </button>
       <div
         style={{
-          backgroundColor: "saddlebrown",
+          backgroundColor: "#D8BFD8",
           paddingTop: "40px",
           paddingBottom: "40px"
         }}
       >
+        <div className="btn-group">
+          <button onClick={doPost}>Skip turn</button>
+          <button onClick={doPost}>Exchange tiles</button>
+        </div>
         <Board
           boardValues={boardValues}
           tempBoardValues={tempBoardValues}
           handleBoardSet={handleBoardSet}
         />
         <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
+        <button className="play-btn" onClick={doPost}>
+          PLAY!
+        </button>
       </div>
     </DndProvider>
   );

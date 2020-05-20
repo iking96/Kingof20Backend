@@ -10,6 +10,30 @@ body {
   font-family: "Raleway";
 }
 
+/* Buttons */
+button {
+  margin: 10px auto;
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  font-size: 1.5em;
+}
+button.play-btn {
+  background-color: #7851a9;
+}
+
+.btn-group {
+  text-align: center;
+}
+.btn-group button {
+  margin: 20px 20px;
+  display: inline-block;
+}
+
 /* Form */
 form {
   margin: 10px auto;
@@ -36,17 +60,6 @@ textarea {
   /* Bottom margin */
   resize: vertical;
   /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-button {
-  width: 100%;
-  background-color: #4caf50;
-  color: white;
-  padding: 14px 16px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 #Login {
