@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import RackSquare from "frontend/components/RackSquare";
 
-const TileRack = ({ rack_values, handleRackSet }) => {
+const TileRack = ({ rackValues, handleRackSet }) => {
   return (
     <div id="js-rack">
       <div className="rack">
-        {rack_values.map((value, index) => (
+        {rackValues.map((value, index) => (
           <RackSquare
             key={index}
             col={index}

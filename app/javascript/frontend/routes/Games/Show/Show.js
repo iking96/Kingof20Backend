@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import useFetch from "frontend/utils/useFetch";
+import usePost from "frontend/utils/usePost";
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
@@ -19,11 +20,13 @@ const Show = ({
 }) => {
   const [gameData, setGameData] = useState({});
   const [boardValues, setBoardValues] = useState(initalBoardValues);
+  const [tempBoardValues, setTempBoardValues] = useState(initalBoardValues);
   const [rackValues, setRackValues] = useState(initalRackValues);
+  const [reFetchToggle, setReFetchToggle] = useState(true);
 
   const { isFetching, hasFetched, fetchError } = useFetch(
     `/api/v1/games/${id}`,
-    false,
+    reFetchToggle,
     ({
       json: {
         game: { board, your_rack }
@@ -31,8 +34,54 @@ const Show = ({
     }) => {
       setBoardValues(board);
       setRackValues(your_rack);
+      setTempBoardValues(initalBoardValues);
     }
   );
+
+  const placeTiles = () => {
+    var row_num = [];
+    var col_num = [];
+    var tile_value = [];
+
+    tempBoardValues.forEach((arr, row) => {
+      arr.forEach((value, col) => {
+        if (value != 0) {
+          row_num.push(row)
+          col_num.push(col)
+          tile_value.push(value)
+        }
+      });
+    });
+
+    return {
+      row_num: row_num,
+      col_num: col_num,
+      tile_value: tile_value
+    };
+  };
+
+  const { isPosting, hasPosted, postError, doPost } = usePost(
+    "/api/v1/moves",
+    {
+      move_info: {
+        game_id: id,
+        move_type: "tile_placement",
+        ...placeTiles()
+      }
+    },
+    ({ response, json }) => {
+      var status = response.status
+      if (status != 200)  {
+        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`)
+      }
+    }
+  );
+
+  useEffect(() => {
+    if (hasPosted) {
+      setReFetchToggle(!reFetchToggle);
+    }
+  }, [hasPosted]);
 
   const handleRackSet = (col, value) => {
     var newRack = rackValues.slice();
@@ -41,11 +90,11 @@ const Show = ({
   };
 
   const handleBoardSet = (row, col, value) => {
-    var newBoard = boardValues.map(function(arr) {
+    var newBoard = tempBoardValues.map(function(arr) {
       return arr.slice();
     });
     newBoard[row][col] = value;
-    setBoardValues(newBoard);
+    setTempBoardValues(newBoard);
   };
 
   if (!hasFetched) {
@@ -62,6 +111,9 @@ const Show = ({
 
   return (
     <DndProvider backend={Backend}>
+      <button style={{ float: "right" }} onClick={doPost}>
+        Something New
+      </button>
       <div
         style={{
           backgroundColor: "saddlebrown",
@@ -69,8 +121,12 @@ const Show = ({
           paddingBottom: "40px"
         }}
       >
-        <Board board_values={boardValues} handleBoardSet={handleBoardSet} />
-        <TileRack rack_values={rackValues} handleRackSet={handleRackSet} />
+        <Board
+          boardValues={boardValues}
+          tempBoardValues={tempBoardValues}
+          handleBoardSet={handleBoardSet}
+        />
+        <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
       </div>
     </DndProvider>
   );

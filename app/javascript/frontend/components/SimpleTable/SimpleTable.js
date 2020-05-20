@@ -10,7 +10,7 @@ const Row = React.memo(({ columns, row, rowIdx, onRowClick }) => {
     <tr onClick={handleRowClick} key={row.id}>
       {columns.map((column, columnIdx) => (
         <td key={column.key}>
-        {column.render ? column.render(row, rowIdx): row[column.key]}
+          {column.render ? column.render(row, rowIdx) : row[column.key]}
         </td>
       ))}
     </tr>
@@ -40,7 +40,9 @@ const Body = React.memo(({ columns, rows, resourceName, onRowClick }) => (
         />
       ))
     ) : (
-      <td colspan={999}>No {resourceName || items}</td>
+      <tr>
+        <td colSpan={999}>No {resourceName || items}</td>
+      </tr>
     )}
   </tbody>
 ));

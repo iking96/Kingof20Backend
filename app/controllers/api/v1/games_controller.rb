@@ -58,7 +58,7 @@ module Api
           user: user,
         )
         @game.requesting_user_id = user.id
-        
+
         json_response(game: @game)
       end
 

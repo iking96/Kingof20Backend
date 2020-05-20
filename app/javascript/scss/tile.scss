@@ -41,6 +41,10 @@ $decal-font-color: black;
     position: absolute;
     top: 0px;
     left: 0px;
+
+    &.temp {
+      background-color: yellow;
+    }
   }
 
   .highlight {

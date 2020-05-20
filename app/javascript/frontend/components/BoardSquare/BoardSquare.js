@@ -10,17 +10,18 @@ const is_starting_space = (row, col) => {
   );
 };
 
-const BoardSquare = ({ row, col, value, handleBoardSet }) => {
+const BoardSquare = ({ row, col, value, tempValue, handleBoardSet }) => {
   return (
     <Tile
       row={row}
       col={col}
-      value={value}
-      styleName={`${is_starting_space(row, col) ? " starting" : ""}`}
-      canDrag={() => true}
+      value={tempValue != 0 ? tempValue : value}
+      is_starting={is_starting_space(row, col) ? " starting" : ""}
+      is_temp={tempValue != 0}
+      canDrag={() => tempValue != 0}
       canDrop={() => value == 0}
       didDrop={() => handleBoardSet(row, col, 0)}
-      handleDrop={(value) => handleBoardSet(row, col, value)}
+      handleDrop={value => handleBoardSet(row, col, value)}
     />
   );
 };

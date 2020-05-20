@@ -1,43 +1,43 @@
 import React, { useCallback, useState } from "react";
 import { getAccessToken } from "frontend/utils/authenticateHelper.js";
 
-function usePost(url, handleResponse) {
+function usePost(url, data = {}, handleResponse = () => {}) {
   const [isPosting, setIsPosting] = useState(false);
   const [hasPosted, setHasPosted] = useState(false);
   const [postError, setPostError] = useState(null);
 
-  const doPost = useCallback(() => {
-    const postData = async () => {
-      setIsPosting(true);
-      setHasPosted(false);
+  const doPost = async () => {
+    setIsPosting(true);
+    setHasPosted(false);
 
-      try {
-        const opts = {
-          headers: {
-            AUTHORIZATION: `Bearer ${getAccessToken()}`
-          },
-          credentials: 'same-origin',
-          method: "POST"
-        };
-        const response = await fetch(url, opts);
-        const json = await response.json();
+    try {
+      const opts = {
+        headers: {
+          AUTHORIZATION: `Bearer ${getAccessToken()}`,
+          CONTENT_TYPE: "application/json",
+          Accept: "application/json"
+        },
+        credentials: "same-origin",
+        method: "POST",
+        body: JSON.stringify(data)
+      };
 
-        handleResponse({ response, json });
-        setPostError(null);
-      } catch (e) {
-        setPostError(
-          e.response
-            ? { type: "Network Error", ...e.response }
-            : { type: "Javascript Error", name: e.response, message: e.message }
-        );
-      }
+      const response = await fetch(url, opts);
+      const json = await response.json();
 
-      setIsPosting(false);
-      setHasPosted(true);
-    };
+      handleResponse({ response, json });
+      setPostError(null);
+    } catch (e) {
+      setPostError(
+        e.response
+          ? { type: "Network Error", ...e.response }
+          : { type: "Javascript Error", name: e.response, message: e.message }
+      );
+    }
 
-    postData();
-  }, [url]);
+    setIsPosting(false);
+    setHasPosted(true);
+  };
 
   return {
     isPosting,

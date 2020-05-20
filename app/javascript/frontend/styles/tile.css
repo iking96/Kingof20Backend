@@ -24,6 +24,9 @@
   top: 0px;
   left: 0px;
 }
+.tile .decal.temp {
+  background-color: yellow;
+}
 .tile .highlight {
   width: 100%;
   height: 100%;

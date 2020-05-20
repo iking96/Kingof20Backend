@@ -5,7 +5,8 @@ const Tile = ({
   row,
   col,
   value,
-  styleName = "",
+  is_starting = false,
+  is_temp = false,
   canDrag = () => {},
   canDrop = () => {},
   didDrop = () => {},
@@ -30,11 +31,11 @@ const Tile = ({
   });
 
   return (
-    <div className={"tile" + ` ${styleName}`} ref={drop}>
+    <div className={"tile" + `${is_starting ? " starting" : ""}`} ref={drop}>
       {value == 0 ? (
         <></>
       ) : (
-        <div className="decal" ref={drag}>
+        <div className={"decal" + `${is_temp ? " temp" : ""}`} ref={drag}>
           {value}
         </div>
       )}
