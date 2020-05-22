@@ -6,6 +6,7 @@
 @import 'styles/board.css';
 @import 'styles/rack.css';
 @import 'styles/tile.css';
+@import 'styles/scoreboard.css';
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,500,700&display=swap");
 
 /* Compile SCSS: sass --no-source-map --watch app/javascript/scss/:app/javascript/frontend/styles/ */

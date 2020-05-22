@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { getAccessToken } from "frontend/utils/authenticateHelper.js";
 
-function usePost(url, data = {}, handleResponse = () => {}) {
+function usePost(url, handleResponse = () => {}) {
   const [isPosting, setIsPosting] = useState(false);
   const [hasPosted, setHasPosted] = useState(false);
   const [postError, setPostError] = useState(null);
 
-  const doPost = async () => {
+  const doPost = async (data = {}) => {
     setIsPosting(true);
     setHasPosted(false);
 

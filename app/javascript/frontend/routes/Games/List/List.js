@@ -45,7 +45,7 @@ const List = ({ history }) => {
 
   return (
     <div>
-      <button onClick={doPost}>
+      <button onClick={() => doPost()}>
         New Game
       </button>
       <GamesTable games={gameData.games} onRowClick={handleRowClick} />

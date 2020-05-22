@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
+import ScoreBoard from "frontend/components/ScoreBoard";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import useFetch from "frontend/utils/useFetch";
@@ -18,9 +19,10 @@ const Show = ({
     params: { id }
   }
 }) => {
-  const [gameData, setGameData] = useState({});
   const [boardValues, setBoardValues] = useState(initalBoardValues);
   const [tempBoardValues, setTempBoardValues] = useState(initalBoardValues);
+  const [gameFlowData, setGameFlowData] = useState({});
+  const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
   const [reFetchToggle, setReFetchToggle] = useState(true);
 
@@ -29,12 +31,29 @@ const Show = ({
     reFetchToggle,
     ({
       json: {
-        game: { board, your_rack }
+        game: {
+          board,
+          you,
+          them,
+          your_rack,
+          your_turn,
+          your_score,
+          their_score
+        }
       }
     }) => {
       setBoardValues(board);
       setRackValues(your_rack);
       setTempBoardValues(initalBoardValues);
+      setGameFlowData({
+        your_turn: your_turn,
+        your_score: your_score,
+        their_score: their_score
+      });
+      setPlayerData({
+        you: you,
+        them: them
+      });
     }
   );
 
@@ -62,13 +81,6 @@ const Show = ({
 
   const { isPosting, hasPosted, postError, doPost } = usePost(
     "/api/v1/moves",
-    {
-      move_info: {
-        game_id: id,
-        move_type: "tile_placement",
-        ...placeTiles()
-      }
-    },
     ({ response, json }) => {
       var status = response.status;
       if (status != 200) {
@@ -97,6 +109,29 @@ const Show = ({
     setTempBoardValues(newBoard);
   };
 
+  const postTilePlacement = () => {
+    doPost({
+      move_info: {
+        game_id: id,
+        move_type: "tile_placement",
+        ...placeTiles()
+      }
+    });
+  };
+
+  const postPass = () => {
+    doPost({
+      move_info: {
+        game_id: id,
+        move_type: "pass"
+      }
+    });
+  };
+
+  const postExchange = () => {
+    doPost();
+  };
+
   if (!hasFetched) {
     return (
       <div
@@ -109,18 +144,26 @@ const Show = ({
     );
   }
 
+  if (hasFetched) {
+    debugger;
+  }
+
   return (
     <DndProvider backend={Backend}>
       <div
         style={{
-          backgroundColor: "#D8BFD8",
-          paddingTop: "40px",
-          paddingBottom: "40px"
+          backgroundColor: "#D8BFD8"
         }}
       >
+        <ScoreBoard
+          yourTurn={gameFlowData.your_turn}
+          opponentUsername={playerData.them ? playerData.them.username : null}
+          playerScore={gameFlowData.your_score}
+          opponentScore={gameFlowData.their_score}
+        />
         <div className="btn-group">
-          <button onClick={doPost}>Skip turn</button>
-          <button onClick={doPost}>Exchange tiles</button>
+          <button onClick={postPass}>Pass</button>
+          <button onClick={postExchange}>Exchange tiles</button>
         </div>
         <Board
           boardValues={boardValues}
@@ -128,7 +171,7 @@ const Show = ({
           handleBoardSet={handleBoardSet}
         />
         <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-        <button className="play-btn" onClick={doPost}>
+        <button className="play-btn" onClick={postTilePlacement}>
           PLAY!
         </button>
       </div>

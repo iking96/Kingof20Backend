@@ -151,6 +151,7 @@ class Game < ApplicationRecord
       response_data[:you] = initiator.as_json&.except('email')
       response_data[:them] = opponent.as_json&.except('email')
       response_data[:your_rack] = initiator_rack
+      response_data[:your_turn] = (current_player == 'initiator')
       response_data[:your_score] = initiator_score
       response_data[:their_score] = opponent_score
     end
@@ -159,6 +160,7 @@ class Game < ApplicationRecord
       response_data[:you] = opponent.as_json&.except('email')
       response_data[:them] = initiator.as_json&.except('email')
       response_data[:your_rack] = opponent_rack
+      response_data[:your_turn] = (current_player == 'opponent')
       response_data[:your_score] = opponent_score
       response_data[:their_score] = initiator_score
     end

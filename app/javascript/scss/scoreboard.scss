@@ -1,0 +1,44 @@
+@import 'base.scss';
+
+@mixin coloredSquare($size, $color) {
+  width: $size;
+  height: $size;
+  background-color: $color;
+}
+
+@mixin coloredRectangle($width, $height, $color) {
+  width: $width;
+  height: $height;
+  background-color: $color;
+}
+
+.scoreboard {
+  width: 100%;
+  height: 75px;
+  color: white;
+  text-align: center;
+  
+  .scoreboard-lt {
+    @include coloredRectangle(50%, 100%, $royal-purple);
+    border-color: transparent;
+    border-style: solid;
+    float: left;
+    transition: border-color .5s;
+
+    &.current {
+      border-color: white;
+    }
+  }
+
+  .scoreboard-rt {
+    @include coloredRectangle(50%, 100%, $royal-purple);
+    border-color: transparent;
+    border-style: solid;
+    float: right;
+    transition: border-color .5s;
+
+    &.current {
+      border-color: white;
+    }
+  }
+}
