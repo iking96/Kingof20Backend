@@ -175,7 +175,7 @@ RSpec.describe('Game API', type: :request) do
           "you" => hash_including('id' => user.id),
           "them" => nil,
         ))
-        expect(json['game']["stage"]).to(eq('in_play'))
+        expect(json['game']["complete"]).to(eq(false))
       end
 
       it 'adds a game to the game queue' do
@@ -199,7 +199,7 @@ RSpec.describe('Game API', type: :request) do
           "you" => hash_including('id' => user.id),
           "them" => hash_including('id' => user2.id),
         ))
-        expect(json['game']["stage"]).to(eq('in_play'))
+        expect(json['game']["complete"]).to(eq(false))
       end
 
       it 'removes a game to the game queue' do
@@ -216,7 +216,7 @@ RSpec.describe('Game API', type: :request) do
             "you" => hash_including('id' => user.id),
             "them" => nil,
           ))
-          expect(json['game']["stage"]).to(eq('in_play'))
+          expect(json['game']["complete"]).to(eq(false))
         end
 
         it 'adds a game to the game queue' do
@@ -239,7 +239,7 @@ RSpec.describe('Game API', type: :request) do
               "you" => hash_including('id' => user.id),
               "them" => hash_including('id' => user3.id),
             ))
-            expect(json['game']["stage"]).to(eq('in_play'))
+            expect(json['game']["complete"]).to(eq(false))
           end
 
           it 'removes a game to the game queue' do
@@ -282,7 +282,7 @@ RSpec.describe('Game API', type: :request) do
           subject
           expect(response).to(have_http_status(200))
           expect(json['game']).to(include(
-            "stage" => 'initiator_forfit',
+            "complete" => true,
           ))
         end
 
@@ -294,7 +294,7 @@ RSpec.describe('Game API', type: :request) do
             subject
             expect(response).to(have_http_status(200))
             expect(json['game']).to(include(
-              "stage" => 'opponent_forfit',
+              "complete" => true,
             ))
           end
         end

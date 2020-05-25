@@ -38,7 +38,10 @@ const Show = ({
           your_rack,
           your_turn,
           your_score,
-          their_score
+          their_score,
+          allow_swap,
+          complete,
+          your_win
         }
       }
     }) => {
@@ -48,7 +51,10 @@ const Show = ({
       setGameFlowData({
         your_turn: your_turn,
         your_score: your_score,
-        their_score: their_score
+        their_score: their_score,
+        allow_swap: allow_swap,
+        complete: complete,
+        your_win: your_win
       });
       setPlayerData({
         you: you,
@@ -144,38 +150,63 @@ const Show = ({
     );
   }
 
-  if (hasFetched) {
-    debugger;
-  }
-
-  return (
-    <DndProvider backend={Backend}>
-      <div
-        style={{
-          backgroundColor: "#D8BFD8"
-        }}
-      >
-        <ScoreBoard
-          yourTurn={gameFlowData.your_turn}
-          opponentUsername={playerData.them ? playerData.them.username : null}
-          playerScore={gameFlowData.your_score}
-          opponentScore={gameFlowData.their_score}
-        />
-        <div className="btn-group">
-          <button onClick={postPass}>Pass</button>
-          <button onClick={postExchange}>Exchange tiles</button>
-        </div>
+  const renderPlayArea = () => (
+    <div>
+      <div className="btn-group">
+        <button onClick={postPass} disabled={!gameFlowData.your_turn}>
+          Pass
+        </button>
+        <button
+          onClick={postExchange}
+          disabled={!gameFlowData.your_turn || !gameFlowData.allow_swap}
+        >
+          Exchange tiles
+        </button>
+      </div>
+      <DndProvider backend={Backend}>
         <Board
           boardValues={boardValues}
           tempBoardValues={tempBoardValues}
           handleBoardSet={handleBoardSet}
         />
         <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-        <button className="play-btn" onClick={postTilePlacement}>
-          PLAY!
-        </button>
+      </DndProvider>
+      <button
+        className="play-btn"
+        onClick={postTilePlacement}
+        disabled={!gameFlowData.your_turn}
+      >
+        PLAY!
+      </button>
+    </div>
+  );
+
+  const renderGameOver = () => (
+    <div>
+      <div className="gameOverMessage">
+        Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}
       </div>
-    </DndProvider>
+      <DndProvider backend={Backend}>
+        <Board boardValues={boardValues} tempBoardValues={initalBoardValues} />
+      </DndProvider>
+    </div>
+  );
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#D8BFD8"
+      }}
+    >
+      <ScoreBoard
+        yourTurn={gameFlowData.your_turn}
+        opponentUsername={playerData.them ? playerData.them.username : null}
+        playerScore={gameFlowData.your_score}
+        opponentScore={gameFlowData.their_score}
+      />
+      {!gameFlowData.complete && renderPlayArea()}
+      {gameFlowData.complete && renderGameOver()}
+    </div>
   );
 };
 

@@ -100,9 +100,11 @@ class Game < ApplicationRecord
       :opponent_rack,
       :available_tiles,
       :hidden_from,
+      :stage,
     ]
-    super(options.merge(methods: [:allow_swap?], except: exclude_methods)).tap do |hash|
+    super(options.merge(except: exclude_methods)).tap do |hash|
       hash.merge!(requesting_user_data)
+      hash.merge!(allow_swap: allow_swap?, complete: complete?)
     end
   end
 
@@ -154,6 +156,7 @@ class Game < ApplicationRecord
       response_data[:your_turn] = (current_player == 'initiator')
       response_data[:your_score] = initiator_score
       response_data[:their_score] = opponent_score
+      response_data[:your_win] = (determine_winner == 'initiator')
     end
 
     if opponent && requesting_user_id == opponent.id
@@ -163,23 +166,24 @@ class Game < ApplicationRecord
       response_data[:your_turn] = (current_player == 'opponent')
       response_data[:your_score] = opponent_score
       response_data[:their_score] = initiator_score
+      response_data[:your_win] = (determine_winner == 'opponent')
     end
 
     response_data
   end
 
-  def requesting_user_score
-    if requesting_user_id == initiator.id
-      return initiator_score
-    end
-
-    if opponent && requesting_user_id == opponent.id
-      opponent_score
-    end
-  end
-
   def toggle_current_user
     self.current_player = current_player == 'initiator' ? 'opponent' : 'initiator'
+  end
+
+  def determine_winner
+    return nil unless complete?
+
+    return 'initiator' if stage == 'opponent_forfit'
+    return 'opponent' if stage == 'initiator_forfit'
+    return 'tie' if initiator_score == opponent_score
+
+    initiator_score > opponent_score ? 'opponent' : 'initiator'
   end
 
   def refill_current_user_rack

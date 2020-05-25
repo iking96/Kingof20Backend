@@ -26,6 +26,10 @@ button.play-btn {
   background-color: #7851a9;
 }
 
+button:disabled {
+  opacity: 0.5;
+}
+
 .btn-group {
   text-align: center;
 }
