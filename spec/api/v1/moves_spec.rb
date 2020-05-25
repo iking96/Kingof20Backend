@@ -11,8 +11,8 @@ RSpec.describe('Move API', type: :request) do
     stub_current_user(user)
   end
 
-  describe 'GET /api/moves' do
-    subject { get '/api/moves', params: params }
+  describe 'GET /api/v1/moves' do
+    subject { get '/api/v1/moves', params: params }
     let(:params) { nil }
 
     context 'when the user has moves' do
@@ -89,8 +89,8 @@ RSpec.describe('Move API', type: :request) do
     end
   end
 
-  describe 'GET /api/moves/$id' do
-    subject { get "/api/moves/#{move_id}" }
+  describe 'GET /api/v1/moves/$id' do
+    subject { get "/api/v1/moves/#{move_id}" }
 
     context 'when the user has moves' do
       let!(:move) do
@@ -141,8 +141,8 @@ RSpec.describe('Move API', type: :request) do
     end
   end
 
-  describe 'POST /api/moves' do
-    subject { post '/api/moves', params: params }
+  describe 'POST /api/v1/moves' do
+    subject { post '/api/v1/moves', params: params }
 
     let!(:game) do
       create(

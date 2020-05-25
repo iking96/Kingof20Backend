@@ -36,6 +36,8 @@ class Game < ApplicationRecord
     13 => "Over",
   }
 
+  attr_accessor :requesting_user_id
+
   belongs_to :initiator, class_name: 'User', required: true
   belongs_to :opponent, class_name: 'User', required: false
 
@@ -89,11 +91,25 @@ class Game < ApplicationRecord
   end
 
   def as_json(options = {})
-    super options.merge(methods: [:allow_swap?])
+    exclude_methods = [
+      :initiator_id,
+      :initiator_score,
+      :initiator_rack,
+      :opponent_id,
+      :opponent_score,
+      :opponent_rack,
+      :available_tiles,
+      :hidden_from,
+      :stage,
+    ]
+    super(options.merge(except: exclude_methods)).tap do |hash|
+      hash.merge!(requesting_user_data)
+      hash.merge!(allow_swap: allow_swap?, complete: complete?)
+    end
   end
 
   def allow_swap?
-    available_tiles.empty?
+    !available_tiles.empty?
   end
 
   def complete?
@@ -106,7 +122,7 @@ class Game < ApplicationRecord
     end
 
     if current_player == 'opponent'
-      return opponent
+      opponent
     end
   end
 
@@ -116,7 +132,7 @@ class Game < ApplicationRecord
     end
 
     if current_player == 'opponent'
-      return opponent_rack
+      opponent_rack
     end
   end
 
@@ -126,12 +142,48 @@ class Game < ApplicationRecord
     end
 
     if current_player == 'opponent'
-      return opponent_score
+      opponent_score
     end
+  end
+
+  def requesting_user_data
+    response_data = {}
+
+    if requesting_user_id == initiator.id
+      response_data[:you] = initiator.as_json&.except('email')
+      response_data[:them] = opponent.as_json&.except('email')
+      response_data[:your_rack] = initiator_rack
+      response_data[:your_turn] = (current_player == 'initiator')
+      response_data[:your_score] = initiator_score
+      response_data[:their_score] = opponent_score
+      response_data[:your_win] = (determine_winner == 'initiator')
+    end
+
+    if opponent && requesting_user_id == opponent.id
+      response_data[:you] = opponent.as_json&.except('email')
+      response_data[:them] = initiator.as_json&.except('email')
+      response_data[:your_rack] = opponent_rack
+      response_data[:your_turn] = (current_player == 'opponent')
+      response_data[:your_score] = opponent_score
+      response_data[:their_score] = initiator_score
+      response_data[:your_win] = (determine_winner == 'opponent')
+    end
+
+    response_data
   end
 
   def toggle_current_user
     self.current_player = current_player == 'initiator' ? 'opponent' : 'initiator'
+  end
+
+  def determine_winner
+    return nil unless complete?
+
+    return 'initiator' if stage == 'opponent_forfit'
+    return 'opponent' if stage == 'initiator_forfit'
+    return 'tie' if initiator_score == opponent_score
+
+    initiator_score > opponent_score ? 'opponent' : 'initiator'
   end
 
   def refill_current_user_rack

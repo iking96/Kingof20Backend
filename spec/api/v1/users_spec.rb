@@ -6,7 +6,7 @@ RSpec.describe('User API', type: :request) do
   let!(:user) { create(:user) }
   let(:valid_params) { nil }
 
-  describe 'POST /api/users' do
+  describe 'POST /api/v1/users' do
     let(:valid_params) do
       {
         email: 'test.account@email.com',
@@ -15,7 +15,7 @@ RSpec.describe('User API', type: :request) do
       }
     end
 
-    subject { post '/api/users', params: { user: valid_params } }
+    subject { post '/api/v1/users', params: { user: valid_params } }
 
     it 'should respond and add a new User' do
       expect { subject }.to(change { User.count }.by(1))
@@ -87,7 +87,7 @@ RSpec.describe('User API', type: :request) do
       json['access_token']
     end
 
-    subject { get '/api/games', params: {}, headers: valid_headers }
+    subject { get '/api/v1/games', params: {}, headers: valid_headers }
 
     it 'should respond with authorized' do
       subject
@@ -96,7 +96,7 @@ RSpec.describe('User API', type: :request) do
   end
 
   describe 'Unauthorized request' do
-    subject { get '/api/games' }
+    subject { get '/api/v1/games' }
 
     it 'should respond with unauthorized' do
       subject

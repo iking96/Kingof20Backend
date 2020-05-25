@@ -1,0 +1,88 @@
+/* Colors */
+/* Make whole site full page width */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set global font */
+body {
+  font-family: "Raleway";
+}
+
+/* Buttons */
+button {
+  margin: 10px auto 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  font-size: 1.5em;
+}
+button.play-btn {
+  background-color: #7851a9;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.btn-group {
+  text-align: center;
+}
+.btn-group button {
+  margin: 20px 20px;
+  display: inline-block;
+}
+
+/* Form */
+form {
+  margin: 10px auto;
+  max-width: 400px;
+  padding: 20px 12px 10px 20px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  /* Full width */
+  padding: 12px;
+  /* Some padding */
+  border: 1px solid #ccc;
+  /* Gray border */
+  border-radius: 4px;
+  /* Rounded borders */
+  box-sizing: border-box;
+  /* Make sure that padding and width stays in place */
+  margin-top: 6px;
+  /* Add a top margin */
+  margin-bottom: 16px;
+  /* Bottom margin */
+  resize: vertical;
+  /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+#Login {
+  padding: 60px 0;
+}
+
+#Login input[type=submit] {
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 16px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#Logout {
+  margin: 10px auto;
+  max-width: 400px;
+  padding: 20px 12px 10px 20px;
+}

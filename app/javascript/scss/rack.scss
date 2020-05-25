@@ -1,0 +1,31 @@
+@import 'tile.scss';
+
+$rack-tile-num: 7;
+$rack-color: black;
+
+$rack-width: $tile-size * $rack-tile-num;
+$rack-height-adj: $tile-size + $tile-border-width * 2;
+$rack-width-adj: $rack-width + $tile-border-width * ($rack-tile-num * 2 + 1);
+
+@mixin coloredSquare($size, $color) {
+  width: $size;
+  height: $size;
+  background-color: $color;
+}
+
+@mixin coloredRectangle($width, $height, $color) {
+  width: $width;
+  height: $height;
+  background-color: $color;
+}
+
+#js-rack {
+  @include coloredRectangle($rack-width-adj, $rack-height-adj, $rack-color);
+  margin: auto;
+  margin-top: 20px;
+  box-sizing: content-box;
+
+  .rack {
+    background-color: $tile-border-color;
+  }
+}

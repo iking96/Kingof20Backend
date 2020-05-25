@@ -7,49 +7,59 @@ module Api
       before_action :update_params, only: [:update]
 
       def index
+        user = current_resource_owner
         @games = PlayLogic::GameLogic::GameManager.get_user_games_with_params(
-          user: current_resource_owner,
+          user: user,
           params: @permitted_params
         )
+        @games.each { |g| g.requesting_user_id = user.id }
 
         add_resource_count
-        json_response(@games)
+        json_response(games: @games)
       end
 
       def show
+        user = current_resource_owner
         @game = PlayLogic::GameLogic::GameManager.get_user_game(
           game_id: params[:id],
-          user: current_resource_owner,
+          user: user,
         )
+        @game.requesting_user_id = user.id
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def create
+        user = current_resource_owner
         @game = PlayLogic::GameLogic::GameManager.create_game_or_enqueue_for_user(
-          user: current_resource_owner,
+          user: user,
         )
+        @game.requesting_user_id = user.id
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def update
+        user = current_resource_owner
         @game = PlayLogic::GameLogic::GameManager.update_game(
           game_id: params[:id],
-          user: current_resource_owner,
+          user: user,
           params: @permitted_params
         )
+        @game.requesting_user_id = user.id
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def destroy
+        user = current_resource_owner
         @game = PlayLogic::GameLogic::GameManager.delete_user_game(
           game_id: params[:id],
-          user: current_resource_owner,
+          user: user,
         )
+        @game.requesting_user_id = user.id
 
-        json_response(@game)
+        json_response(game: @game)
       end
 
       def index_params

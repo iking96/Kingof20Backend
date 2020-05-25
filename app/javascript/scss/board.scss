@@ -1,0 +1,35 @@
+@import 'tile.scss';
+
+$bg-color: white;
+$board-color: maroon;
+$board-size: $tile-size * $tile-num;
+$board-border-width: round($board-size/80);
+
+$row-height-adj: $tile-size + $tile-border-width * 2;
+$board-size-adj: $board-size + $tile-border-width * ($tile-num * 2 + 1);
+
+$rack-tile-num: 7;
+$rack-size: $tile-size * $rack-tile-num;
+
+@mixin coloredSquare($size, $color) {
+  width: $size;
+  height: $size;
+  background-color: $color;
+}
+
+#js-board {
+  @include coloredSquare($board-size-adj, $board-color);
+  min-width: $board-size-adj;
+  min-height: $board-size-adj;
+  margin: auto;
+  box-sizing: content-box;
+
+  .board {
+    background-color: $tile-border-color;
+    padding: $tile-border-width / 2;
+
+    .row {
+      height: $row-height-adj;
+    }
+  }
+}

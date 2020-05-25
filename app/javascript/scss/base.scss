@@ -1,0 +1,22 @@
+$sidebar-flex: 1.5;
+$condiv-flex: 6;
+$fontsize-p: 1.2rem;
+$fontsize-nav: 1.6rem;
+$typing-font: 3rem;
+
+/* Colors */
+$green-color: #4caf50;
+$lightgray-color: #333;
+$vlightgray-color: #999;
+$royal-purple: rgb(120, 81, 169);
+
+/* Make whole site full page width */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set global font */
+body {
+  font-family: "Raleway";
+}

@@ -96,11 +96,11 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
             end
 
             it 'responds with all a users games' do
-              expect(subject).to(eq(
+              expect(subject.sort).to(eq(
                 [
                   game2,
                   game,
-                ]
+                ].sort
               ))
             end
           end

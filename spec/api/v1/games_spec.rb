@@ -11,8 +11,8 @@ RSpec.describe('Game API', type: :request) do
     stub_current_user(user)
   end
 
-  describe 'GET /api/games' do
-    subject { get '/api/games', params: params }
+  describe 'GET /api/v1/games' do
+    subject { get '/api/v1/games', params: params }
     let(:params) { "" }
 
     context 'when the user has games' do
@@ -26,11 +26,11 @@ RSpec.describe('Game API', type: :request) do
         subject
         expect(response).to(have_http_status(200))
         expect(response.headers['X-total-count']).to(eq(1))
-        expect(json.size).to(eq(1))
-        expect(json.first).to(include(
-          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-          "initiator_id" => user.id,
-          "opponent_id" => nil,
+        expect(json['games'].size).to(eq(1))
+        expect(json['games'].first).to(include(
+          "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "you" => hash_including('id' => user.id),
+          "them" => nil,
         ))
       end
 
@@ -45,11 +45,11 @@ RSpec.describe('Game API', type: :request) do
         it 'responds with only a users games' do
           subject
           expect(response).to(have_http_status(200))
-          expect(json.size).to(eq(1))
-          expect(json.first).to(include(
-            "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-            "initiator_id" => user.id,
-            "opponent_id" => nil,
+          expect(json['games'].size).to(eq(1))
+          expect(json['games'].first).to(include(
+            "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+            "you" => hash_including('id' => user.id),
+            "them" => nil,
           ))
         end
 
@@ -64,11 +64,11 @@ RSpec.describe('Game API', type: :request) do
           it 'responds with a users games' do
             subject
             expect(response).to(have_http_status(200))
-            expect(json.size).to(eq(2))
-            expect(json.last).to(include(
-              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-              "initiator_id" => user2.id,
-              "opponent_id" => user.id,
+            expect(json['games'].size).to(eq(2))
+            expect(json['games'].last).to(include(
+              "your_rack" => [1, 2, 3, 4, 5, 6, 11],
+              "you" => hash_including('id' => user.id),
+              "them" => hash_including('id' => user2.id),
             ))
           end
         end
@@ -87,10 +87,10 @@ RSpec.describe('Game API', type: :request) do
           let(:params) { { initiator: true } }
           it 'should respond with games where the user is the initiator' do
             subject
-            expect(json.first).to(include(
-              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-              "initiator_id" => user.id,
-              "opponent_id" => nil,
+            expect(json['games'].first).to(include(
+              "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+              "you" => hash_including('id' => user.id),
+              "them" => nil,
             ))
           end
         end
@@ -100,10 +100,10 @@ RSpec.describe('Game API', type: :request) do
 
           it 'should respond with games where the user is the initiator' do
             subject
-            expect(json.first).to(include(
-              "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-              "initiator_id" => user2.id,
-              "opponent_id" => user.id,
+            expect(json['games'].first).to(include(
+              "your_rack" => [1, 2, 3, 4, 5, 6, 11],
+              "you" => hash_including('id' => user.id),
+              "them" => hash_including('id' => user2.id),
             ))
           end
         end
@@ -111,8 +111,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'GET /api/games/$id' do
-    subject { get "/api/games/#{game_id}" }
+  describe 'GET /api/v1/games/$id' do
+    subject { get "/api/v1/games/#{game_id}" }
 
     context 'when the user has games' do
       let!(:game) do
@@ -126,10 +126,10 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with a users games' do
         subject
         expect(response).to(have_http_status(200))
-        expect(json).to(include(
-          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-          "initiator_id" => user.id,
-          "opponent_id" => nil,
+        expect(json['game']).to(include(
+          "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "you" => hash_including('id' => user.id),
+          "them" => nil,
         ))
       end
 
@@ -164,25 +164,18 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'POST /api/games' do
-    subject { post '/api/games' }
+  describe 'POST /api/v1/games' do
+    subject { post '/api/v1/games' }
 
     context 'there are no games in the game queue' do
       it 'responds with a new game' do
         subject
         expect(response).to(have_http_status(200))
-        expect(json).to(include(
-          "initiator_id" => user.id,
-          "opponent_id" => nil,
+        expect(json['game']).to(include(
+          "you" => hash_including('id' => user.id),
+          "them" => nil,
         ))
-        expect(
-          (json["initiator_rack"] +
-          json["opponent_rack"] +
-          json["available_tiles"]).sort
-        ).to(eq(
-          Game.initial_available_tiles.sort
-        ))
-        expect(json["stage"]).to(eq('in_play'))
+        expect(json['game']["complete"]).to(eq(false))
       end
 
       it 'adds a game to the game queue' do
@@ -202,11 +195,11 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with the waiting game' do
         subject
         expect(response).to(have_http_status(200))
-        expect(json).to(include(
-          "initiator_id" => user2.id,
-          "opponent_id" => user.id,
+        expect(json['game']).to(include(
+          "you" => hash_including('id' => user.id),
+          "them" => hash_including('id' => user2.id),
         ))
-        expect(json["stage"]).to(eq('in_play'))
+        expect(json['game']["complete"]).to(eq(false))
       end
 
       it 'removes a game to the game queue' do
@@ -219,18 +212,11 @@ RSpec.describe('Game API', type: :request) do
         it 'responds with a new game' do
           subject
           expect(response).to(have_http_status(200))
-          expect(json).to(include(
-            "initiator_id" => user.id,
-            "opponent_id" => nil,
+          expect(json['game']).to(include(
+            "you" => hash_including('id' => user.id),
+            "them" => nil,
           ))
-          expect(
-            (json["initiator_rack"] +
-            json["opponent_rack"] +
-            json["available_tiles"]).sort
-          ).to(eq(
-            Game.initial_available_tiles.sort
-          ))
-          expect(json["stage"]).to(eq('in_play'))
+          expect(json['game']["complete"]).to(eq(false))
         end
 
         it 'adds a game to the game queue' do
@@ -249,11 +235,11 @@ RSpec.describe('Game API', type: :request) do
           it 'should respond with the waiting game' do
             subject
             expect(response).to(have_http_status(200))
-            expect(json).to(include(
-              "initiator_id" => user3.id,
-              "opponent_id" => user.id,
+            expect(json['game']).to(include(
+              "you" => hash_including('id' => user.id),
+              "them" => hash_including('id' => user3.id),
             ))
-            expect(json["stage"]).to(eq('in_play'))
+            expect(json['game']["complete"]).to(eq(false))
           end
 
           it 'removes a game to the game queue' do
@@ -264,8 +250,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'PATCH /api/games/$id' do
-    subject { patch "/api/games/#{game_id}", params: params }
+  describe 'PATCH /api/v1/games/$id' do
+    subject { patch "/api/v1/games/#{game_id}", params: params }
     let(:params) { nil }
 
     context 'when the user has games' do
@@ -282,10 +268,10 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with a users games' do
         subject
         expect(response).to(have_http_status(200))
-        expect(json).to(include(
-          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-          "initiator_id" => user.id,
-          "opponent_id" => nil,
+        expect(json['game']).to(include(
+          "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "you" => hash_including('id' => user.id),
+          "them" => nil,
         ))
       end
 
@@ -295,8 +281,8 @@ RSpec.describe('Game API', type: :request) do
         it 'forfits the correct user' do
           subject
           expect(response).to(have_http_status(200))
-          expect(json).to(include(
-            "stage" => 'initiator_forfit',
+          expect(json['game']).to(include(
+            "complete" => true,
           ))
         end
 
@@ -307,8 +293,8 @@ RSpec.describe('Game API', type: :request) do
           it 'forfits the correct user' do
             subject
             expect(response).to(have_http_status(200))
-            expect(json).to(include(
-              "stage" => 'opponent_forfit',
+            expect(json['game']).to(include(
+              "complete" => true,
             ))
           end
         end
@@ -316,8 +302,8 @@ RSpec.describe('Game API', type: :request) do
     end
   end
 
-  describe 'DELETE /api/games/$id' do
-    subject { delete "/api/games/#{game_id}" }
+  describe 'DELETE /api/v1/games/$id' do
+    subject { delete "/api/v1/games/#{game_id}" }
 
     context 'when the user has games' do
       let!(:game) do
@@ -331,10 +317,10 @@ RSpec.describe('Game API', type: :request) do
       it 'responds with a users games' do
         subject
         expect(response).to(have_http_status(200))
-        expect(json).to(include(
-          "initiator_rack" => [7, 6, 5, 4, 3, 2, 1],
-          "initiator_id" => user.id,
-          "opponent_id" => nil,
+        expect(json['game']).to(include(
+          "your_rack" => [7, 6, 5, 4, 3, 2, 1],
+          "you" => hash_including('id' => user.id),
+          "them" => nil,
         ))
       end
 
