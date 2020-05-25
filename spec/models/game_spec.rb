@@ -103,6 +103,10 @@ RSpec.describe(Game, type: :model) do
         game.save!
       end.to(raise_error ActiveRecord::RecordInvalid)
     end
+
+    it 'can determine if swapping is allowed' do
+      expect(game.allow_swap?).to(eq(true))
+    end
   end
 
   context 'when a user is involved in a game' do

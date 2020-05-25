@@ -183,8 +183,8 @@ const Show = ({
 
   const renderGameOver = () => (
     <div>
-      <div className="gameOverMessage">
-        Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}
+      <div className="gameover-message">
+        <h1>Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}</h1>
       </div>
       <DndProvider backend={Backend}>
         <Board boardValues={boardValues} tempBoardValues={initalBoardValues} />
@@ -195,7 +195,8 @@ const Show = ({
   return (
     <div
       style={{
-        backgroundColor: "#D8BFD8"
+        backgroundColor: "#D8BFD8",
+        padding: "0px 0px 10px 0px"
       }}
     >
       <ScoreBoard

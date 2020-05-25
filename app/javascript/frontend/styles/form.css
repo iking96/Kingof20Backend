@@ -12,7 +12,7 @@ body {
 
 /* Buttons */
 button {
-  margin: 10px auto;
+  margin: 10px auto 0px;
   background-color: #4caf50;
   color: white;
   padding: 8px 16px;

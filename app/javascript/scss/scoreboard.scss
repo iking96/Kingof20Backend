@@ -17,7 +17,7 @@
   height: 75px;
   color: white;
   text-align: center;
-  
+
   .scoreboard-lt {
     @include coloredRectangle(50%, 100%, $royal-purple);
     border-color: transparent;
@@ -41,4 +41,11 @@
       border-color: white;
     }
   }
+}
+
+.gameover-message {
+  text-align: center;
+  height: 75px;
+  line-height: 75px;
+  width: 100%;
 }

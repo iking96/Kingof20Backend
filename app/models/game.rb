@@ -109,7 +109,7 @@ class Game < ApplicationRecord
   end
 
   def allow_swap?
-    available_tiles.empty?
+    !available_tiles.empty?
   end
 
   def complete?
