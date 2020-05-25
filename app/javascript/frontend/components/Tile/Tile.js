@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
+const determineValue = (value) => {
+  if (value == 10) {
+    return 'Plus';
+  } else if (value == 11) {
+    return 'Minus';
+  } else if (value == 12) {
+    return 'Times';
+  } else if (value == 13) {
+    return 'Over';
+  }
+
+  return value;
+}
+
 const Tile = ({
   row,
   col,
@@ -36,7 +50,7 @@ const Tile = ({
         <></>
       ) : (
         <div className={"decal" + `${is_temp ? " temp" : ""}`} ref={drag}>
-          {value}
+          {determineValue(value)}
         </div>
       )}
       {!isOver ? <></> : <div className="highlight" />}
