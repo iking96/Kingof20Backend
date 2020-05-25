@@ -25,11 +25,11 @@ const ScoreBoard = ({
   return (
     <div className="scoreboard">
       <div ref={scoreboard_lt_ref} className="scoreboard-lt">
-        <h1>Your score</h1>
+        <h1>You</h1>
         <h2>{playerScore}</h2>
       </div>
       <div ref={scoreboard_rt_ref} className="scoreboard-rt">
-        <h1>{opponentUsername ? opponentUsername + "'s'" : "Searching..."}</h1>
+        <h1>{opponentUsername ? opponentUsername : "Searching..."}</h1>
         <h2>{opponentScore}</h2>
       </div>
     </div>
