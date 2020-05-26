@@ -14,7 +14,7 @@ function usePost(url, handleResponse = () => {}) {
       const opts = {
         headers: {
           AUTHORIZATION: `Bearer ${getAccessToken()}`,
-          CONTENT_TYPE: "application/json",
+          'Content-Type': "application/json",
           Accept: "application/json"
         },
         credentials: "same-origin",
