@@ -3,6 +3,7 @@ import GamesTable from "frontend/components/GamesTable";
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
+import useDelete from "frontend/utils/useDelete";
 import {
   isAuthenticated,
   getAccessToken
@@ -26,6 +27,10 @@ const List = ({ history }) => {
     "/api/v1/games"
   );
 
+  const { isDeleting, hasDeleted, deleteError, doDelete } = useDelete(
+    "/api/v1/games"
+  );
+
   useEffect(() => {
     if (hasPosted) {
       setNewGameToggle(!newGameToggle);
@@ -43,12 +48,18 @@ const List = ({ history }) => {
     history.push(`/games/${game.id}`)
   };
 
+  const handleGameDelete = (e, game) => {
+    e.stopPropagation();
+    doDelete(game.id);
+    setNewGameToggle(!newGameToggle);
+  };
+
   return (
     <div>
       <button onClick={() => doPost()}>
         New Game
       </button>
-      <GamesTable games={gameData.games} onRowClick={handleRowClick} />
+      <GamesTable games={gameData.games} onRowClick={handleRowClick} onGameDelete={handleGameDelete}/>
     </div>
   );
 };

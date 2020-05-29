@@ -297,6 +297,14 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
         expect { subject }.to(change { owning_user.visible_games.count }.by(-1))
       end
 
+      context 'when the game as a game queue entry' do
+        let!(:game_queue_entry) { GameQueueEntry.create!(user: owning_user, game: game) }
+
+        it 'deletes all connected game queue entries' do
+          expect { subject }.to(change(GameQueueEntry, :count).by(-1))
+        end
+      end
+
       context 'when the game id does not exist' do
         let(:game_id) { -1 }
 
