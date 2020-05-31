@@ -14,7 +14,7 @@ module PlayLogic
         end
 
         index = start
-        index -= 1 while index - 1 > 0 && !board_slice[index - 1].zero?
+        index -= 1 while index.positive? && !board_slice[index - 1].zero?
         index += 1 while index < Game.board_size && board_slice[index].operation_tile?
 
         result = board_slice[index]

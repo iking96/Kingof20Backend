@@ -138,6 +138,16 @@ RSpec.describe(PlayLogic::ScoreHelpers) do
         end
       end
 
+      context 'the left edge, does not start at zero' do
+        let(:board_slice) { [5, 10, 4, 10, 4, 0, 0, 0, 0, 0, 0, 0] }
+        let(:start) { 3 }
+
+        it 'returns the correct result' do
+          expect(subject.success?).to(eq(true))
+          expect(subject.value).to(eq(7))
+        end
+      end
+
       context 'the right edge' do
         let(:board_slice) { [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 10, 4] }
         let(:start) { 9 }
