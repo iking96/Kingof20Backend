@@ -32,13 +32,13 @@ const List = ({ history }) => {
   );
 
   useEffect(() => {
-    if (hasPosted) {
+    if (hasPosted || hasDeleted) {
       setNewGameToggle(!newGameToggle);
     }
     if (!is_authenticated) {
       window.location.replace(`/`);
     }
-  }, [is_authenticated, hasPosted]);
+  }, [is_authenticated, hasPosted, hasDeleted]);
 
   if(!hasFetched) {
     return <div/>

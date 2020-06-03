@@ -41,8 +41,8 @@ module Api
       def create_params
         @permitted_params = params.require(:move_info).permit(
           :game_id,
-          :returned_tiles,
           :move_type,
+          returned_tiles: [],
           row_num: [],
           col_num: [],
           tile_value: [],

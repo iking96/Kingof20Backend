@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import ScoreBoard from "frontend/components/ScoreBoard";
+import ExchangeView from "frontend/components/ExchangeView";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import useFetch from "frontend/utils/useFetch";
@@ -25,6 +26,7 @@ const Show = ({
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
   const [reFetchToggle, setReFetchToggle] = useState(true);
+  const [exchanging, setExchanging] = useState(false);
 
   const { isFetching, hasFetched, fetchError } = useFetch(
     `/api/v1/games/${id}`,
@@ -134,8 +136,8 @@ const Show = ({
     });
   };
 
-  const postExchange = () => {
-    doPost();
+  const setExchange = (newValue) => {
+    setExchanging(newValue);
   };
 
   if (!hasFetched) {
@@ -157,7 +159,7 @@ const Show = ({
           Pass
         </button>
         <button
-          onClick={postExchange}
+          onClick={() => setExchange(true)}
           disabled={!gameFlowData.your_turn || !gameFlowData.allow_swap}
         >
           Exchange tiles
@@ -192,11 +194,16 @@ const Show = ({
     </div>
   );
 
+  const renderExchange = () => (
+    <ExchangeView id={id} rackValues={rackValues} doPost={doPost} cancel={() => setExchange(false)}/>
+  );
+
   return (
     <div
       style={{
         backgroundColor: "#D8BFD8",
-        padding: "0px 0px 10px 0px"
+        padding: '0px 0px 20px 0px',
+        overflow: 'auto'
       }}
     >
       <ScoreBoard
@@ -205,8 +212,7 @@ const Show = ({
         playerScore={gameFlowData.your_score}
         opponentScore={gameFlowData.their_score}
       />
-      {!gameFlowData.complete && renderPlayArea()}
-      {gameFlowData.complete && renderGameOver()}
+      {gameFlowData.complete ? renderGameOver() : exchanging ? renderExchange() : renderPlayArea()}
     </div>
   );
 };

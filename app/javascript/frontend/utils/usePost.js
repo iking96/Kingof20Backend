@@ -6,7 +6,7 @@ function usePost(url, handleResponse = () => {}) {
   const [hasPosted, setHasPosted] = useState(false);
   const [postError, setPostError] = useState(null);
 
-  const doPost = async (data = {}) => {
+  const doPost = async (data = {}, onComplete = () => {}) => {
     setIsPosting(true);
     setHasPosted(false);
 
@@ -26,6 +26,7 @@ function usePost(url, handleResponse = () => {}) {
       const json = await response.json();
 
       handleResponse({ response, json });
+      onComplete({ response, json });
       setPostError(null);
     } catch (e) {
       setPostError(
