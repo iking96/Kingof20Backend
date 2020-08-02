@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import GamesTable from "frontend/components/GamesTable";
+import { ActionCableConsumer } from 'react-actioncable-provider';
+import ActionCableConsumerMemo from 'frontend/utils/actionCableConsumerMemo';
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
@@ -10,56 +12,72 @@ import {
 } from "frontend/utils/authenticateHelper.js";
 
 const List = ({ history }) => {
-  const [gameData, setGameData] = useState({});
-  const [newGameToggle, setNewGameToggle] = useState(true);
+  const [games, setGames] = useState({});
   const access_token = getAccessToken();
   const is_authenticated = isAuthenticated();
 
-  const { isFetching, hasFetched, fetchError } = useFetch(
+  const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
     "/api/v1/games",
-    newGameToggle,
     ({ json }) => {
-      setGameData({ games: json.games });
+      setGames(json.games);
     }
   );
 
-  const { isPosting, hasPosted, postError, doPost } = usePost(
-    "/api/v1/games"
-  );
+  const { isPosting, hasPosted, postError, doPost } = usePost("/api/v1/games");
 
   const { isDeleting, hasDeleted, deleteError, doDelete } = useDelete(
     "/api/v1/games"
   );
 
   useEffect(() => {
-    if (hasPosted || hasDeleted) {
-      setNewGameToggle(!newGameToggle);
-    }
     if (!is_authenticated) {
       window.location.replace(`/`);
     }
-  }, [is_authenticated, hasPosted, hasDeleted]);
+    doFetch()
+  }, [is_authenticated]);
 
-  if(!hasFetched) {
-    return <div/>
+  useEffect(() => {
+    if (hasPosted) {
+      doFetch()
+    }
+  }, [hasPosted]);
+
+  useEffect(() => {
+    if (hasDeleted) {
+      doFetch()
+    }
+  }, [hasDeleted]);
+
+  if (!hasFetched) {
+    return <div />;
   }
 
   const handleRowClick = (e, game) => {
-    history.push(`/games/${game.id}`)
+    history.push(`/games/${game.id}`);
   };
 
   const handleGameDelete = (e, game) => {
     e.stopPropagation();
     doDelete(game.id);
-    setNewGameToggle(!newGameToggle);
+  };
+
+  const handleReceivedUpdate = response => {
+    if (isFetching) { return }
+    doFetch()
   };
 
   return (
     <div>
-      <button onClick={() => doPost()}>
-        New Game
-      </button>
-      <GamesTable games={gameData.games} onRowClick={handleRowClick} onGameDelete={handleGameDelete}/>
+      <button onClick={() => doPost()}>New Game</button>
+      <GamesTable
+        games={games}
+        onRowClick={handleRowClick}
+        onGameDelete={handleGameDelete}
+      />
+      <ActionCableConsumerMemo
+        channel={{ channel: 'GamesChannel'}}
+        onReceived={handleReceivedUpdate}
+      />
     </div>
   );
 };

@@ -3,6 +3,16 @@
 class Game < ApplicationRecord
   before_validation :setup_game, on: :create
 
+  after_save :broadcast
+
+  def broadcast
+    GamesChannel.broadcast_to(initiator, 'refresh')
+
+    if opponent
+      GamesChannel.broadcast_to(opponent, 'refresh')
+    end
+  end
+
   BOARD_SIZE = 12
   RACK_SIZE = 7
   TWENTY = 20

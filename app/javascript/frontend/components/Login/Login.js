@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useField from "frontend/utils/useField";
-import { config } from "frontend/utils/constants"
 
 const LoginForm = props => {
   return (

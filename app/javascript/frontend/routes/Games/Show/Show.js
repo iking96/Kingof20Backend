@@ -28,9 +28,8 @@ const Show = ({
   const [reFetchToggle, setReFetchToggle] = useState(true);
   const [exchanging, setExchanging] = useState(false);
 
-  const { isFetching, hasFetched, fetchError } = useFetch(
+  const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
     `/api/v1/games/${id}`,
-    reFetchToggle,
     ({
       json: {
         game: {
@@ -98,6 +97,7 @@ const Show = ({
   );
 
   useEffect(() => {
+    doFetch()
     if (hasPosted) {
       setReFetchToggle(!reFetchToggle);
     }
