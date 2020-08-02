@@ -8,6 +8,7 @@ import Backend from "react-dnd-html5-backend";
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
 import { boardSize, rackSize } from "frontend/utils/constants.js";
+import ActionCableConsumerMemo from 'frontend/utils/actionCableConsumerMemo';
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -198,6 +199,11 @@ const Show = ({
     <ExchangeView id={id} rackValues={rackValues} doPost={doPost} cancel={() => setExchange(false)}/>
   );
 
+  const handleReceivedUpdate = response => {
+    if (isFetching) { return }
+    doFetch()
+  };
+  
   return (
     <div
       style={{
@@ -213,6 +219,10 @@ const Show = ({
         opponentScore={gameFlowData.their_score}
       />
       {gameFlowData.complete ? renderGameOver() : exchanging ? renderExchange() : renderPlayArea()}
+      <ActionCableConsumerMemo
+        channel={{ channel: 'GamesChannel'}}
+        onReceived={handleReceivedUpdate}
+      />
     </div>
   );
 };

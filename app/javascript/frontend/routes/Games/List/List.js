@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import GamesTable from "frontend/components/GamesTable";
-import { ActionCableConsumer } from 'react-actioncable-provider';
 import ActionCableConsumerMemo from 'frontend/utils/actionCableConsumerMemo';
 
 import useFetch from "frontend/utils/useFetch";
