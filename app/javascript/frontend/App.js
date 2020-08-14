@@ -4,7 +4,7 @@ import "./App.css";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 //Reference: https://github.com/cpunion/react-actioncable-provider/blob/master/lib/index.js
-import { ActionCableProvider } from "react-actioncable-provider";
+import { ActionCableProvider } from "frontend/utils/actionCableProvider";
 
 import Games from "frontend/routes/Games";
 import Login from "frontend/components/Login";

@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import GamesTable from "frontend/components/GamesTable";
-import ActionCableConsumerMemo from 'frontend/utils/actionCableConsumerMemo';
+
+//Reference: https://github.com/cpunion/react-actioncable-provider/blob/master/lib/index.js
+import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
 import useDelete from "frontend/utils/useDelete";
-import {
-  isAuthenticated,
-  getAccessToken
-} from "frontend/utils/authenticateHelper.js";
+import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 const List = ({ history }) => {
   const [games, setGames] = useState({});
-  const access_token = getAccessToken();
   const is_authenticated = isAuthenticated();
 
   const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
@@ -34,18 +32,6 @@ const List = ({ history }) => {
     }
     doFetch()
   }, [is_authenticated]);
-
-  useEffect(() => {
-    if (hasPosted) {
-      doFetch()
-    }
-  }, [hasPosted]);
-
-  useEffect(() => {
-    if (hasDeleted) {
-      doFetch()
-    }
-  }, [hasDeleted]);
 
   if (!hasFetched) {
     return <div />;
@@ -73,7 +59,7 @@ const List = ({ history }) => {
         onRowClick={handleRowClick}
         onGameDelete={handleGameDelete}
       />
-      <ActionCableConsumerMemo
+      <ActionCableConsumer
         channel={{ channel: 'GamesChannel'}}
         onReceived={handleReceivedUpdate}
       />

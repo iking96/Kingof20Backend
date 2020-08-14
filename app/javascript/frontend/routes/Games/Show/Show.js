@@ -5,10 +5,13 @@ import ScoreBoard from "frontend/components/ScoreBoard";
 import ExchangeView from "frontend/components/ExchangeView";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
+
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
+import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
+
 import { boardSize, rackSize } from "frontend/utils/constants.js";
-import ActionCableConsumerMemo from 'frontend/utils/actionCableConsumerMemo';
+import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -26,8 +29,8 @@ const Show = ({
   const [gameFlowData, setGameFlowData] = useState({});
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
-  const [reFetchToggle, setReFetchToggle] = useState(true);
   const [exchanging, setExchanging] = useState(false);
+  const is_authenticated = isAuthenticated();
 
   const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
     `/api/v1/games/${id}`,
@@ -98,11 +101,11 @@ const Show = ({
   );
 
   useEffect(() => {
-    doFetch()
-    if (hasPosted) {
-      setReFetchToggle(!reFetchToggle);
+    if (!is_authenticated) {
+      window.location.replace(`/`);
     }
-  }, [hasPosted]);
+    doFetch()
+  }, [is_authenticated]);
 
   const handleRackSet = (col, value) => {
     var newRack = rackValues.slice();
@@ -203,7 +206,7 @@ const Show = ({
     if (isFetching) { return }
     doFetch()
   };
-  
+
   return (
     <div
       style={{
@@ -219,7 +222,7 @@ const Show = ({
         opponentScore={gameFlowData.their_score}
       />
       {gameFlowData.complete ? renderGameOver() : exchanging ? renderExchange() : renderPlayArea()}
-      <ActionCableConsumerMemo
+      <ActionCableConsumer
         channel={{ channel: 'GamesChannel'}}
         onReceived={handleReceivedUpdate}
       />
