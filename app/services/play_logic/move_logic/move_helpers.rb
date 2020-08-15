@@ -24,7 +24,7 @@ module PlayLogic
               unless move.row_num.all? { |row| (0..Game.board_size).include?(row) }
                 errors << :move_row_col_invalid
               end
-              unless move.col_num.all? { |col| (0..Game::BOARD_SIZE).include?(col) }
+              unless move.col_num.all? { |col| (0..Game.board_size).include?(col) }
                 errors << :move_row_col_invalid
               end
               unless move.tile_value.all? { |tile| Game::TILES_MAPPING.keys.include?(tile) }
