@@ -45,6 +45,10 @@ $decal-font-color: black;
     &.temp {
       background-color: yellow;
     }
+
+    &.last-move {
+      background-color: lightblue;
+    }
   }
 
   .highlight {
