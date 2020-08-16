@@ -115,6 +115,7 @@ class Game < ApplicationRecord
     super(options.merge(except: exclude_methods)).tap do |hash|
       hash.merge!(requesting_user_data)
       hash.merge!(allow_swap: allow_swap?, complete: complete?)
+      hash.merge!(last_move: moves.last&.as_json)
     end
   end
 
