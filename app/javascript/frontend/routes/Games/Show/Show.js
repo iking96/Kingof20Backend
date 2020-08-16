@@ -26,6 +26,7 @@ const Show = ({
 }) => {
   const [boardValues, setBoardValues] = useState(initalBoardValues);
   const [tempBoardValues, setTempBoardValues] = useState(initalBoardValues);
+  const [lastMoveInfo, setLastMoveInfo] = useState(null);
   const [gameFlowData, setGameFlowData] = useState({});
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
@@ -40,6 +41,7 @@ const Show = ({
           board,
           you,
           them,
+          last_move,
           your_rack,
           your_turn,
           your_score,
@@ -52,6 +54,14 @@ const Show = ({
     }) => {
       setBoardValues(board);
       setRackValues(your_rack);
+      setLastMoveInfo(
+        last_move && last_move.row_num.reduce((map, row, index) => {
+          map[row] = map[row]
+            ? map[row].concat(last_move.col_num[index])
+            : [last_move.col_num[index]];
+          return map;
+        }, {})
+      );
       setTempBoardValues(initalBoardValues);
       setGameFlowData({
         your_turn: your_turn,
@@ -104,7 +114,7 @@ const Show = ({
     if (!is_authenticated) {
       window.location.replace(`/`);
     }
-    doFetch()
+    doFetch();
   }, [is_authenticated]);
 
   const handleRackSet = (col, value) => {
@@ -140,7 +150,7 @@ const Show = ({
     });
   };
 
-  const setExchange = (newValue) => {
+  const setExchange = newValue => {
     setExchanging(newValue);
   };
 
@@ -173,6 +183,7 @@ const Show = ({
         <Board
           boardValues={boardValues}
           tempBoardValues={tempBoardValues}
+          lastMoveInfo={lastMoveInfo}
           handleBoardSet={handleBoardSet}
         />
         <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
@@ -199,20 +210,27 @@ const Show = ({
   );
 
   const renderExchange = () => (
-    <ExchangeView id={id} rackValues={rackValues} doPost={doPost} cancel={() => setExchange(false)}/>
+    <ExchangeView
+      id={id}
+      rackValues={rackValues}
+      doPost={doPost}
+      cancel={() => setExchange(false)}
+    />
   );
 
   const handleReceivedUpdate = response => {
-    if (isFetching) { return }
-    doFetch()
+    if (isFetching) {
+      return;
+    }
+    doFetch();
   };
 
   return (
     <div
       style={{
         backgroundColor: "#D8BFD8",
-        padding: '0px 0px 20px 0px',
-        overflow: 'auto'
+        padding: "0px 0px 20px 0px",
+        overflow: "auto"
       }}
     >
       <ScoreBoard
@@ -221,9 +239,13 @@ const Show = ({
         playerScore={gameFlowData.your_score}
         opponentScore={gameFlowData.their_score}
       />
-      {gameFlowData.complete ? renderGameOver() : exchanging ? renderExchange() : renderPlayArea()}
+      {gameFlowData.complete
+        ? renderGameOver()
+        : exchanging
+        ? renderExchange()
+        : renderPlayArea()}
       <ActionCableConsumer
-        channel={{ channel: 'GamesChannel'}}
+        channel={{ channel: "GamesChannel" }}
         onReceived={handleReceivedUpdate}
       />
     </div>

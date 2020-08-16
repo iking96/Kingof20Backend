@@ -21,6 +21,7 @@ const Tile = ({
   value,
   is_starting = false,
   is_temp = false,
+  inLastMove = false,
   canDrag = () => {},
   canDrop = () => {},
   didDrop = () => {},
@@ -49,7 +50,7 @@ const Tile = ({
       {value == 0 ? (
         <></>
       ) : (
-        <div className={"decal" + `${is_temp ? " temp" : ""}`} ref={drag}>
+        <div className={"decal" + `${is_temp ? " temp" : ""}` + `${inLastMove ? " last-move" : ""}`} ref={drag}>
           {determineValue(value)}
         </div>
       )}
