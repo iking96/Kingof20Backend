@@ -55,7 +55,7 @@ const Show = ({
       setBoardValues(board);
       setRackValues(your_rack);
       setLastMoveInfo(
-        last_move && last_move.row_num.reduce((map, row, index) => {
+        last_move && last_move.row_num && last_move.row_num.reduce((map, row, index) => {
           map[row] = map[row]
             ? map[row].concat(last_move.col_num[index])
             : [last_move.col_num[index]];
