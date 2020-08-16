@@ -319,7 +319,7 @@ RSpec.describe('Move API', type: :request) do
       it 'moves the game to the next stage' do
         subject
         game.reload
-        expect(game.stage).to(eq('end_round_one'))
+        expect(game.stage).to(eq('end_round_two'))
       end
 
       context 'and it is the initiators turn' do
