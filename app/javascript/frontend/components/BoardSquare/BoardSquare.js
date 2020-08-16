@@ -10,7 +10,7 @@ const is_starting_space = (row, col) => {
   );
 };
 
-const BoardSquare = ({ row, col, value, tempValue, handleBoardSet }) => {
+const BoardSquare = ({ row, col, value, tempValue, inLastMove = false, handleBoardSet }) => {
   return (
     <Tile
       row={row}
@@ -18,6 +18,7 @@ const BoardSquare = ({ row, col, value, tempValue, handleBoardSet }) => {
       value={tempValue != 0 ? tempValue : value}
       is_starting={is_starting_space(row, col) ? " starting" : ""}
       is_temp={tempValue != 0}
+      inLastMove={inLastMove}
       canDrag={() => tempValue != 0}
       canDrop={() => (value == 0 && tempValue == 0)}
       didDrop={() => handleBoardSet(row, col, 0)}
