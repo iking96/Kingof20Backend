@@ -156,7 +156,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         it 'moves the game to end_round_one' do
           subject
           game.reload
-          expect(game.stage).to(eq('end_round_one'))
+          expect(game.stage).to(eq('end_round_two'))
         end
       end
 
@@ -166,10 +166,12 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
           game.save!
         end
 
-        it 'moves the game to end_round_one' do
-          subject
-          game.reload
-          expect(game.stage).to(eq('end_round_one'))
+        context 'and it is the opponents turn' do
+          it 'moves the game to end_round_two' do
+            subject
+            game.reload
+            expect(game.stage).to(eq('end_round_two'))
+          end
         end
 
         context 'and it is the initiators turn' do

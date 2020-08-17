@@ -368,4 +368,76 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
     end
   end
+
+  describe 'evaluate_end_game' do
+    subject { described_class.evaluate_end_game(game: game) }
+
+    let(:current_player) { 'opponent' }
+    let(:available_tiles) { [] }
+    let(:stage) { 'in_play' }
+    let!(:game) do
+      build(
+        :game,
+        current_player: current_player,
+        available_tiles: available_tiles,
+        stage: stage
+      )
+    end
+
+    context 'when tiles remain' do
+      let(:available_tiles) { [1] }
+
+      it 'does not change game stage' do
+        subject
+        expect(game.stage).to(eq('in_play'))
+      end
+    end
+
+    context 'game is already complete' do
+      let(:stage) { 'complete' }
+
+      it 'does not change game stage' do
+        subject
+        expect(game.stage).to(eq('complete'))
+      end
+    end
+
+    context 'when the game is in play' do
+      context 'when opponent is the current player' do
+        it 'moves to round two' do
+          subject
+          expect(game.stage).to(eq('end_round_two'))
+        end
+      end
+
+      context 'when initiator is the current player' do
+        let(:current_player) { 'initiator' }
+
+        it 'moves to round one' do
+          subject
+          expect(game.stage).to(eq('end_round_one'))
+        end
+      end
+    end
+
+    context 'when the game is in round one or two' do
+      let(:stage) { 'end_round_one' }
+
+      context 'when opponent is the current player' do
+        it 'moves stage forward' do
+          subject
+          expect(game.stage).to(eq('end_round_two'))
+        end
+      end
+
+      context 'when initiator is the current player' do
+        let(:current_player) { 'initiator' }
+
+        it 'does not change game stage' do
+          subject
+          expect(game.stage).to(eq('end_round_one'))
+        end
+      end
+    end
+  end
 end

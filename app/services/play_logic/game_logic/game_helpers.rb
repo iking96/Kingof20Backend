@@ -205,7 +205,6 @@ module PlayLogic
 
           if game.stage == 'in_play'
             game.stage = 'end_round_one'
-            return
           end
 
           return unless game.current_player == 'opponent'
