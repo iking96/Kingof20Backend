@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from "react";
 import RackSquare from "frontend/components/RackSquare";
-
-const determineValue = (value) => {
-  if (value == 10) {
-    return 'Plus';
-  } else if (value == 11) {
-    return 'Times';
-  } else if (value == 12) {
-    return 'Minus';
-  } else if (value == 13) {
-    return 'Over';
-  }
-
-  return value;
-}
+import { determineValue } from "frontend/utils/tilePrintingHelper.js";
 
 const ExchangeRack = ({ rackValues, handleRackSet, selectedTiles }) => {
   return (
