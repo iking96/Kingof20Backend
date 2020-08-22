@@ -108,7 +108,6 @@ class Game < ApplicationRecord
       :opponent_id,
       :opponent_score,
       :opponent_rack,
-      :available_tiles,
       :hidden_from,
       :stage,
     ]

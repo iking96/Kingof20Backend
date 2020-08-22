@@ -1,0 +1,13 @@
+.play-area {
+  display: flex;
+
+  .play-area-box {
+    flex: 1;
+  }
+
+  @media only screen and (max-width: 800px) {
+    .hidden-on-small-screen {
+      display: none;
+    }
+  }
+}

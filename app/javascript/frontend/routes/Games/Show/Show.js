@@ -12,6 +12,7 @@ import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
+import AvailableTilesTable from "frontend/components/AvailableTilesTable";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -42,6 +43,7 @@ const Show = ({
           you,
           them,
           last_move,
+          available_tiles,
           your_rack,
           your_turn,
           your_score,
@@ -55,12 +57,14 @@ const Show = ({
       setBoardValues(board);
       setRackValues(your_rack);
       setLastMoveInfo(
-        last_move && last_move.row_num && last_move.row_num.reduce((map, row, index) => {
-          map[row] = map[row]
-            ? map[row].concat(last_move.col_num[index])
-            : [last_move.col_num[index]];
-          return map;
-        }, {})
+        last_move &&
+          last_move.row_num &&
+          last_move.row_num.reduce((map, row, index) => {
+            map[row] = map[row]
+              ? map[row].concat(last_move.col_num[index])
+              : [last_move.col_num[index]];
+            return map;
+          }, {})
       );
       setTempBoardValues(initalBoardValues);
       setGameFlowData({
@@ -69,7 +73,8 @@ const Show = ({
         their_score: their_score,
         allow_swap: allow_swap,
         complete: complete,
-        your_win: your_win
+        your_win: your_win,
+        available_tiles: available_tiles
       });
       setPlayerData({
         you: you,
@@ -167,34 +172,40 @@ const Show = ({
   }
 
   const renderPlayArea = () => (
-    <div>
-      <div className="btn-group">
-        <button onClick={postPass} disabled={!gameFlowData.your_turn}>
-          Pass
-        </button>
+    <div className="play-area">
+      <div className="play-area-box hidden-on-small-screen"/>
+      <div className="play-area-box">
+        <DndProvider backend={Backend}>
+          <Board
+            boardValues={boardValues}
+            tempBoardValues={tempBoardValues}
+            lastMoveInfo={lastMoveInfo}
+            handleBoardSet={handleBoardSet}
+          />
+          <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
+        </DndProvider>
         <button
-          onClick={() => setExchange(true)}
-          disabled={!gameFlowData.your_turn || !gameFlowData.allow_swap}
+          className="play-btn"
+          onClick={postTilePlacement}
+          disabled={!gameFlowData.your_turn}
         >
-          Exchange tiles
+          PLAY!
         </button>
+        <div className="btn-group">
+          <button onClick={postPass} disabled={!gameFlowData.your_turn}>
+            Pass
+          </button>
+          <button
+            onClick={() => setExchange(true)}
+            disabled={!gameFlowData.your_turn || !gameFlowData.allow_swap}
+          >
+            Exchange tiles
+          </button>
+        </div>
       </div>
-      <DndProvider backend={Backend}>
-        <Board
-          boardValues={boardValues}
-          tempBoardValues={tempBoardValues}
-          lastMoveInfo={lastMoveInfo}
-          handleBoardSet={handleBoardSet}
-        />
-        <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-      </DndProvider>
-      <button
-        className="play-btn"
-        onClick={postTilePlacement}
-        disabled={!gameFlowData.your_turn}
-      >
-        PLAY!
-      </button>
+      <div className="play-area-box hidden-on-small-screen">
+        <AvailableTilesTable tile_infos={gameFlowData.available_tiles} />
+      </div>
     </div>
   );
 
