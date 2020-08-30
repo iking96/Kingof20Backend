@@ -12,7 +12,9 @@ Rails.application.routes.draw do
         registrations: 'api/v1/users/registrations',
       }, skip: [:sessions, :password]
 
-      resources :games
+      resources :games do
+        resources :moves, only: [:index], to: 'games#moves'
+      end
       resources :moves
     end
   end

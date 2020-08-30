@@ -1,0 +1,42 @@
+/* Scroller */
+.move-message-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+
+  .move-message-row {
+    display: grid;
+    padding: 0 20px;
+  }
+
+  .message-text {
+    padding: 9px 14px;
+    margin-bottom: 5px;
+    overflow-wrap: break-word;
+  }
+
+  .message-time {
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  .you-message {
+    justify-content: end;
+  }
+
+  .them-message {
+    justify-content: start;
+  }
+
+  .you-message .message-text {
+    background: #0048AA;
+    color: white;
+    border-radius: 10px 10px 0 10px
+  }
+
+  .them-message .message-text {
+    background: #eee;
+    color: black;
+    border-radius: 10px 10px 10px 0px
+  }
+}
