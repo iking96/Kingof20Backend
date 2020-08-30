@@ -37,10 +37,7 @@ const Show = ({
   const is_authenticated = isAuthenticated();
 
   const { isFetching, hasFetched, fetchError, doFetch } = useMultiFetch(
-    [
-      `/api/v1/games/${id}`,
-      `/api/v1/games/${id}/moves`
-    ],
+    [`/api/v1/games/${id}`, `/api/v1/games/${id}/moves`],
     ({
       json: {
         game: {
@@ -181,18 +178,16 @@ const Show = ({
   const renderPlayArea = () => (
     <div className="play-area">
       <div className="play-area-box hidden-on-small-screen">
-        <MoveHistory moves={moves} initiator={playerData.you.username}/>
+        <MoveHistory moves={moves} initiator={playerData.you.username} />
       </div>
       <div className="play-area-box">
-        <DndProvider backend={Backend}>
-          <Board
-            boardValues={boardValues}
-            tempBoardValues={tempBoardValues}
-            lastMoveInfo={lastMoveInfo}
-            handleBoardSet={handleBoardSet}
-          />
-          <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-        </DndProvider>
+        <Board
+          boardValues={boardValues}
+          tempBoardValues={tempBoardValues}
+          lastMoveInfo={lastMoveInfo}
+          handleBoardSet={handleBoardSet}
+        />
+        <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
         <button
           className="play-btn"
           onClick={postTilePlacement}
@@ -223,9 +218,7 @@ const Show = ({
       <div className="gameover-message">
         <h1>Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}</h1>
       </div>
-      <DndProvider backend={Backend}>
-        <Board boardValues={boardValues} tempBoardValues={initalBoardValues} />
-      </DndProvider>
+      <Board boardValues={boardValues} tempBoardValues={initalBoardValues} />
     </div>
   );
 
@@ -260,11 +253,13 @@ const Show = ({
         playerScore={gameFlowData.your_score}
         opponentScore={gameFlowData.their_score}
       />
-      {gameFlowData.complete
-        ? renderGameOver()
-        : exchanging
-        ? renderExchange()
-        : renderPlayArea()}
+      <DndProvider backend={Backend}>
+        {gameFlowData.complete
+          ? renderGameOver()
+          : exchanging
+          ? renderExchange()
+          : renderPlayArea()}
+      </DndProvider>
       <ActionCableConsumer
         channel={{ channel: "GamesChannel" }}
         onReceived={handleReceivedUpdate}
