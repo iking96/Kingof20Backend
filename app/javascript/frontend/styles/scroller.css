@@ -1,0 +1,7 @@
+/* Scroller */
+.scroller {
+  margin: 10px auto;
+  height: 750px;
+  width: 300px;
+  overflow: auto;
+}

@@ -4,6 +4,7 @@ module Api
   module V1
     class GamesController < ApplicationController
       before_action :index_params, only: [:index]
+      before_action :move_params, only: [:moves]
       before_action :update_params, only: [:update]
 
       def index
@@ -16,6 +17,14 @@ module Api
 
         add_resource_count
         json_response(games: @games)
+      end
+
+      def moves
+        @moves = PlayLogic::MoveLogic::MoveManager.get_game_moves(
+          game_id: @permitted_params[:game_id],
+        )
+
+        json_response(moves: @moves)
       end
 
       def show
@@ -64,6 +73,10 @@ module Api
 
       def index_params
         @permitted_params = params.permit(PlayLogic::GameLogic::GameManager::GAME_INDEX_PARAMS).to_h
+      end
+
+      def move_params
+        @permitted_params = params.permit([:game_id]).to_h
       end
 
       def update_params

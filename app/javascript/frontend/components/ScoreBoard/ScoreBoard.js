@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 const ScoreBoard = ({
   yourTurn,
+  initiatorUsername,
   opponentUsername,
   playerScore,
   opponentScore
@@ -25,7 +26,7 @@ const ScoreBoard = ({
   return (
     <div className="scoreboard">
       <div ref={scoreboard_lt_ref} className="scoreboard-lt">
-        <h1>You</h1>
+        <h1>{initiatorUsername}</h1>
         <h2>{playerScore}</h2>
       </div>
       <div ref={scoreboard_rt_ref} className="scoreboard-rt">

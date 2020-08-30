@@ -6,13 +6,14 @@ import ExchangeView from "frontend/components/ExchangeView";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
-import useFetch from "frontend/utils/useFetch";
+import useMultiFetch from "frontend/utils/useMultiFetch";
 import usePost from "frontend/utils/usePost";
 import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import AvailableTilesTable from "frontend/components/AvailableTilesTable";
+import MoveHistory from "frontend/components/MoveHistory";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -32,10 +33,14 @@ const Show = ({
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
   const [exchanging, setExchanging] = useState(false);
+  const [moves, setMoves] = useState([]);
   const is_authenticated = isAuthenticated();
 
-  const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
-    `/api/v1/games/${id}`,
+  const { isFetching, hasFetched, fetchError, doFetch } = useMultiFetch(
+    [
+      `/api/v1/games/${id}`,
+      `/api/v1/games/${id}/moves`
+    ],
     ({
       json: {
         game: {
@@ -51,7 +56,8 @@ const Show = ({
           allow_swap,
           complete,
           your_win
-        }
+        },
+        moves
       }
     }) => {
       setBoardValues(board);
@@ -80,6 +86,7 @@ const Show = ({
         you: you,
         them: them
       });
+      setMoves(moves);
     }
   );
 
@@ -173,7 +180,9 @@ const Show = ({
 
   const renderPlayArea = () => (
     <div className="play-area">
-      <div className="play-area-box hidden-on-small-screen"/>
+      <div className="play-area-box hidden-on-small-screen">
+        <MoveHistory moves={moves} initiator={playerData.you.username}/>
+      </div>
       <div className="play-area-box">
         <DndProvider backend={Backend}>
           <Board
@@ -246,6 +255,7 @@ const Show = ({
     >
       <ScoreBoard
         yourTurn={gameFlowData.your_turn}
+        initiatorUsername={playerData.you.username}
         opponentUsername={playerData.them ? playerData.them.username : null}
         playerScore={gameFlowData.your_score}
         opponentScore={gameFlowData.their_score}

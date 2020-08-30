@@ -3,7 +3,7 @@
 module PlayLogic
   module MoveLogic
     class MoveManager
-      MOVE_INDEX_PARAMS = [:result].freeze
+      MOVE_INDEX_PARAMS = [:result, :game_id].freeze
       SWAP_PASS_PENALTY = 10
       class << self
         def get_user_moves_with_params(user:, params:)
@@ -13,6 +13,10 @@ module PlayLogic
           moves = moves.select { |move| move.result == params['result'].to_i } if options.include?('result')
 
           moves
+        end
+
+        def get_game_moves(game_id:)
+          Game.find(game_id).moves
         end
 
         def get_user_move(move_id:, user:)

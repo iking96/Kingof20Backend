@@ -25,10 +25,10 @@ RSpec.describe('Move API', type: :request) do
         expect(response).to(have_http_status(200))
         expect(response.headers['X-total-count']).to(eq(2))
         expect(json.first).to(include(
-          "user_id" => user.id,
+          "username" => user.username,
         ))
         expect(json.second).to(include(
-          "user_id" => user.id,
+          "username" => user.username,
         ))
       end
 
@@ -45,10 +45,10 @@ RSpec.describe('Move API', type: :request) do
           subject
           expect(response).to(have_http_status(200))
           expect(json.first).to(include(
-            "user_id" => user.id,
+            "username" => user.username,
           ))
           expect(json.second).to(include(
-            "user_id" => user.id,
+            "username" => user.username,
           ))
         end
       end
@@ -68,10 +68,10 @@ RSpec.describe('Move API', type: :request) do
             subject
             expect(response).to(have_http_status(200))
             expect(json.first).to(include(
-              "user_id" => user.id,
+              "username" => user.username,
             ))
             expect(json.second).to(include(
-              "user_id" => user.id,
+              "username" => user.username,
             ))
           end
 
@@ -106,7 +106,7 @@ RSpec.describe('Move API', type: :request) do
         subject
         expect(response).to(have_http_status(200))
         expect(json).to(include(
-          "user_id" => user.id,
+          "username" => user.username,
         ))
       end
 
@@ -178,7 +178,7 @@ RSpec.describe('Move API', type: :request) do
       subject
       expect(response).to(have_http_status(200))
       expect(json).to(include(
-        "user_id" => user.id,
+        "username" => user.username,
         "game_id" => game_id,
         "row_num" => row_num,
         "col_num" => col_num,
@@ -307,7 +307,7 @@ RSpec.describe('Move API', type: :request) do
         subject
         expect(response).to(have_http_status(200))
         expect(json).to(include(
-          "user_id" => user.id,
+          "username" => user.username,
           "game_id" => game_id,
           "row_num" => row_num,
           "col_num" => col_num,
@@ -333,7 +333,7 @@ RSpec.describe('Move API', type: :request) do
           subject
           expect(response).to(have_http_status(200))
           expect(json).to(include(
-            "user_id" => user.id,
+            "username" => user.username,
             "game_id" => game_id,
             "row_num" => row_num,
             "col_num" => col_num,

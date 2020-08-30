@@ -40,4 +40,13 @@ class Move < ApplicationRecord
   def pass?
     move_type == 'pass'
   end
+
+  def as_json(options = {})
+    exclude_methods = [
+      :user_id,
+    ]
+    super(options.merge(except: exclude_methods)).tap do |hash|
+      hash.merge!(username: user.username)
+    end
+  end
 end
