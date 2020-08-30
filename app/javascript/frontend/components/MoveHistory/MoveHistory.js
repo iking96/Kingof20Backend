@@ -9,12 +9,13 @@ const MoveHistory = ({ moves, initiator }) => {
   return (
     <ScrollView>
       <div className="move-message-list">
-        {moves.map(move => (
+        {moves.map((move, index) => (
           <div
             className={
               "move-message-row" +
               `${move.username == initiator ? " you-message" : " them-message"}`
             }
+            key={index}
           >
             <div className="message-text">
               {move.username} for {move.result}
