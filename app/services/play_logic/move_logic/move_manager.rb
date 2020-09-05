@@ -16,7 +16,7 @@ module PlayLogic
         end
 
         def get_game_moves(game_id:)
-          Game.find(game_id).moves
+          Game.find(game_id).moves.order(:move_number)
         end
 
         def get_user_move(move_id:, user:)
