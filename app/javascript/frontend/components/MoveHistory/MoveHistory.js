@@ -9,7 +9,7 @@ const MoveHistory = ({ moves, initiator }) => {
   return (
     <ScrollView>
       <div className="move-message-list">
-        {moves.map((move, index) => (
+        {moves.reverse().map((move, index) => (
           <div
             className={
               "move-message-row" +
