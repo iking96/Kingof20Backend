@@ -3,6 +3,8 @@ import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import ExchangeView from "frontend/components/ExchangeView";
 
+import { Link } from "react-router-dom";
+
 const PlayArea = ({
   boardValues,
   tempBoardValues,
@@ -35,7 +37,18 @@ const PlayArea = ({
 
   return (
     <div className="play-area">
-      <div className="play-area-box"></div>
+      <div className="play-area-box">
+        <Link to ={`/games/${gameFlowData.id}/move_history`} >
+          <button>
+            Show Move History
+          </button>
+        </Link>
+        <Link to ={`/games/${gameFlowData.id}/tile_distribution`} >
+          <button>
+            Show Tile Distribution
+          </button>
+        </Link>
+      </div>
       <div className="play-area-box">
         {
           gameFlowData.complete ? renderGameOver() : <div/>

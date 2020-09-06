@@ -8,6 +8,10 @@
 body {
   font-family: "Raleway"; }
 
+/* No link underlines */
+a {
+  text-decoration: none; }
+
 /* Buttons */
 button {
   margin: 10px auto 0px;

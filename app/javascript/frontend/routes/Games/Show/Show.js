@@ -9,7 +9,6 @@ import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
-import AvailableTilesTable from "frontend/components/AvailableTilesTable";
 import MoveHistory from "frontend/components/MoveHistory";
 import PlayArea from "frontend/components/PlayArea";
 
@@ -35,28 +34,39 @@ const Show = ({
 
   const { isFetching, hasFetched, fetchError, doFetch } = useMultiFetch(
     [`/api/v1/games/${id}`, `/api/v1/games/${id}/moves`],
-    ({
-      json: {
-        game: {
-          board,
-          you,
-          them,
-          available_tiles,
-          your_rack,
-          your_turn,
-          your_score,
-          their_score,
-          allow_swap,
-          complete,
-          your_win
-        },
-        moves
+    ({ responses, json }) => {
+      var error_status_index = responses.findIndex(
+        response => response.status != 200
+      );
+      if (error_status_index != -1) {
+        alert(
+          `Server responded with ${
+            responses[error_status_index].status
+          }. JSON: ${JSON.stringify(json)}`
+        );
+        window.location.replace(`/`);
       }
-    }) => {
+
+      var game = json.game;
+      var moves = json.moves;
+
+      var board = game.board;
+      var you = game.you;
+      var them = game.them;
+      var available_tiles = game.available_tiles;
+      var your_rack = game.your_rack;
+      var your_turn = game.your_turn;
+      var your_score = game.your_score;
+      var their_score = game.their_score;
+      var allow_swap = game.allow_swap;
+      var complete = game.complete;
+      var your_win = game.your_win;
+
       setBoardValues(board);
       setRackValues(your_rack);
       setTempBoardValues(initalBoardValues);
       setGameFlowData({
+        id: id,
         your_turn: your_turn,
         your_score: your_score,
         their_score: their_score,

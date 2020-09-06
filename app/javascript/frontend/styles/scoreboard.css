@@ -2,48 +2,44 @@
 /* Make whole site full page width */
 * {
   margin: 0;
-  padding: 0;
-}
+  padding: 0; }
 
 /* Set global font */
 body {
-  font-family: "Raleway";
-}
+  font-family: "Raleway"; }
+
+/* No link underlines */
+a {
+  text-decoration: none; }
 
 .scoreboard {
   width: 100%;
   height: 75px;
   color: white;
-  text-align: center;
-}
-.scoreboard .scoreboard-lt {
-  width: 50%;
-  height: 100%;
-  background-color: #7851a9;
-  border-color: transparent;
-  border-style: solid;
-  float: left;
-  transition: border-color 0.5s;
-}
-.scoreboard .scoreboard-lt.current {
-  border-color: white;
-}
-.scoreboard .scoreboard-rt {
-  width: 50%;
-  height: 100%;
-  background-color: #7851a9;
-  border-color: transparent;
-  border-style: solid;
-  float: right;
-  transition: border-color 0.5s;
-}
-.scoreboard .scoreboard-rt.current {
-  border-color: white;
-}
+  text-align: center; }
+  .scoreboard .scoreboard-lt {
+    width: 50%;
+    height: 100%;
+    background-color: #7851a9;
+    border-color: transparent;
+    border-style: solid;
+    float: left;
+    transition: border-color .5s; }
+    .scoreboard .scoreboard-lt.current {
+      border-color: white; }
+  .scoreboard .scoreboard-rt {
+    width: 50%;
+    height: 100%;
+    background-color: #7851a9;
+    border-color: transparent;
+    border-style: solid;
+    float: right;
+    transition: border-color .5s; }
+    .scoreboard .scoreboard-rt.current {
+      border-color: white; }
 
 .gameover-message {
   text-align: center;
   height: 75px;
   line-height: 75px;
-  width: 100%;
-}
+  width: 100%; }

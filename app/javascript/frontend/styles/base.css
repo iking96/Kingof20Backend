@@ -2,10 +2,12 @@
 /* Make whole site full page width */
 * {
   margin: 0;
-  padding: 0;
-}
+  padding: 0; }
 
 /* Set global font */
 body {
-  font-family: "Raleway";
-}
+  font-family: "Raleway"; }
+
+/* No link underlines */
+a {
+  text-decoration: none; }

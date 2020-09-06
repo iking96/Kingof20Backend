@@ -20,3 +20,8 @@ $royal-purple: rgb(120, 81, 169);
 body {
   font-family: "Raleway";
 }
+
+/* No link underlines */
+a {
+  text-decoration: none;
+}
