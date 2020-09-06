@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import Board from "frontend/components/Board";
-import TileRack from "frontend/components/TileRack";
 import ScoreBoard from "frontend/components/ScoreBoard";
-import ExchangeView from "frontend/components/ExchangeView";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
@@ -14,6 +11,7 @@ import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import AvailableTilesTable from "frontend/components/AvailableTilesTable";
 import MoveHistory from "frontend/components/MoveHistory";
+import PlayArea from "frontend/components/PlayArea";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -32,7 +30,6 @@ const Show = ({
   const [gameFlowData, setGameFlowData] = useState({});
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
-  const [exchanging, setExchanging] = useState(false);
   const [moves, setMoves] = useState([]);
   const is_authenticated = isAuthenticated();
 
@@ -44,7 +41,6 @@ const Show = ({
           board,
           you,
           them,
-          last_move,
           available_tiles,
           your_rack,
           your_turn,
@@ -59,16 +55,6 @@ const Show = ({
     }) => {
       setBoardValues(board);
       setRackValues(your_rack);
-      setLastMoveInfo(
-        last_move &&
-          last_move.row_num &&
-          last_move.row_num.reduce((map, row, index) => {
-            map[row] = map[row]
-              ? map[row].concat(last_move.col_num[index])
-              : [last_move.col_num[index]];
-            return map;
-          }, {})
-      );
       setTempBoardValues(initalBoardValues);
       setGameFlowData({
         your_turn: your_turn,
@@ -84,6 +70,17 @@ const Show = ({
         them: them
       });
       setMoves(moves);
+      var last_move = moves[moves.length - 1];
+      setLastMoveInfo(
+        last_move &&
+          last_move.row_num &&
+          last_move.row_num.reduce((map, row, index) => {
+            map[row] = map[row]
+              ? map[row].concat(last_move.col_num[index])
+              : [last_move.col_num[index]];
+            return map;
+          }, {})
+      );
     }
   );
 
@@ -159,8 +156,19 @@ const Show = ({
     });
   };
 
-  const setExchange = newValue => {
-    setExchanging(newValue);
+  const postExchange = (returned_tiles, callback) => {
+    doPost(
+      {
+        move_info: {
+          game_id: id,
+          move_type: "swap",
+          returned_tiles: returned_tiles
+        }
+      },
+      () => {
+        callback();
+      }
+    );
   };
 
   if (!hasFetched) {
@@ -175,62 +183,6 @@ const Show = ({
     );
   }
 
-  const renderPlayArea = () => (
-    <div className="play-area">
-      <div className="play-area-box hidden-on-small-screen">
-        <MoveHistory moves={moves} initiator={playerData.you.username} />
-      </div>
-      <div className="play-area-box">
-        <Board
-          boardValues={boardValues}
-          tempBoardValues={tempBoardValues}
-          lastMoveInfo={lastMoveInfo}
-          handleBoardSet={handleBoardSet}
-        />
-        <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-        <button
-          className="play-btn"
-          onClick={postTilePlacement}
-          disabled={!gameFlowData.your_turn}
-        >
-          PLAY!
-        </button>
-        <div className="btn-group">
-          <button onClick={postPass} disabled={!gameFlowData.your_turn}>
-            Pass
-          </button>
-          <button
-            onClick={() => setExchange(true)}
-            disabled={!gameFlowData.your_turn || !gameFlowData.allow_swap}
-          >
-            Exchange tiles
-          </button>
-        </div>
-      </div>
-      <div className="play-area-box hidden-on-small-screen">
-        <AvailableTilesTable tile_infos={gameFlowData.available_tiles} />
-      </div>
-    </div>
-  );
-
-  const renderGameOver = () => (
-    <div>
-      <div className="gameover-message">
-        <h1>Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}</h1>
-      </div>
-      <Board boardValues={boardValues} tempBoardValues={initalBoardValues} />
-    </div>
-  );
-
-  const renderExchange = () => (
-    <ExchangeView
-      id={id}
-      rackValues={rackValues}
-      doPost={doPost}
-      cancel={() => setExchange(false)}
-    />
-  );
-
   const handleReceivedUpdate = response => {
     if (isFetching) {
       return;
@@ -242,8 +194,9 @@ const Show = ({
     <div
       style={{
         backgroundColor: "#D8BFD8",
-        padding: "0px 0px 20px 0px",
-        overflow: "auto"
+        height: "auto",
+        minHeight: "100%",
+        paddingBottom: "10px"
       }}
     >
       <ScoreBoard
@@ -254,11 +207,18 @@ const Show = ({
         opponentScore={gameFlowData.their_score}
       />
       <DndProvider backend={Backend}>
-        {gameFlowData.complete
-          ? renderGameOver()
-          : exchanging
-          ? renderExchange()
-          : renderPlayArea()}
+        <PlayArea
+          boardValues={boardValues}
+          tempBoardValues={tempBoardValues}
+          rackValues={rackValues}
+          lastMoveInfo={lastMoveInfo}
+          gameFlowData={gameFlowData}
+          handleBoardSet={handleBoardSet}
+          handleRackSet={handleRackSet}
+          postTilePlacement={postTilePlacement}
+          postPass={postPass}
+          postExchange={postExchange}
+        />
       </DndProvider>
       <ActionCableConsumer
         channel={{ channel: "GamesChannel" }}

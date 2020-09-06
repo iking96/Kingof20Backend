@@ -7,47 +7,40 @@
   font: bold 70%/1.5 "Open Sans", sans-serif;
   text-align: center;
   color: black;
-  position: relative;
-}
-.tile.starting {
-  background-color: #888;
-}
-.tile .decal {
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  text-align: center;
-  line-height: 40px;
-  text-transform: uppercase;
-  overflow: visible;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-}
-.tile .decal.temp {
-  background-color: yellow;
-}
-.tile .decal.last-move {
-  background-color: lightblue;
-}
-.tile .highlight {
-  width: 100%;
-  height: 100%;
-  background-color: yellow;
-  opacity: 0.5;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-}
+  position: relative; }
+  .tile.starting {
+    background-color: #888; }
+  .tile .decal {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    text-align: center;
+    line-height: 40px;
+    text-transform: uppercase;
+    overflow: visible;
+    position: absolute;
+    top: 0px;
+    left: 0px; }
+    .tile .decal.temp {
+      background-color: yellow; }
+    .tile .decal.last-move {
+      background-color: lightblue; }
+  .tile .highlight {
+    width: 100%;
+    height: 100%;
+    background-color: yellow;
+    opacity: 0.5;
+    position: absolute;
+    top: 0px;
+    left: 0px; }
 
 #js-rack {
   width: 310px;
   height: 44px;
   background-color: black;
   margin: auto;
-  margin-top: 20px;
-  box-sizing: content-box;
-}
-#js-rack .rack {
-  background-color: #666;
-}
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-sizing: content-box; }
+  #js-rack .rack {
+    background-color: #666; }

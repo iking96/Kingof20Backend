@@ -22,7 +22,8 @@ $rack-width-adj: $rack-width + $tile-border-width * ($rack-tile-num * 2 + 1);
 #js-rack {
   @include coloredRectangle($rack-width-adj, $rack-height-adj, $rack-color);
   margin: auto;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   box-sizing: content-box;
 
   .rack {

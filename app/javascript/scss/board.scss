@@ -22,6 +22,8 @@ $rack-size: $tile-size * $rack-tile-num;
   min-width: $board-size-adj;
   min-height: $board-size-adj;
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
   box-sizing: content-box;
 
   .board {

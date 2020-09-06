@@ -7,7 +7,7 @@ const ExchangeRack = ({ rackValues, handleRackSet, selectedTiles }) => {
     <div id="js-rack">
       <div className="rack">
         {rackValues.map((value, index) => (
-          <div className='tile' onClick={() => handleRackSet(index, value)}>
+          <div key={index} className='tile' onClick={() => handleRackSet(index, value)}>
             <div className={"decal" + `${selectedTiles[index] ? " temp" : ""}`}>
               {determineValue(value)}
             </div>
