@@ -5,17 +5,18 @@ const ScrollView = props => {
   return <div className="scroller">{props.children}</div>;
 };
 
-const MoveHistory = ({ moves, initiator }) => {
+const MoveHistory = ({ moves, you, onIndexClick }) => {
   return (
     <ScrollView>
       <div className="move-message-list">
-        {moves.reverse().map((move, index) => (
+        {moves.slice(0).reverse().map((move, index) => (
           <div
             className={
               "move-message-row" +
-              `${move.username == initiator ? " you-message" : " them-message"}`
+              `${move.username == you ? " you-message" : " them-message"}`
             }
             key={index}
+            onClick={() => onIndexClick(index)}
           >
             <div className="message-text">
               {move.username} for {move.result}

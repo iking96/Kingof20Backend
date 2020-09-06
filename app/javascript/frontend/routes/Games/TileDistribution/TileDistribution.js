@@ -30,7 +30,6 @@ const TileDistribution = ({
       }
 
       var game = json.game;
-      var moves = json.moves;
 
       var you = game.you;
       var them = game.them;
