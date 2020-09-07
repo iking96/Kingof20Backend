@@ -9,7 +9,6 @@ import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
-import MoveHistory from "frontend/components/MoveHistory";
 import PlayArea from "frontend/components/PlayArea";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
