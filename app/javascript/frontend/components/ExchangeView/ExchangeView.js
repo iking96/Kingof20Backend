@@ -4,7 +4,7 @@ import { boardSize, rackSize } from "frontend/utils/constants.js";
 
 const initalRackValues = Array.from({ length: rackSize }, () => false);
 
-const ExchangeView = ({ id, rackValues, doPost, cancel }) => {
+const ExchangeView = ({ rackValues, postExchange, cancel }) => {
   const [selectedTiles, setSelectedTiles] = useState(initalRackValues);
 
   const handleRackSet = (col, _) => {
@@ -17,7 +17,7 @@ const ExchangeView = ({ id, rackValues, doPost, cancel }) => {
     cancel();
   };
 
-  const postExchange = () => {
+  const doExchange = () => {
     var returned_tiles = [];
 
     rackValues.forEach((value, col) => {
@@ -26,14 +26,8 @@ const ExchangeView = ({ id, rackValues, doPost, cancel }) => {
       }
     });
 
-    doPost(
-      {
-        move_info: {
-          game_id: id,
-          move_type: "swap",
-          returned_tiles: returned_tiles
-        }
-      },
+    postExchange(
+      returned_tiles,
       () => { cancel() }
     );
   };
@@ -42,7 +36,7 @@ const ExchangeView = ({ id, rackValues, doPost, cancel }) => {
     <div>
       <div className="btn-group">
         <button onClick={cancelExchange}>Cancel</button>
-        <button onClick={postExchange}>Perform Exchange</button>
+        <button onClick={doExchange}>Perform Exchange</button>
       </div>
       <ExchangeRack
         rackValues={rackValues}

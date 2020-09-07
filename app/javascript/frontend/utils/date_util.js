@@ -29,7 +29,7 @@ export function humanizedDate(comparisonTime) {
     return `${diff_mins} minutes ago`;
   }
 
-  var diff_hours = diff_mins / 60;
+  var diff_hours = (diff_mins / 60).toFixed();
   if (diff_hours == 1) {
     return `1 hour`;
   }

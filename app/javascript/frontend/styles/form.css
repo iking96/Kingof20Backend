@@ -2,13 +2,15 @@
 /* Make whole site full page width */
 * {
   margin: 0;
-  padding: 0;
-}
+  padding: 0; }
 
 /* Set global font */
 body {
-  font-family: "Raleway";
-}
+  font-family: "Raleway"; }
+
+/* No link underlines */
+a {
+  text-decoration: none; }
 
 /* Buttons */
 button {
@@ -21,29 +23,24 @@ button {
   cursor: pointer;
   display: block;
   font-size: 1.5em;
-}
-button.play-btn {
-  background-color: #7851a9;
-}
+  white-space: nowrap; }
+  button.play-btn {
+    background-color: #7851a9; }
 
 button:disabled {
-  opacity: 0.5;
-}
+  opacity: 0.5; }
 
 .btn-group {
-  text-align: center;
-}
-.btn-group button {
-  margin: 20px 20px;
-  display: inline-block;
-}
+  text-align: center; }
+  .btn-group button {
+    margin: 20px 20px;
+    display: inline-block; }
 
 /* Form */
 form {
   margin: 10px auto;
   max-width: 400px;
-  padding: 20px 12px 10px 20px;
-}
+  padding: 20px 12px 10px 20px; }
 
 input,
 select,
@@ -63,12 +60,10 @@ textarea {
   margin-bottom: 16px;
   /* Bottom margin */
   resize: vertical;
-  /* Allow the user to vertically resize the textarea (not horizontally) */
-}
+  /* Allow the user to vertically resize the textarea (not horizontally) */ }
 
 #Login {
-  padding: 60px 0;
-}
+  padding: 60px 0; }
 
 #Login input[type=submit] {
   width: 100%;
@@ -78,11 +73,9 @@ textarea {
   margin: 8px 0;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
-}
+  cursor: pointer; }
 
 #Logout {
   margin: 10px auto;
   max-width: 400px;
-  padding: 20px 12px 10px 20px;
-}
+  padding: 20px 12px 10px 20px; }
