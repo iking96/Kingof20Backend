@@ -2,14 +2,20 @@
 .move-message-list {
   display: flex;
   flex-direction: column;
-  padding: 0 20px; }
+  padding: 5px 20px; }
   .move-message-list .move-message-row {
     display: grid;
     padding: 0 20px; }
   .move-message-list .message-text {
     padding: 9px 14px;
     margin-bottom: 5px;
-    overflow-wrap: break-word; }
+    overflow-wrap: break-word;
+    position: relative;
+    top: 0px;
+    transition: all 0.2s; }
+    .move-message-list .message-text:hover {
+      top: -3px;
+      cursor: pointer; }
   .move-message-list .message-time {
     font-size: 0.8rem;
     color: #777; }

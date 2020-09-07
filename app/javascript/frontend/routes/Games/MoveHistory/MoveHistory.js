@@ -88,13 +88,16 @@ const MoveHistory = ({
   }
 
   const calculateBoardValues = () => {
-    var moves_to_undo = moves.slice(0).reverse().slice(0, selectedMove);
+    var moves_to_undo = moves
+      .slice(0)
+      .reverse()
+      .slice(0, selectedMove);
     var calculatedBoard = boardValues.map(function(arr) {
       return arr.slice();
     });
 
-    moves_to_undo.forEach((move) => {
-      if (move.move_type != 'tile_placement') {
+    moves_to_undo.forEach(move => {
+      if (move.move_type != "tile_placement") {
         return;
       }
 
@@ -110,7 +113,8 @@ const MoveHistory = ({
 
   const calculateLastMoveInfo = () => {
     var selected_move = moves[moves.length - 1 - selectedMove];
-    return selected_move &&
+    return (
+      selected_move &&
       selected_move.row_num &&
       selected_move.row_num.reduce((map, row, index) => {
         map[row] = map[row]
@@ -118,6 +122,7 @@ const MoveHistory = ({
           : [selected_move.col_num[index]];
         return map;
       }, {})
+    );
   };
 
   return (
@@ -139,19 +144,25 @@ const MoveHistory = ({
       <Link to={`/games/${id}`}>
         <button>Back</button>
       </Link>
-      <DndProvider backend={Backend}>
-        <Board
-          boardValues={calculateBoardValues()}
-          tempBoardValues={initalBoardValues}
-          lastMoveInfo={calculateLastMoveInfo()}
-          handleBoardSet={() => {}}
-        />
-      </DndProvider>
-      <MoveHistoryScroll
-        moves={moves}
-        you={playerData.you.username}
-        onIndexClick={(index) => setSelectedMove(index)}
-      />
+      <div className="move-history">
+        <div className="move-list-section">
+          <MoveHistoryScroll
+            moves={moves}
+            you={playerData.you.username}
+            onIndexClick={index => setSelectedMove(index)}
+          />
+        </div>
+        <div className="board-section">
+          <DndProvider backend={Backend}>
+            <Board
+              boardValues={calculateBoardValues()}
+              tempBoardValues={initalBoardValues}
+              lastMoveInfo={calculateLastMoveInfo()}
+              handleBoardSet={() => {}}
+            />
+          </DndProvider>
+        </div>
+      </div>
     </div>
   );
 };

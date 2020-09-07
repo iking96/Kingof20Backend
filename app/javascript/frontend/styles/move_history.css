@@ -1,0 +1,6 @@
+.move-history {
+  display: flex; }
+  .move-history .move-list-section {
+    flex: 1; }
+  .move-history .board-section {
+    flex: 1; }

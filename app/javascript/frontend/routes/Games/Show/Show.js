@@ -3,7 +3,7 @@ import ScoreBoard from "frontend/components/ScoreBoard";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
-import useMultiFetch from "frontend/utils/useMultiFetch";
+import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
 import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
@@ -32,18 +32,12 @@ const Show = ({
   const [moves, setMoves] = useState([]);
   const is_authenticated = isAuthenticated();
 
-  const { isFetching, hasFetched, fetchError, doFetch } = useMultiFetch(
-    [`/api/v1/games/${id}`, `/api/v1/games/${id}/moves`],
-    ({ responses, json }) => {
-      var error_status_index = responses.findIndex(
-        response => response.status != 200
-      );
-      if (error_status_index != -1) {
-        alert(
-          `Server responded with ${
-            responses[error_status_index].status
-          }. JSON: ${JSON.stringify(json)}`
-        );
+  const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
+    `/api/v1/games/${id}`,
+    ({ response, json }) => {
+      var status = response.status;
+      if (status != 200) {
+        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`);
         window.location.replace(`/`);
       }
 
@@ -53,6 +47,7 @@ const Show = ({
       var board = game.board;
       var you = game.you;
       var them = game.them;
+      var last_move = game.last_move;
       var available_tiles = game.available_tiles;
       var your_rack = game.your_rack;
       var your_turn = game.your_turn;
@@ -80,7 +75,6 @@ const Show = ({
         them: them
       });
       setMoves(moves);
-      var last_move = moves[moves.length - 1];
       setLastMoveInfo(
         last_move &&
           last_move.row_num &&
