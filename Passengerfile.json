@@ -1,7 +1,11 @@
 {
   "environment": "production",
-  "port": 80,
+  "port": 443,
   "daemonize": true,
   "user": "deploy",
-  "ruby": "/home/deploy/.rvm/rubies/ruby-2.6.3/bin/ruby"
+  "ruby": "/home/deploy/.rvm/rubies/ruby-2.6.3/bin/ruby",
+  "ssl": true,
+  "ssl_certificate": "/etc/letsencrypt/live/www.kingof20.com/fullchain.pem",
+  "ssl_certificate_key": "/etc/letsencrypt/live/www.kingof20.com/privkey.pem",
+  "nginx_config_template": "config/nginx.conf.erb"
 }

@@ -3,8 +3,8 @@ export const rackSize = 7
 
 const prod = {
   url: {
-    API_URL: `http://54.69.119.37`,
-    API_WS_ROOT: `ws://54.69.119.37/cable`
+    API_URL: `https://kingof20.com:443`,
+    API_WS_ROOT: `wss://kingof20.com:443/cable`
   }
 };
 
