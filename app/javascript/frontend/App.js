@@ -38,6 +38,10 @@ class App extends React.Component {
               path="/login"
               render={() => <Login setLogin={this.setLogin} />}
             />
+            <Route
+              path="/signup"
+              render={() => <Login setLogin={this.setLogin} />}
+            />
           </Switch>
         </BrowserRouter>
       </ActionCableProvider>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useField from "frontend/utils/useField";
 
+import { Link } from "react-router-dom";
+
 const LoginForm = props => {
   return (
     <form onSubmit={props.handleSubmit} id="Login">
@@ -41,7 +43,7 @@ const LoggedInMessage = props => {
   );
 };
 
-const Login = ({setLogin}) => {
+const Login = ({ setLogin }) => {
   const [token, setToken] = useState({ value: "" });
   const [errorString, setErrorString] = useState({ value: "" });
   const username = useField("");
@@ -75,8 +77,8 @@ const Login = ({setLogin}) => {
 
   const handleLogout = e => {
     e.preventDefault();
-    setToken({ value: '' });
-    Cookies.remove('access_token');
+    setToken({ value: "" });
+    Cookies.remove("access_token");
     setLogin(false);
   };
 
@@ -97,7 +99,7 @@ const Login = ({setLogin}) => {
   return (
     <div>
       {token.value ? (
-        <LoggedInMessage onClick={handleLogout}/>
+        <LoggedInMessage onClick={handleLogout} />
       ) : (
         <div>
           <LoginForm
@@ -105,6 +107,9 @@ const Login = ({setLogin}) => {
             username={username}
             password={password}
           />
+          <div align="center">
+            No account? Signup <Link to={`/signup`}> here! </Link>
+          </div>
           {errorMessage}
         </div>
       )}
