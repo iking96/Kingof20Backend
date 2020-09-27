@@ -8,6 +8,7 @@ import { ActionCableProvider } from "frontend/utils/actionCableProvider";
 
 import Games from "frontend/routes/Games";
 import Login from "frontend/components/Login";
+import Signup from "frontend/components/Signup";
 import Home from "frontend/routes/Home";
 import Navbar from "frontend/components/NavBar";
 import { isAuthenticated, getAccessToken } from "frontend/utils/authenticateHelper.js";
@@ -40,7 +41,7 @@ class App extends React.Component {
             />
             <Route
               path="/signup"
-              render={() => <Login setLogin={this.setLogin} />}
+              component={Signup}
             />
           </Switch>
         </BrowserRouter>

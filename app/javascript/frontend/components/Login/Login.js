@@ -108,7 +108,7 @@ const Login = ({ setLogin }) => {
             password={password}
           />
           <div align="center">
-            No account? Signup <Link to={`/signup`}> here! </Link>
+            No account? <Link to={`/signup`}> Signup here! </Link>
           </div>
           {errorMessage}
         </div>
