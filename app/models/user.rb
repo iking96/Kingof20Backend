@@ -15,11 +15,20 @@ class User < ApplicationRecord
 
   has_many :waiting_games, class_name: 'Game', through: :game_queue_entries, source: :game
 
-  validates :email, presence: true
   validates :encrypted_password, presence: true
   validates :encrypted_password, uniqueness: true
   validates :username, presence: true
   validates :username, uniqueness: true
+
+  # Inform Devise that email is NOT required
+  def email_required?
+    false
+  end
+
+  # Inform Devise that password is required
+  def password_required?
+    true
+  end
 
   def games
     Game.where('initiator_id = ? or opponent_id = ?', id, id)
