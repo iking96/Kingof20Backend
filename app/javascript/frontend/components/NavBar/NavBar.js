@@ -26,6 +26,15 @@ class NavBar extends React.Component {
               className={"highlight"}
             ></NavItem>
           )}
+          {!this.props.loggedIn == true ? (
+            <NavItem
+              item="Signup"
+              tolink="/signup"
+              className={"highlight"}
+            ></NavItem>
+          ) : (
+            <></>
+          )}
         </ul>
       </nav>
     );
