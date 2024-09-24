@@ -3,7 +3,7 @@
   "port": 443,
   "daemonize": true,
   "user": "deploy",
-  "ruby": "/home/deploy/.rvm/rubies/ruby-2.6.3/bin/ruby",
+  "ruby": "/home/deploy/.rvm/rubies/ruby-3.3.5/bin/ruby",
   "ssl": true,
   "ssl_certificate": "/etc/letsencrypt/live/www.kingof20.com/fullchain.pem",
   "ssl_certificate_key": "/etc/letsencrypt/live/www.kingof20.com/privkey.pem",

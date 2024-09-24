@@ -232,4 +232,6 @@ Doorkeeper.configure do
   # realm "Doorkeeper"
 end
 
-Doorkeeper::OAuth::ErrorResponse.send :prepend, CustomTokenErrorResponse
+Rails.application.config.to_prepare do
+  Doorkeeper::OAuth::ErrorResponse.send :prepend, CustomTokenErrorResponse
+end
