@@ -29,7 +29,7 @@ RSpec.describe(Move, type: :model) do
     let!(:move) { create(:move, game: game, user: user, move_type: 'tile_placement') }
 
     it 'does not allow unrecognized type values' do
-      expect { move.move_type = "some_string" }.to(raise_error ArgumentError)
+      expect { move.move_type = "some_string" }.to(raise_error(ArgumentError))
     end
 
     context 'tests pre_processing conditions' do

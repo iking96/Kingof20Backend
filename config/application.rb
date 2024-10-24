@@ -20,7 +20,7 @@ Bundler.require(*Rails.groups)
 module Kingof20Api
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
+    config.load_defaults(5.2)
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -33,6 +33,6 @@ module Kingof20Api
     config.api_only = true
 
     # Autoload /lib
-    config.paths.add Rails.root.join('lib').to_s, eager_load: true
+    config.paths.add(Rails.root.join('lib').to_s, eager_load: true)
   end
 end

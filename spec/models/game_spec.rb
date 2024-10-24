@@ -57,18 +57,18 @@ RSpec.describe(Game, type: :model) do
     end
 
     it 'does not allow unrecognized current_player values' do
-      expect { game.current_player = 'some_string' }.to(raise_error ArgumentError)
+      expect { game.current_player = 'some_string' }.to(raise_error(ArgumentError))
     end
 
     it 'does not allow unrecognized stage value' do
-      expect { game.stage = 'some_string' }.to(raise_error ArgumentError)
+      expect { game.stage = 'some_string' }.to(raise_error(ArgumentError))
     end
 
     it 'does not allow unrecognized hidden_from value' do
       expect do
         game.hidden_from = 4
         game.save!
-      end.to(raise_error ActiveRecord::RecordInvalid)
+      end.to(raise_error(ActiveRecord::RecordInvalid))
     end
 
     context 'when a user forfits' do
@@ -101,7 +101,7 @@ RSpec.describe(Game, type: :model) do
       expect do
         game.opponent = initiating_user
         game.save!
-      end.to(raise_error ActiveRecord::RecordInvalid)
+      end.to(raise_error(ActiveRecord::RecordInvalid))
     end
 
     it 'can determine if swapping is allowed' do

@@ -86,7 +86,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       let(:move_info) { {} }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error Error::Move::PreProcessingError)
+        expect { subject }.to(raise_error(Error::Move::PreProcessingError))
       end
     end
 
@@ -249,7 +249,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         let(:tile_value) { [1, 2, 20] }
 
         it 'raises an error' do
-          expect { subject }.to(raise_error Error::Move::PreProcessingError)
+          expect { subject }.to(raise_error(Error::Move::PreProcessingError))
         end
       end
 
