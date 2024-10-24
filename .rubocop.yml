@@ -1,9 +1,19 @@
 # From https://shopify.github.io/ruby-style-guide/rubocop.yml
+require: rubocop-rails
+
 AllCops:
   Exclude:
+  - bin/**/*
+  - Capfile
   - 'db/schema.rb'
+  - 'db/**/*'
+  - spec/rails_helper.rb
+  - config/initializers/doorkeeper.rb
   DisabledByDefault: true
   StyleGuideBaseURL: https://shopify.github.io/ruby-style-guide/
+
+Rails/EnumSyntax:
+  Enabled: true
 
 Lint/AssignmentInCondition:
   Enabled: true
@@ -72,17 +82,10 @@ Style/BlockDelimiters:
   - let!
   - subject
   - watch
-  IgnoredMethods:
+  AllowedMethods:
   - lambda
   - proc
   - it
-
-Style/BracesAroundHashParameters:
-  EnforcedStyle: no_braces
-  SupportedStyles:
-  - braces
-  - no_braces
-  - context_dependent
 
 Layout/CaseIndentation:
   EnforcedStyle: end
@@ -210,6 +213,7 @@ Style/GlobalVars:
 
 Style/HashSyntax:
   EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: never
   SupportedStyles:
   - ruby19
   - hash_rockets
@@ -265,13 +269,16 @@ Style/NonNilCheck:
 Style/MethodCallWithArgsParentheses:
   Enabled: true
   IgnoreMacros: true
-  IgnoredMethods:
+  AllowedMethods:
   - require
   - require_relative
   - require_dependency
   - yield
   - raise
   - puts
+  - render
+  - respond_with
+  - clean_up_passwords
   Exclude:
   - Gemfile
 
@@ -458,7 +465,7 @@ Layout/SpaceInsideStringInterpolation:
   - no_space
 
 Style/SymbolProc:
-  IgnoredMethods:
+  AllowedMethods:
   - respond_to
   - define_method
 
@@ -512,15 +519,7 @@ Metrics/BlockNesting:
   Max: 3
 
 Layout/LineLength:
-  Max: 120
-  AllowHeredoc: true
-  AllowURI: true
-  URISchemes:
-  - http
-  - https
-  IgnoreCopDirectives: false
-  IgnoredPatterns:
-  - '\A\s*(remote_)?test(_\w+)?\s.*(do|->)(\s|\Z)'
+  Enabled: false
 
 Metrics/ParameterLists:
   Max: 5
@@ -579,7 +578,7 @@ Style/BeginBlock:
   Enabled: true
 
 Style/BlockComments:
-  Enabled: true
+  Enabled: false
 
 Layout/BlockEndNewline:
   Enabled: true
@@ -680,7 +679,7 @@ Style/LineEndConcatenation:
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
 
-Style/MethodMissingSuper:
+Lint/MissingSuper:
   Enabled: true
 
 Style/MissingRespondToMissing:
@@ -812,7 +811,7 @@ Layout/SpaceInsideRangeLiteral:
 Style/SymbolLiteral:
   Enabled: true
 
-Layout/Tab:
+Layout/IndentationStyle:
   Enabled: true
 
 Layout/TrailingWhitespace:
@@ -843,7 +842,7 @@ Style/ZeroLengthPredicate:
   Enabled: true
 
 Layout/HeredocIndentation:
-  EnforcedStyle: squiggly
+  Enabled: true
 
 Lint/AmbiguousOperator:
   Enabled: true
@@ -881,7 +880,7 @@ Lint/EmptyEnsure:
 Lint/EmptyInterpolation:
   Enabled: true
 
-Lint/EndInMethod:
+Style/EndBlock:
   Enabled: true
 
 Lint/EnsureReturn:
@@ -976,7 +975,7 @@ Lint/UselessAccessModifier:
 Lint/UselessAssignment:
   Enabled: true
 
-Lint/UselessComparison:
+Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
 
 Lint/UselessElseWithoutRescue:

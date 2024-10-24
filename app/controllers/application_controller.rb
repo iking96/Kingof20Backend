@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   # Rational: https://stackoverflow.com/questions/35181340/rails-cant-verify-csrf-token-authenticity-when-making-a-post-request
   skip_before_action :verify_authenticity_token
 
-  #include ActionController::MimeResponds
+  # include ActionController::MimeResponds
   include Response
 
   # Devise code

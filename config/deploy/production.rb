@@ -7,8 +7,6 @@
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-
-
 # role-based syntax
 # ==================
 
@@ -22,7 +20,7 @@
 # role :db,  %w{deploy@example.com}
 role :app, %w{deploy@54.69.119.37}
 role :web, %w{deploy@54.69.119.37}
-role :db,  %w{deploy@54.69.119.37}, :primary => true
+role :db,  %w{deploy@54.69.119.37}, primary: true
 set :branch, "master"
 set :rails_env, "production"
 set :deploy_to, "/var/www/king_of_20_production"
@@ -34,8 +32,6 @@ set :deploy_to, "/var/www/king_of_20_production"
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
-
-
 
 # Custom SSH Options
 # ==================

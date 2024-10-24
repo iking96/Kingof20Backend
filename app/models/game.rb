@@ -64,13 +64,13 @@ class Game < ApplicationRecord
   validates :initiator, presence: true
 
   validates :current_player, presence: true
-  enum current_player: {
+  enum :current_player, {
     initiator: 'initiator',
     opponent: 'opponent',
   }
 
   validates :stage, presence: true
-  enum stage: {
+  enum :stage, {
     in_play: 'in_play',
     end_round_one: 'end_round_one',
     end_round_two: 'end_round_two',
@@ -206,7 +206,7 @@ class Game < ApplicationRecord
     end
   end
 
-  def set_current_user_rack(new_rack:) # rubocop:disable Naming/AccessorMethodName
+  def set_current_user_rack(new_rack:)
     if current_player == 'initiator'
       self.initiator_rack = new_rack
     end
@@ -216,7 +216,7 @@ class Game < ApplicationRecord
     end
   end
 
-  def set_current_user_score(new_score:) # rubocop:disable Naming/AccessorMethodName
+  def set_current_user_score(new_score:)
     if current_player == 'initiator'
       self.initiator_score = new_score
     end

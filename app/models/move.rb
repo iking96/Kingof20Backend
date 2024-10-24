@@ -5,7 +5,7 @@ class Move < ApplicationRecord
   belongs_to :game, required: false
 
   validates :move_type, presence: true
-  enum move_type: {
+  enum :move_type, {
     tile_placement: 'tile_placement',
     swap: 'swap',
     pass: 'pass',

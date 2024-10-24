@@ -3,7 +3,7 @@ module Error
   module ErrorHandler
     def self.included(clazz)
       clazz.class_eval do
-        rescue_from StandardError do |e|
+        rescue_from(StandardError) do |e|
           respond(
             error: :standard_error,
             error_code: 'system',
@@ -11,7 +11,7 @@ module Error
             message: e.to_s
           )
         end
-        rescue_from ActiveRecord::RecordNotFound do |e|
+        rescue_from(ActiveRecord::RecordNotFound) do |e|
           respond(
             error: :record_not_found,
             error_code: 'system',
@@ -19,7 +19,7 @@ module Error
             message: e.to_s
           )
         end
-        rescue_from ArgumentError do |e|
+        rescue_from(ArgumentError) do |e|
           respond(
             error: :argument_error,
             error_code: 'system',
@@ -27,7 +27,7 @@ module Error
             message: e.to_s
           )
         end
-        rescue_from CustomError do |e|
+        rescue_from(CustomError) do |e|
           respond(
             error: e.error,
             error_code: e.error_code,
