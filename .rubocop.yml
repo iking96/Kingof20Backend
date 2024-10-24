@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 # From https://shopify.github.io/ruby-style-guide/rubocop.yml
 require: rubocop-rails
 
