@@ -51,7 +51,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 
   # Include testing framework - https://github.com/rspec/rspec-rails
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails', '~> 7.0'
 end
 
 group :development do
