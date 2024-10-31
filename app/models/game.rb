@@ -80,8 +80,11 @@ class Game < ApplicationRecord
   }
 
   # validates .. presence: true will not allow empty array
-  validates :available_tiles, exclusion: { in: [nil] }
-
+  validate :available_tiles_presence
+  def available_tiles_presence
+    errors.add(:initiator, 'available_tiles can\'t be nil') if available_tiles.nil?
+  end
+  
   HIDDEN_FROM_NEITHER = 0
   HIDDEN_FROM_INITIATOR = 1
   HIDDEN_FROM_OPPONENT = 2

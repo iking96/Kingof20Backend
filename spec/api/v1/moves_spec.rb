@@ -197,7 +197,7 @@ RSpec.describe('Move API', type: :request) do
           "error" => "standard_error",
           "status" => 500,
         ))
-        expect(json["message"]).to(include("param is missing or the value is empty: move_info"))
+        expect(json["message"]).to(include("param is missing or the value is empty or invalid: move_info"))
       end
     end
 
