@@ -13,8 +13,10 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 postgresql postgresql-contrib libpq-dev && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips nodejs npm sqlite3 postgresql postgresql-contrib libpq-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+RUN npm install -g yarn
 
 # Set production environment
 ENV RAILS_ENV="production" \
@@ -31,10 +33,12 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock package.json yarn.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
+
+RUN yarn install --frozen-lockfile
 
 # Copy application code
 COPY . .
@@ -44,9 +48,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
 
 # Final stage for app image
 FROM base
