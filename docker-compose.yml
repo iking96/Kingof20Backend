@@ -2,24 +2,30 @@ version: '3.7'
 
 services:
   app:
-    image: iking/kingapi:latest
+    build: .
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_HOST=pg
-      - DATABASE_PORT=5432
-      - DATABASE_USERNAME=root
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-    volumes:
-      - ./:/application
-
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
+      - POSTGRES_HOST=pg
+      - POSTGRES_DB=king_pg_production
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      - pg
   pg:
     image: postgres:11-alpine
     volumes:
       - pg-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_HOST=pg
+      - POSTGRES_DB=king_pg_production
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
 
 volumes:
   pg-data:
