@@ -29,6 +29,7 @@ gem 'redis', '~> 4.0'
 # Authentication with Doorkeeper+Devise
 gem 'devise'
 gem 'doorkeeper'
+gem 'dotenv-rails', groups: [:development, :test]
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

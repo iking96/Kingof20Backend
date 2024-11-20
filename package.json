@@ -19,6 +19,6 @@
     "webpack-dev-server": "^3.10.3"
   },
   "engines": {
-    "node": ">= 13.8.0"
+    "node": ">= 23.0.0"
   }
 }
