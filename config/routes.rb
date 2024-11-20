@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     end
   end
 
+  mount ActionCable.server => '/cable'
+
   # Forward all requests to StaticController#index with
   # some formatting requirements
   get '*page', to: 'static#index', constraints: ->(req) do
