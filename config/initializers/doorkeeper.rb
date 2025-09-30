@@ -11,9 +11,8 @@ Doorkeeper.configure do
   end
 
   resource_owner_from_credentials do |routes|
-    user = User.find_for_database_authentication(:username => params[:username])
-    if user && user.valid_for_authentication? { user.valid_password?(params[:password]) }
-      request.env['warden'].set_user(user, scope: :user, store: false)
+    user = User.find_by(username: params[:username])
+    if user && user.valid_password?(params[:password])
       user
     end
   end
