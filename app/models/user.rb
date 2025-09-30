@@ -16,7 +16,6 @@ class User < ApplicationRecord
   has_many :waiting_games, class_name: 'Game', through: :game_queue_entries, source: :game
 
   validates :encrypted_password, presence: true
-  validates :encrypted_password, uniqueness: true
   validates :username, presence: true
   validates :username, uniqueness: true
 
