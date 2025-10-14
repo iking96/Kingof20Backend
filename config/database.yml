@@ -30,4 +30,4 @@ test:
 production:
   <<: *default
   #database: db/production.sqlite3
-  database: king_pg_production
+  database: <%= ENV.fetch('POSTGRES_DB', 'king_pg_production') %>

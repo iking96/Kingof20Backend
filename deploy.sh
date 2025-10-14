@@ -90,13 +90,60 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
 
     # Install Node.js dependencies and build assets with proper environment
     npm install
+
+    # Clean existing assets to ensure fresh compilation
+    rm -rf public/packs
+    rm -rf tmp/cache/webpacker
+
+    # Set Node options and compile assets with proper environment
     export NODE_OPTIONS='--openssl-legacy-provider'
-    bundle exec rails assets:precompile RAILS_ENV=production
+    export RAILS_ENV=production
+
+    # Ensure CSS compilation happens
+    bundle exec rails webpacker:clean
+    bundle exec rails assets:precompile
+
+    # Verify CSS was compiled
+    if [ -f public/packs/manifest.json ]; then
+        echo "📋 Checking manifest for CSS files..."
+        if grep -q "application.css" public/packs/manifest.json; then
+            echo "✅ CSS files found in manifest"
+        else
+            echo "⚠️  CSS files missing from manifest, attempting recompilation..."
+            bundle exec rails webpacker:compile
+            bundle exec rails assets:precompile
+        fi
+    else
+        echo "❌ No manifest.json found"
+    fi
 
     # Load environment variables and run migrations
     if [ -f .env.production ]; then
         export $(cat .env.production | grep -v '^#' | xargs)
         bundle exec rails db:migrate RAILS_ENV=production
+    fi
+
+    # Kill any existing Rails processes to avoid port conflicts
+    pkill -f "rails server" || true
+    pkill -f "puma" || true
+
+    # Wait for processes to fully terminate
+    sleep 3
+
+    # Start Rails server in production mode (in background)
+    echo "🚀 Starting Rails server..."
+    nohup bundle exec rails server -b 0.0.0.0 -p 3000 -e production > rails.log 2>&1 &
+
+    # Wait a moment and check if server started
+    sleep 5
+    if pgrep -f "rails server\|puma.*3000" > /dev/null; then
+        RAILS_PID=$(pgrep -f "rails server\|puma.*3000" | head -1)
+        echo "✅ Rails server started successfully!"
+        echo "📋 Server PID: $RAILS_PID"
+        echo "📄 Logs available at: /opt/kingof20/rails.log"
+    else
+        echo "❌ Failed to start Rails server. Check logs:"
+        tail -20 rails.log
     fi
 
     echo "✅ Deployment complete!"
