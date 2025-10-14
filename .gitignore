@@ -35,3 +35,7 @@ yarn-debug.log*
 .yarn-integrity
 
 .env
+.env.production
+.env.local
+*.pem
+deploy.tar.gz
