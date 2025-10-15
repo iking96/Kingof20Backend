@@ -121,6 +121,7 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
     if [ -f .env.production ]; then
         export $(cat .env.production | grep -v '^#' | xargs)
         bundle exec rails db:migrate RAILS_ENV=production
+        bundle exec rails db:seed RAILS_ENV=production
     fi
 
     # Kill any existing Rails processes to avoid port conflicts
