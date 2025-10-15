@@ -17,4 +17,3 @@ const dev = {
 
 export const config = process.env.NODE_ENV === "development" ? dev : prod;
 export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-export const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;

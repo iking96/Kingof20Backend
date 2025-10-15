@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useField from "frontend/utils/useField";
 
-import { CLIENT_ID, CLIENT_SECRET } from "frontend/utils/constants.js";
+import { CLIENT_ID } from "frontend/utils/constants.js";
 import { Link } from "react-router-dom";
 
 const LoginForm = props => {
@@ -54,8 +54,19 @@ const Login = ({ setLogin }) => {
     try {
       console.log(CLIENT_ID)
       const response = await fetch(
-        `/oauth/token?username=${username}&password=${password}&grant_type=password&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
-        { method: "POST" }
+        `/oauth/token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            grant_type: "password",
+            username: username,
+            password: password,
+            client_id: CLIENT_ID
+          })
+        }
       );
 
       const json = await response.json();
