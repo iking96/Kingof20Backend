@@ -136,9 +136,21 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
     nohup bundle exec rails server -b 0.0.0.0 -p 3000 -e production > rails.log 2>&1 &
 
     # Wait a moment and check if server started
-    sleep 5
-    if pgrep -f "rails server\|puma.*3000" > /dev/null; then
-        RAILS_PID=$(pgrep -f "rails server\|puma.*3000" | head -1)
+    echo "⏳ Checking if Rails server started..."
+    RAILS_PID=""
+
+    # Wait for "Listening on" message in logs which indicates successful startup
+    for i in {1..20}; do
+        sleep 10
+
+        # Check if we can find the "Listening on" message in the log
+        if grep -q "Listening on http://0.0.0.0:3000" rails.log 2>/dev/null; then
+            RAILS_PID=$(pgrep -f "puma.*:3000" | head -1)
+            break
+        fi
+    done
+
+    if [ -n "$RAILS_PID" ]; then
         echo "✅ Rails server started successfully!"
         echo "📋 Server PID: $RAILS_PID"
         echo "📄 Logs available at: /opt/kingof20/rails.log"
