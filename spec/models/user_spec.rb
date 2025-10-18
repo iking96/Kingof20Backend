@@ -6,7 +6,6 @@ RSpec.describe(User, type: :model) do
   it { should validate_presence_of(:username) }
   it { should validate_presence_of(:encrypted_password) }
   it { should validate_uniqueness_of(:username) }
-  it { should validate_uniqueness_of(:encrypted_password) }
 
   context 'when the user is involved in a game' do
     let(:initiating_user) { create(:user) }

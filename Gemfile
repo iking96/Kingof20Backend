@@ -65,7 +65,7 @@ end
 # Gemfile
 group :test do
   gem 'factory_bot_rails', '~> 4.0' # Fixtures replacement with a more straightforward syntax
-  gem 'shoulda-matchers', '~> 3.1' # Provides RSpec with additional matchers
+  gem 'shoulda-matchers', '~> 6.0' # Provides RSpec with additional matchers
   gem 'faker' # A library for generating fake data
   gem 'database_cleaner' # Cleans the test database to ensure a clean state in each test suite
 end

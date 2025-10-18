@@ -75,6 +75,8 @@ RSpec.describe('User API', type: :request) do
       {
         username: user.username,
         password: user.password,
+        client_id: doorkeeper_application.uid,
+        client_secret: doorkeeper_application.secret,
         grant_type: 'password',
       }
     end
