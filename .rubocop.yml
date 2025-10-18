@@ -1,7 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-# From https://shopify.github.io/ruby-style-guide/rubocop.yml
-require: rubocop-rails
+plugins: rubocop-rails
 
 AllCops:
   Exclude:
@@ -348,7 +347,7 @@ Style/PercentQLiterals:
   - lower_case_q
   - upper_case_q
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   NamePrefix:
   - is_
   ForbiddenPrefixes:
@@ -880,9 +879,6 @@ Lint/EmptyEnsure:
   Enabled: true
 
 Lint/EmptyInterpolation:
-  Enabled: true
-
-Style/EndBlock:
   Enabled: true
 
 Lint/EnsureReturn:
