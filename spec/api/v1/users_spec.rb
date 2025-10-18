@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe('User API', type: :request) do
   let!(:user) { create(:user) }
   let(:valid_params) { nil }
-  let!(:doorkeeper_application) {  Doorkeeper::Application.create!(name: 'Test Client', redirect_uri: '', scopes: '') }
+  let!(:doorkeeper_application) { Doorkeeper::Application.create!(name: 'Test Client', redirect_uri: '', scopes: '') }
 
   describe 'POST /api/v1/users' do
     let(:valid_params) do
