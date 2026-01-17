@@ -39,3 +39,6 @@ yarn-debug.log*
 .env.local
 *.pem
 deploy.tar.gz
+
+# macOS
+.DS_Store
