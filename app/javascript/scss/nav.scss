@@ -31,11 +31,6 @@ nav ul li a:hover {
   background-color: black;
 }
 
-nav .highlight {
-  background-color: $green-color;
-  float: right;
-}
-
 nav .disabled-link {
   pointer-events: none;
   background-color: #444;
