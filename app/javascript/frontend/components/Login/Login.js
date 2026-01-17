@@ -74,6 +74,8 @@ const Login = ({ setLogin }) => {
       if (response.status == 200) {
         setToken({ value: json.access_token });
         Cookies.set("access_token", json.access_token);
+        // TODO: Replace cookie storage with API endpoint (/api/v1/me) to get user data
+        Cookies.set("username", username);
         setLogin(true);
       } else {
         setErrorString({ value: json.status_code + " " + json.message });
@@ -92,6 +94,7 @@ const Login = ({ setLogin }) => {
     e.preventDefault();
     setToken({ value: "" });
     Cookies.remove("access_token");
+    Cookies.remove("username");
     setLogin(false);
   };
 

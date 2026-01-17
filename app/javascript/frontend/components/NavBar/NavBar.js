@@ -1,43 +1,55 @@
-import React, { useEffect, useState } from "react";
-import NavItem from "frontend/components/NavItem";
-import { isAuthenticated } from "frontend/utils/authenticateHelper";
+import React from "react";
+import { Link } from "react-router-dom";
+import "./NavBar.scss";
+import logo from "frontend/assets/logo-large.png";
 
-class NavBar extends React.Component {
-  render() {
-    return (
-      <nav>
-        <ul>
-          <NavItem item="Home" tolink="/"></NavItem>
-          <NavItem
-            item="Games"
-            tolink="/games"
-            className={!this.props.loggedIn ? "disabled-link" : ""}
-          ></NavItem>
-          {!this.props.loggedIn == true ? (
-            <NavItem
-              item="Login"
-              tolink="/login"
-              className={"highlight"}
-            ></NavItem>
-          ) : (
-            <NavItem
-              item="Logout"
-              tolink="/login"
-              className={"highlight"}
-            ></NavItem>
+const NavBar = ({ loggedIn, username }) => {
+  return (
+    <nav className="modern-navbar">
+      <div className="navbar-content">
+        <div className="navbar-left">
+          <Link to="/" className="logo-link">
+            <img src={logo} alt="King of 20" className="logo-image" />
+          </Link>
+        </div>
+
+        <div className="navbar-center">
+          {loggedIn && (
+            <div className="nav-links">
+              <Link to="/games" className="nav-link">
+                Games
+              </Link>
+            </div>
           )}
-          {!this.props.loggedIn == true ? (
-            <NavItem
-              item="Signup"
-              tolink="/signup"
-              className={"highlight"}
-            ></NavItem>
+        </div>
+
+        <div className="navbar-right">
+          {loggedIn ? (
+            <div className="user-info">
+              <div className="user-profile">
+                <div className="user-avatar">
+                  {username ? username.charAt(0).toUpperCase() : "U"}
+                </div>
+                <span className="username">{username || "User"}</span>
+              </div>
+              <Link to="/login" className="btn-logout">
+                Logout
+              </Link>
+            </div>
           ) : (
-            <></>
+            <div className="auth-buttons">
+              <Link to="/login" className="btn-login">
+                Login
+              </Link>
+              <Link to="/signup" className="btn-signup">
+                Sign Up
+              </Link>
+            </div>
           )}
-        </ul>
-      </nav>
-    );
-  }
-}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
 export default NavBar;
