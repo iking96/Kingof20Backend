@@ -35,7 +35,11 @@ module Api
         )
         @game.requesting_user_id = user.id
 
-        json_response(game: @game)
+        @moves = PlayLogic::MoveLogic::MoveManager.get_game_moves(
+          game_id: params[:id],
+        )
+
+        json_response(game: @game, moves: @moves)
       end
 
       def create

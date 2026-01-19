@@ -1,0 +1,107 @@
+@import "../../../scss/base.scss";
+
+.player-score-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 15%) 100%);
+  border-radius: 12px;
+  margin-bottom: 20px;
+
+  .vs-divider {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &.active {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+
+  .player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .username {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .you-badge {
+        background: $green-color;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: white;
+      }
+    }
+
+    .score {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+  }
+
+  .turn-indicator {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: $green-color;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}

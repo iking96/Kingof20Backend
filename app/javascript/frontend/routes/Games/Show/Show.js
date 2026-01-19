@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import ScoreBoard from "frontend/components/ScoreBoard";
+import React, { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
@@ -9,7 +8,16 @@ import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
-import PlayArea from "frontend/components/PlayArea";
+
+import PlayerScoreArea from "frontend/components/PlayerScoreArea";
+import MoveHistorySidebar from "frontend/components/MoveHistorySidebar";
+import TileDistributionModal from "frontend/components/TileDistributionModal";
+import OptionsMenu from "frontend/components/OptionsMenu";
+import Board from "frontend/components/Board";
+import TileRack from "frontend/components/TileRack";
+import ExchangeView from "frontend/components/ExchangeView";
+
+import "../../../../scss/game_container.scss";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
   Array.from({ length: boardSize }, () => 0)
@@ -29,6 +37,8 @@ const Show = ({
   const [playerData, setPlayerData] = useState({});
   const [rackValues, setRackValues] = useState(initalRackValues);
   const [moves, setMoves] = useState([]);
+  const [exchanging, setExchanging] = useState(false);
+  const [showTileDistribution, setShowTileDistribution] = useState(false);
   const is_authenticated = isAuthenticated();
 
   const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
@@ -174,18 +184,6 @@ const Show = ({
     );
   };
 
-  if (!hasFetched) {
-    return (
-      <div
-        style={{
-          backgroundColor: "#D8BFD8",
-          width: "100%",
-          height: "100%"
-        }}
-      ></div>
-    );
-  }
-
   const handleReceivedUpdate = response => {
     if (isFetching) {
       return;
@@ -193,36 +191,90 @@ const Show = ({
     doFetch();
   };
 
+  if (!hasFetched) {
+    return (
+      <div className="game-container">
+        <div className="game-panel">
+          <div className="floating-card" style={{ height: "600px" }}></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        backgroundColor: "#D8BFD8",
-        height: "auto",
-        minHeight: "100%",
-        paddingBottom: "10px"
-      }}
-    >
-      <ScoreBoard
-        yourTurn={gameFlowData.your_turn}
-        initiatorUsername={playerData.you.username}
-        opponentUsername={playerData.them ? playerData.them.username : null}
-        playerScore={gameFlowData.your_score}
-        opponentScore={gameFlowData.their_score}
+    <div className="game-container">
+      <div className="game-panel">
+        <div className="floating-card">
+          <PlayerScoreArea
+            yourTurn={gameFlowData.your_turn}
+            playerUsername={playerData.you?.username}
+            opponentUsername={playerData.them?.username}
+            playerScore={gameFlowData.your_score}
+            opponentScore={gameFlowData.their_score}
+          />
+
+          <DndProvider backend={Backend}>
+            <Board
+              boardValues={boardValues}
+              tempBoardValues={tempBoardValues}
+              lastMoveInfo={lastMoveInfo}
+              handleBoardSet={handleBoardSet}
+            />
+
+            <div className="controls-row">
+              <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
+
+              <OptionsMenu
+                yourTurn={gameFlowData.your_turn}
+                allowSwap={gameFlowData.allow_swap}
+                gameComplete={gameFlowData.complete}
+                onPass={postPass}
+                onExchange={() => setExchanging(true)}
+                onShowTileDistribution={() => setShowTileDistribution(true)}
+              />
+
+              <button
+                className="play-btn"
+                onClick={postTilePlacement}
+                disabled={!gameFlowData.your_turn || gameFlowData.complete}
+              >
+                PLAY!
+              </button>
+            </div>
+          </DndProvider>
+
+          {gameFlowData.complete && (
+            <div className="game-over-message">
+              Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <MoveHistorySidebar
+        moves={moves}
+        currentUsername={playerData.you?.username}
       />
-      <DndProvider backend={Backend}>
-        <PlayArea
-          boardValues={boardValues}
-          tempBoardValues={tempBoardValues}
-          rackValues={rackValues}
-          lastMoveInfo={lastMoveInfo}
-          gameFlowData={gameFlowData}
-          handleBoardSet={handleBoardSet}
-          handleRackSet={handleRackSet}
-          postTilePlacement={postTilePlacement}
-          postPass={postPass}
-          postExchange={postExchange}
+
+      {exchanging && (
+        <div className="exchange-modal-backdrop" onClick={(e) => e.target === e.currentTarget && setExchanging(false)}>
+          <div className="exchange-modal">
+            <ExchangeView
+              rackValues={rackValues}
+              postExchange={postExchange}
+              cancel={() => setExchanging(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showTileDistribution && (
+        <TileDistributionModal
+          availableTiles={gameFlowData.available_tiles}
+          onClose={() => setShowTileDistribution(false)}
         />
-      </DndProvider>
+      )}
+
       <ActionCableConsumer
         channel={{ channel: "GamesChannel" }}
         onReceived={handleReceivedUpdate}

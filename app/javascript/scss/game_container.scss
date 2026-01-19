@@ -1,0 +1,170 @@
+@import "./base.scss";
+
+$stripe-color-1: darken($royal-purple, 5%);
+$stripe-color-2: darken($royal-purple, 12%);
+$stripe-width: 12px;
+
+.game-container {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+  background: repeating-linear-gradient(
+    -45deg,
+    $stripe-color-1,
+    $stripe-color-1 $stripe-width,
+    $stripe-color-2 $stripe-width,
+    $stripe-color-2 ($stripe-width * 2)
+  );
+
+  .game-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+  }
+
+  .floating-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      0 10px 20px rgba(0, 0, 0, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+
+  .play-btn {
+    background: $royal-purple;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &:hover:not(:disabled) {
+      background: darken($royal-purple, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($royal-purple, 0.4);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.game-over-message {
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, $green-color 0%, darken($green-color, 10%) 100%);
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba($green-color, 0.3);
+}
+
+.exchange-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.exchange-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  animation: slideIn 0.2s ease;
+
+  .btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:first-child {
+        background: #f0f0f0;
+        color: #333;
+
+        &:hover {
+          background: #e0e0e0;
+        }
+      }
+
+      &:last-child {
+        background: $royal-purple;
+        color: white;
+
+        &:hover {
+          background: darken($royal-purple, 10%);
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
