@@ -73,7 +73,7 @@ const MoveHistory = ({
       window.location.replace(`/`);
     }
     doFetch();
-  }, [is_authenticated]);
+  }, [is_authenticated, id]);
 
   if (!hasFetched) {
     return (

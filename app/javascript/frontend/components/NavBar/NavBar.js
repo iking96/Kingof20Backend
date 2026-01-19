@@ -14,13 +14,7 @@ const NavBar = ({ loggedIn, username }) => {
         </div>
 
         <div className="navbar-center">
-          {loggedIn && (
-            <div className="nav-links">
-              <Link to="/games" className="nav-link">
-                Games
-              </Link>
-            </div>
-          )}
+          {/* Nav links removed - games are accessible via sidebar */}
         </div>
 
         <div className="navbar-right">

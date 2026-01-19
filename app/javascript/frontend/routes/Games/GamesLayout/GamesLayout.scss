@@ -1,0 +1,12 @@
+.games-layout {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 64px); // Account for NavBar height
+  overflow: hidden;
+}
+
+.games-content {
+  flex: 1;
+  overflow-y: auto;
+  background: #f5f5f5;
+}

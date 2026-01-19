@@ -124,7 +124,7 @@ const Show = ({
       window.location.replace(`/`);
     }
     doFetch();
-  }, [is_authenticated]);
+  }, [is_authenticated, id]);
 
   const handleRackSet = (col, value) => {
     var newRack = rackValues.slice();
