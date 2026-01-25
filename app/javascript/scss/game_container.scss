@@ -27,6 +27,14 @@ $stripe-width: 12px;
     max-width: 600px;
   }
 
+  .game-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .floating-card {
     background: white;
     border-radius: 16px;
@@ -34,7 +42,7 @@ $stripe-width: 12px;
       0 4px 6px rgba(0, 0, 0, 0.05),
       0 10px 20px rgba(0, 0, 0, 0.1),
       0 20px 40px rgba(0, 0, 0, 0.1);
-    padding: 24px;
+    padding: 16px;
     width: 100%;
     box-sizing: border-box;
   }

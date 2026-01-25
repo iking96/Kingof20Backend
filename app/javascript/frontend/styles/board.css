@@ -1,6 +1,6 @@
 .tile {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background-color: black;
   border: solid #666 2px;
   display: inline-block;
@@ -15,7 +15,7 @@
     height: 100%;
     background-color: white;
     text-align: center;
-    line-height: 40px;
+    line-height: 36px;
     text-transform: uppercase;
     overflow: visible;
     position: absolute;
@@ -35,11 +35,11 @@
     left: 0px; }
 
 #js-board {
-  width: 530px;
-  height: 530px;
+  width: 482px;
+  height: 482px;
   background-color: maroon;
-  min-width: 530px;
-  min-height: 530px;
+  min-width: 482px;
+  min-height: 482px;
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -48,4 +48,4 @@
     background-color: #666;
     padding: 1px; }
     #js-board .board .row {
-      height: 44px; }
+      height: 40px; }

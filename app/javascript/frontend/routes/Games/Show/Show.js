@@ -205,14 +205,6 @@ const Show = ({
     <div className="game-container">
       <div className="game-panel">
         <div className="floating-card">
-          <PlayerScoreArea
-            yourTurn={gameFlowData.your_turn}
-            playerUsername={playerData.you?.username}
-            opponentUsername={playerData.them?.username}
-            playerScore={gameFlowData.your_score}
-            opponentScore={gameFlowData.their_score}
-          />
-
           <DndProvider backend={Backend}>
             <Board
               boardValues={boardValues}
@@ -251,10 +243,19 @@ const Show = ({
         </div>
       </div>
 
-      <MoveHistorySidebar
-        moves={moves}
-        currentUsername={playerData.you?.username}
-      />
+<div className="game-sidebar">
+        <PlayerScoreArea
+          yourTurn={gameFlowData.your_turn}
+          playerUsername={playerData.you?.username}
+          opponentUsername={playerData.them?.username}
+          playerScore={gameFlowData.your_score}
+          opponentScore={gameFlowData.their_score}
+        />
+        <MoveHistorySidebar
+          moves={moves}
+          currentUsername={playerData.you?.username}
+        />
+      </div>
 
       {exchanging && (
         <div className="exchange-modal-backdrop" onClick={(e) => e.target === e.currentTarget && setExchanging(false)}>
