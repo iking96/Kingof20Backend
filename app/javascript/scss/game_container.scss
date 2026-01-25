@@ -1,15 +1,16 @@
 @import "./base.scss";
 
-$stripe-color-1: darken($royal-purple, 5%);
-$stripe-color-2: darken($royal-purple, 12%);
+$stripe-color-1: darken($royal-purple, 20%);
+$stripe-color-2: darken($royal-purple, 30%);
 $stripe-width: 12px;
 
 .game-container {
   display: flex;
+  align-items: flex-start;
   width: 100%;
   min-height: calc(100vh - 64px);
-  padding: 20px;
-  gap: 20px;
+  padding: 12px;
+  gap: 16px;
   box-sizing: border-box;
   background: repeating-linear-gradient(
     -45deg,
@@ -32,17 +33,11 @@ $stripe-width: 12px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .floating-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow:
-      0 4px 6px rgba(0, 0, 0, 0.05),
-      0 10px 20px rgba(0, 0, 0, 0.1),
-      0 20px 40px rgba(0, 0, 0, 0.1);
-    padding: 16px;
+    padding: 8px;
     width: 100%;
     box-sizing: border-box;
   }
@@ -52,31 +47,24 @@ $stripe-width: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: 8px;
   flex-wrap: wrap;
 
   .play-btn {
-    background: $royal-purple;
-    color: white;
+    background: $royal-gold;
+    color: #1a1a1a;
     border: none;
     padding: 12px 32px;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
 
     &:hover:not(:disabled) {
-      background: darken($royal-purple, 10%);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba($royal-purple, 0.4);
-    }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
+      background: lighten($royal-gold, 10%);
     }
 
     &:disabled {
