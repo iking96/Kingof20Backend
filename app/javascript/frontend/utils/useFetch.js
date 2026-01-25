@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { getAccessToken } from "frontend/utils/authenticateHelper.js";
 
 // Shamelessly stolen from Jeff
@@ -7,7 +7,17 @@ function useFetch(url, handleResponse) {
   const [hasFetched, setHasFetched] = useState(false);
   const [fetchError, setFetchError] = useState(null);
 
-  const doFetch = async () => {
+  // Use refs to always have the latest values in the callback
+  const urlRef = useRef(url);
+  const handleResponseRef = useRef(handleResponse);
+
+  // Update refs when values change
+  useEffect(() => {
+    urlRef.current = url;
+    handleResponseRef.current = handleResponse;
+  }, [url, handleResponse]);
+
+  const doFetch = useCallback(async () => {
     setIsFetching(true);
 
     try {
@@ -17,10 +27,10 @@ function useFetch(url, handleResponse) {
             `Bearer ${getAccessToken()}`
         }
       };
-      const response = await fetch(url, opts);
+      const response = await fetch(urlRef.current, opts);
       const json = await response.json();
 
-      handleResponse({ response, json });
+      handleResponseRef.current({ response, json });
       setFetchError(null);
     } catch (e) {
       setFetchError(
@@ -32,7 +42,7 @@ function useFetch(url, handleResponse) {
 
     setIsFetching(false);
     setHasFetched(true);
-  };
+  }, []);
 
   return {
     isFetching,
