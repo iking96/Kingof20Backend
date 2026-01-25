@@ -34,6 +34,9 @@ $stripe-width: 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    // Match height of game panel: board (484px) + rack (40px) + controls/spacing (~60px)
+    max-height: 584px;
+    overflow: hidden;
   }
 
   .floating-card {

@@ -7,6 +7,7 @@
   padding: 16px;
   background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 15%) 100%);
   border-radius: 12px;
+  flex-shrink: 0;
 
   .vs-divider {
     color: rgba(255, 255, 255, 0.6);
