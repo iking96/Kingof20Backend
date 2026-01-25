@@ -3,8 +3,6 @@ import { useDrag, useDrop } from "react-dnd";
 import { determineValue } from "frontend/utils/tilePrintingHelper.js";
 
 const Tile = ({
-  row,
-  col,
   value,
   is_starting = false,
   is_temp = false,

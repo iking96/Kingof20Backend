@@ -4,7 +4,6 @@ import Tile from "frontend/components/Tile";
 const RackSquare = ({ value, col, handleRackSet }) => {
   return (
     <Tile
-      col={col}
       value={value}
       canDrag={() => true}
       canDrop={() => value == 0}

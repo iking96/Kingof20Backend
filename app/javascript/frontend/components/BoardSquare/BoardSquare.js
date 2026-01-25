@@ -13,8 +13,6 @@ const is_starting_space = (row, col) => {
 const BoardSquare = ({ row, col, value, tempValue, inLastMove = false, handleBoardSet }) => {
   return (
     <Tile
-      row={row}
-      col={col}
       value={tempValue != 0 ? tempValue : value}
       is_starting={is_starting_space(row, col) ? " starting" : ""}
       is_temp={tempValue != 0}
