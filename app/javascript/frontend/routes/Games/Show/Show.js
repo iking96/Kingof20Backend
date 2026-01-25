@@ -203,6 +203,7 @@ const Show = ({
 
   return (
     <div className="game-container">
+      <div className="game-content-wrapper">
       <div className="game-panel">
         <div className="floating-card">
           <DndProvider backend={Backend}>
@@ -255,6 +256,7 @@ const Show = ({
           moves={moves}
           currentUsername={playerData.you?.username}
         />
+      </div>
       </div>
 
       {exchanging && (

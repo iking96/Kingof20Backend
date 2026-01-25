@@ -5,12 +5,9 @@ $stripe-color-2: darken($royal-purple, 30%);
 $stripe-width: 12px;
 
 .game-container {
-  display: flex;
-  align-items: flex-start;
   width: 100%;
   min-height: calc(100vh - 64px);
   padding: 12px;
-  gap: 16px;
   box-sizing: border-box;
   background: repeating-linear-gradient(
     -45deg,
@@ -20,12 +17,19 @@ $stripe-width: 12px;
     $stripe-color-2 ($stripe-width * 2)
   );
 
+  .game-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
   .game-panel {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 600px;
+    flex-shrink: 0;
   }
 
   .game-sidebar {
@@ -34,7 +38,7 @@ $stripe-width: 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    // Match height of game panel: board (484px) + rack (40px) + controls/spacing (~60px)
+    // Height matches game panel: board (484px) + rack (40px) + controls (~60px)
     max-height: 584px;
     overflow: hidden;
   }
