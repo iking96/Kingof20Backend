@@ -1,9 +1,4 @@
-$tw-color: red;
-$dw-color: pink;
-$dl-color: lightcyan;
-$tl-color: skyblue;
-$ct-color: $dw-color;
-
+// Tile variables - no CSS output, just shared values
 $tile-num: 12;
 $tile-size: 40px;
 $tile-color: black;
@@ -17,45 +12,4 @@ $decal-font-color: black;
   width: $size;
   height: $size;
   background-color: $color;
-}
-
-.tile {
-  @include coloredSquare($tile-size, $tile-color);
-  border: solid $tile-border-color $tile-border-width;
-  display: inline-block;
-  font: $tile-font;
-  text-align: center;
-  color: $decal-font-color;
-  position: relative;
-
-  &.starting {
-    background-color: $starting-tile-color;
-  }
-
-  .decal {
-    @include coloredSquare(100%, white);
-    text-align: center;
-    line-height: $tile-size;
-    text-transform: uppercase;
-    overflow: visible;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-
-    &.temp {
-      background-color: yellow;
-    }
-
-    &.last-move {
-      background-color: lightblue;
-    }
-  }
-
-  .highlight {
-    @include coloredSquare(100%, yellow);
-    opacity: 0.5;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-  }
 }

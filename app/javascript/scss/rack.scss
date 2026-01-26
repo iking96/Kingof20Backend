@@ -1,32 +1,57 @@
 @import 'tile.scss';
+@import 'base.scss';
 
-$rack-tile-num: 7;
-$rack-color: black;
-
-$rack-width: $tile-size * $rack-tile-num;
-$rack-height-adj: $tile-size + $tile-border-width * 2;
-$rack-width-adj: $rack-width + $tile-border-width * ($rack-tile-num * 2 + 1);
-
-@mixin coloredSquare($size, $color) {
-  width: $size;
-  height: $size;
-  background-color: $color;
-}
-
-@mixin coloredRectangle($width, $height, $color) {
-  width: $width;
-  height: $height;
-  background-color: $color;
-}
+$rack-gap: 6px;
+$rack-padding: 8px;
+$rack-bg-color: $royal-purple;
 
 #js-rack {
-  @include coloredRectangle($rack-width-adj, $rack-height-adj, $rack-color);
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  box-sizing: content-box;
+  display: inline-block;
+  padding: $rack-padding;
+  background-color: $rack-bg-color;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 
   .rack {
-    background-color: $tile-border-color;
+    display: flex;
+    gap: $rack-gap;
+  }
+
+  .tile {
+    @include coloredSquare($tile-size, transparent);
+    border: none;
+    display: inline-block;
+    font: $tile-font;
+    text-align: center;
+    color: $decal-font-color;
+    position: relative;
+    box-sizing: border-box;
+
+    .decal {
+      @include coloredSquare(100%, #f5f5f5);
+      text-align: center;
+      line-height: $tile-size;
+      text-transform: uppercase;
+      overflow: visible;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      font-weight: 700;
+
+      &.temp {
+        background-color: #ffd54f;
+      }
+    }
+
+    .highlight {
+      @include coloredSquare(100%, #ffd54f);
+      opacity: 0.4;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      border-radius: 4px;
+    }
   }
 }

@@ -1,37 +1,72 @@
 @import 'tile.scss';
 
-$bg-color: white;
-$board-color: maroon;
+$board-bg-color: #1a1a1a;
 $board-size: $tile-size * $tile-num;
-$board-border-width: round($board-size/80);
-
-$row-height-adj: $tile-size + $tile-border-width * 2;
-$board-size-adj: $board-size + $tile-border-width * ($tile-num * 2 + 1);
-
-$rack-tile-num: 7;
-$rack-size: $tile-size * $rack-tile-num;
-
-@mixin coloredSquare($size, $color) {
-  width: $size;
-  height: $size;
-  background-color: $color;
-}
 
 #js-board {
-  @include coloredSquare($board-size-adj, $board-color);
-  min-width: $board-size-adj;
-  min-height: $board-size-adj;
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  width: $board-size;
+  height: $board-size;
+  background-color: $board-bg-color;
+  min-width: $board-size;
+  min-height: $board-size;
+  margin: 0 auto;
   box-sizing: content-box;
+  border-radius: 4px;
+  border-top: $tile-border-width solid $tile-border-color;
+  border-left: $tile-border-width solid $tile-border-color;
 
   .board {
-    background-color: $tile-border-color;
-    padding: $tile-border-width / 2;
+    background-color: $board-bg-color;
 
     .row {
-      height: $row-height-adj;
+      height: $tile-size;
+    }
+  }
+
+  .tile {
+    @include coloredSquare($tile-size, $board-bg-color);
+    border: none;
+    border-right: $tile-border-width solid $tile-border-color;
+    border-bottom: $tile-border-width solid $tile-border-color;
+    display: inline-block;
+    font: $tile-font;
+    text-align: center;
+    color: $decal-font-color;
+    position: relative;
+    box-sizing: border-box;
+
+    &.starting {
+      background-color: #444;
+    }
+
+    .decal {
+      @include coloredSquare(100%, #f5f5f5);
+      text-align: center;
+      line-height: $tile-size;
+      text-transform: uppercase;
+      overflow: visible;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      border-radius: 3px;
+      font-weight: 700;
+
+      &.temp {
+        background-color: #ffd54f;
+      }
+
+      &.last-move {
+        background-color: #bae9ff;
+      }
+    }
+
+    .highlight {
+      @include coloredSquare(100%, #ffd54f);
+      opacity: 0.4;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      border-radius: 4px;
     }
   }
 }
