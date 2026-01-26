@@ -6,11 +6,12 @@ $rack-padding: 8px;
 $rack-bg-color: $royal-purple;
 
 #js-rack {
-  display: inline-block;
+  display: inline-flex;
   padding: $rack-padding;
   background-color: $rack-bg-color;
   border-radius: 8px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  align-items: center;
 
   .rack {
     display: flex;

@@ -4,33 +4,16 @@
   position: relative;
 
   .options-trigger {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid $royal-purple;
-    background: white;
+    border: none;
+    background: transparent;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
+    padding: 0;
+    font-size: 40px;
+    color: white;
+    line-height: 1;
 
     &:hover {
-      background: lighten($royal-purple, 45%);
-      transform: scale(1.05);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-
-    .dots-icon {
-      font-size: 24px;
-      font-weight: bold;
-      color: $royal-purple;
-      letter-spacing: 1px;
-      line-height: 1;
-      margin-top: -8px;
+      opacity: 0.7;
     }
   }
 

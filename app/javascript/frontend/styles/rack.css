@@ -13,11 +13,12 @@ a {
   text-decoration: none; }
 
 #js-rack {
-  display: inline-block;
+  display: inline-flex;
   padding: 8px;
   background-color: #7851a9;
   border-radius: 8px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); }
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  align-items: center; }
   #js-rack .rack {
     display: flex;
     gap: 6px; }

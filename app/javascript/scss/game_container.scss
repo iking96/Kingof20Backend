@@ -58,6 +58,10 @@ $stripe-width: 12px;
   margin-top: 8px;
   flex-wrap: wrap;
 
+  button {
+    margin: 0;
+  }
+
   .play-btn {
     background: $royal-gold;
     color: #1a1a1a;

@@ -48,7 +48,7 @@ const OptionsMenu = ({
         aria-haspopup="true"
         title="Game Options"
       >
-        <span className="dots-icon">...</span>
+        ☰
       </button>
 
       {isOpen && (
