@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RackSquare from "frontend/components/RackSquare";
+import { rackSize } from "frontend/utils/constants.js";
 
 const TileRack = ({ rackValues, handleRackSet }) => {
   return (
     <div id="js-rack">
       <div className="rack">
-        {rackValues.map((value, index) => (
+        {Array.from({ length: rackSize }, (_, index) => (
           <RackSquare
             key={index}
             col={index}
-            value={value}
+            value={rackValues[index] || 0}
             handleRackSet={handleRackSet}
           />
         ))}

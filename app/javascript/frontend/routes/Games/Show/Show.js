@@ -67,7 +67,7 @@ const Show = ({
       var your_win = game.your_win;
 
       setBoardValues(board);
-      setRackValues(your_rack);
+      setRackValues([1,0,0,0,0,0,0]);
       setTempBoardValues(initalBoardValues);
       setGameFlowData({
         id: id,
