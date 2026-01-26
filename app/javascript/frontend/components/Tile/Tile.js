@@ -33,13 +33,14 @@ const Tile = ({
   return (
     <div className={"tile" + `${is_starting ? " starting" : ""}`} ref={drop}>
       {value == 0 ? (
-        <></>
+        <>
+          {!isOver ? <></> : <div className="highlight" />}
+        </>
       ) : (
         <div className={"decal" + `${is_temp ? " temp" : ""}` + `${inLastMove ? " last-move" : ""}`} ref={drag}>
           {determineValue(value)}
         </div>
       )}
-      {!isOver ? <></> : <div className="highlight" />}
     </div>
   );
 };
