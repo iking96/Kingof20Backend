@@ -238,8 +238,8 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       let(:board) do
         [
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 9, 10, 9, 10, 2, 12, 2, 0, 0, 0, 0],
-          [1, 11, 5, 11, 4, 0, 5, 11, 4, 0, 0, 0],
+          [0, 9,  10, 9,  10, 2, 12, 2,  0, 0, 0, 0],
+          [1, 11, 5,  11, 4,  0, 5,  11, 4, 0, 0, 0],
           [0, 2, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -274,13 +274,13 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
         expect(result_vo.errors).to(include(:move_not_building))
       end
 
-      context 'when the move is the first move' do
+      context 'when added vertically perpendicular' do
         let(:board) do
           [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 5, 11, 4, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -291,14 +291,100 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           ]
         end
-        let(:rows) { [2, 2, 2] }
-        let(:cols) { [2, 3, 4] }
-        let(:tile_values) { [5, 11, 4] }
 
-        it 'returns correct value' do
-          result_vo = subject
-          expect(result_vo.success?).to(eq(true))
+        context 'above' do
+          let(:rows) { [0, 1, 2] }
+          let(:cols) { [4, 4, 4] }
+          let(:tile_values) { [5, 11, 4] }
+
+          it 'returns correct value' do
+            result_vo = subject
+            expect(result_vo.success?).to(eq(false))
+            expect(result_vo.errors).to(include(:move_not_building))
+          end
         end
+
+        context 'below' do
+          let(:rows) { [4, 5, 6] }
+          let(:cols) { [4, 4, 4] }
+          let(:tile_values) { [5, 11, 4] }
+
+          it 'returns correct value' do
+            result_vo = subject
+            expect(result_vo.success?).to(eq(false))
+            expect(result_vo.errors).to(include(:move_not_building))
+          end
+        end
+      end
+
+      context 'when added horizontally perpendicular' do
+        let(:board) do
+          [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          ]
+        end
+
+        context 'above' do
+          let(:rows) { [3, 3, 3] }
+          let(:cols) { [0, 1, 2] }
+          let(:tile_values) { [5, 11, 4] }
+
+          it 'returns correct value' do
+            result_vo = subject
+            expect(result_vo.success?).to(eq(false))
+            expect(result_vo.errors).to(include(:move_not_building))
+          end
+        end
+
+        context 'below' do
+          let(:rows) { [3, 3, 3] }
+          let(:cols) { [4, 5, 6] }
+          let(:tile_values) { [5, 11, 4] }
+
+          it 'returns correct value' do
+            result_vo = subject
+            expect(result_vo.success?).to(eq(false))
+            expect(result_vo.errors).to(include(:move_not_building))
+          end
+        end
+      end
+    end
+
+    context 'when the move is the first move' do
+      let(:board) do
+        [
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+      end
+      let(:rows) { [2, 2, 2] }
+      let(:cols) { [2, 3, 4] }
+      let(:tile_values) { [5, 11, 4] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(true))
       end
     end
   end

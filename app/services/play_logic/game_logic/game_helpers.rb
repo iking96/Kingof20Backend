@@ -362,22 +362,26 @@ module PlayLogic
           if orientation_result.value.include?(:horizontal)
             board_slice = board[move_row]
             move_col -= 1 while move_col - 1 > 0 && !board_slice[move_col - 1].zero?
-            move_col += 1 while move_col < Game.board_size && board_slice[move_col].operation_tile?
             while move_col < Game.board_size && !board_slice[move_col].zero?
-              expression_coordinates << [move_row, move_col]
+              expression_coordinates << [move_row, move_col, board_slice[move_col]]
               move_col += 1
             end
           else
             board_slice = board.transpose[move_col]
             move_row -= 1 while move_row - 1 > 0 && !board_slice[move_row - 1].zero?
-            move_row += 1 while move_row < Game.board_size && board_slice[move_row].operation_tile?
             while move_row < Game.board_size && !board_slice[move_row].zero?
-              expression_coordinates << [move_row, move_col]
+              expression_coordinates << [move_row, move_col, board_slice[move_row]]
               move_row += 1
             end
           end
 
+          # Pop first and/or last element from expression_coordinates if it is an operation
+          expression_coordinates.shift if expression_coordinates.any? && expression_coordinates.first[2].operation_tile?
+          expression_coordinates.pop if expression_coordinates.any? && expression_coordinates.last[2].operation_tile?
+
           move_coordinates = rows.zip(cols)
+          expression_coordinates = expression_coordinates.map { |coord| [coord[0], coord[1]] }
+
           !(expression_coordinates - move_coordinates).empty?
         end
 
