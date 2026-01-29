@@ -361,14 +361,14 @@ module PlayLogic
           expression_coordinates = []
           if orientation_result.value.include?(:horizontal)
             board_slice = board[move_row]
-            move_col -= 1 while move_col - 1 > 0 && !board_slice[move_col - 1].zero?
+            move_col -= 1 while move_col - 1 >= 0 && !board_slice[move_col - 1].zero?
             while move_col < Game.board_size && !board_slice[move_col].zero?
               expression_coordinates << [move_row, move_col, board_slice[move_col]]
               move_col += 1
             end
           else
             board_slice = board.transpose[move_col]
-            move_row -= 1 while move_row - 1 > 0 && !board_slice[move_row - 1].zero?
+            move_row -= 1 while move_row - 1 >= 0 && !board_slice[move_row - 1].zero?
             while move_row < Game.board_size && !board_slice[move_row].zero?
               expression_coordinates << [move_row, move_col, board_slice[move_row]]
               move_row += 1
