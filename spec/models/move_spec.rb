@@ -32,6 +32,47 @@ RSpec.describe(Move, type: :model) do
       expect { move.move_type = "some_string" }.to(raise_error(ArgumentError))
     end
 
+    context 'ai_move?' do
+      let(:ai_game) { create(:game, initiator: user, ai_difficulty: :easy) }
+      let(:ai_move) { create(:move, game: ai_game, user: nil, move_type: 'tile_placement') }
+      let(:human_move) { move }
+
+      it 'returns true for a move without a user on an AI game' do
+        expect(ai_move.ai_move?).to(be(true))
+      end
+
+      it 'returns false for a move with a user' do
+        expect(human_move.ai_move?).to(be(false))
+      end
+    end
+
+    context 'validates user presence' do
+      let(:ai_game) { create(:game, initiator: user, ai_difficulty: :easy) }
+
+      it 'allows nil user for AI moves' do
+        ai_move = build(:move, game: ai_game, user: nil, move_type: 'pass', move_number: 1, result: 10)
+        expect(ai_move).to(be_valid)
+      end
+
+      it 'requires user for non-AI moves' do
+        human_move = build(:move, game: game, user: nil, move_type: 'pass', move_number: 1, result: 10)
+        expect(human_move).not_to(be_valid)
+        expect(human_move.errors[:user]).to(be_present)
+      end
+    end
+
+    context 'as_json' do
+      it 'includes username from user' do
+        expect(move.as_json[:username]).to(eq(user.username))
+      end
+
+      it 'returns Computer when user is nil' do
+        ai_game = create(:game, initiator: user, ai_difficulty: :easy)
+        ai_move = create(:move, game: ai_game, user: nil, move_type: 'tile_placement')
+        expect(ai_move.as_json[:username]).to(eq('Computer'))
+      end
+    end
+
     context 'tests pre_processing conditions' do
       let(:game) { create(:game_with_user) }
 

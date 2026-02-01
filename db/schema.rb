@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_30_065657) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_27_022358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_30_065657) do
     t.string "current_player", default: "initiator"
     t.string "stage", default: "in_play"
     t.integer "hidden_from", default: 0
+    t.string "ai_difficulty"
     t.index ["initiator_id"], name: "index_games_on_initiator_id"
     t.index ["opponent_id"], name: "index_games_on_opponent_id"
   end

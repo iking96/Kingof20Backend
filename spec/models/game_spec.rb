@@ -134,4 +134,101 @@ RSpec.describe(Game, type: :model) do
       expect(game.moves.size).to(eq(2))
     end
   end
+
+  context 'AI games' do
+    let(:user) { create(:user) }
+
+    context 'when ai_difficulty is set' do
+      let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'easy') }
+
+      it 'is recognized as a computer game' do
+        expect(game.vs_computer?).to(eq(true))
+      end
+
+      it 'allows nil opponent' do
+        expect(game).to(be_valid)
+        expect(game.opponent).to(be_nil)
+      end
+
+      it 'does not require opponent validation' do
+        expect(game.errors[:initiator]).to(be_empty)
+      end
+
+      context 'with easy difficulty' do
+        it 'returns correct ai_difficulty value' do
+          expect(game.ai_difficulty).to(eq('easy'))
+          expect(game.ai_difficulty_easy?).to(eq(true))
+          expect(game.ai_difficulty_hard?).to(eq(false))
+        end
+      end
+
+      context 'with hard difficulty' do
+        let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'hard') }
+
+        it 'returns correct ai_difficulty value' do
+          expect(game.ai_difficulty).to(eq('hard'))
+          expect(game.ai_difficulty_easy?).to(eq(false))
+          expect(game.ai_difficulty_hard?).to(eq(true))
+        end
+      end
+    end
+
+    context 'when ai_difficulty is not set' do
+      let(:game) { create(:game, initiator: user, opponent: create(:user)) }
+
+      it 'is not recognized as a computer game' do
+        expect(game.vs_computer?).to(eq(false))
+      end
+    end
+
+    context 'current_turn_is_ai?' do
+      let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'easy') }
+
+      it 'returns false when current_player is initiator' do
+        game.current_player = 'initiator'
+        expect(game.current_turn_is_ai?).to(eq(false))
+      end
+
+      it 'returns true when current_player is opponent in AI game' do
+        game.current_player = 'opponent'
+        expect(game.current_turn_is_ai?).to(eq(true))
+      end
+
+      context 'in a human vs human game' do
+        let(:game) { create(:game, initiator: user, opponent: create(:user)) }
+
+        it 'returns false even when current_player is opponent' do
+          game.current_player = 'opponent'
+          expect(game.current_turn_is_ai?).to(eq(false))
+        end
+      end
+    end
+
+    context 'computer_opponent_data' do
+      let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'easy') }
+
+      it 'returns computer opponent info for easy AI' do
+        data = game.computer_opponent_data
+        expect(data['id']).to(eq(0))
+        expect(data['username']).to(eq('Computer (Easy)'))
+      end
+
+      context 'with hard difficulty' do
+        let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'hard') }
+
+        it 'returns computer opponent info for hard AI' do
+          data = game.computer_opponent_data
+          expect(data['username']).to(eq('Computer (Hard)'))
+        end
+      end
+
+      context 'for human vs human game' do
+        let(:game) { create(:game, initiator: user, opponent: create(:user)) }
+
+        it 'returns nil' do
+          expect(game.computer_opponent_data).to(be_nil)
+        end
+      end
+    end
+  end
 end

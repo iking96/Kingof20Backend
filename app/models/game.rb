@@ -8,7 +8,8 @@ class Game < ApplicationRecord
   def broadcast
     GamesChannel.broadcast_to(initiator, 'refresh')
 
-    if opponent
+    # Don't broadcast to opponent if it's an AI game or opponent not yet assigned
+    if opponent && !vs_computer?
       GamesChannel.broadcast_to(opponent, 'refresh')
     end
   end
@@ -79,6 +80,19 @@ class Game < ApplicationRecord
     opponent_forfit: 'opponent_forfit',
   }
 
+  enum :ai_difficulty, {
+    easy: 'easy',
+    hard: 'hard',
+  }, prefix: true
+
+  def vs_computer?
+    ai_difficulty.present?
+  end
+
+  def current_turn_is_ai?
+    vs_computer? && current_player == 'opponent'
+  end
+
   # validates .. presence: true will not allow empty array
   validate :available_tiles_presence
   def available_tiles_presence
@@ -100,6 +114,8 @@ class Game < ApplicationRecord
 
   validate :check_initiator_and_opponent
   def check_initiator_and_opponent
+    return if vs_computer? # AI games don't have an opponent user
+
     errors.add(:initiator, 'initiator can\'t be the same as opponent') if initiator == opponent
   end
 
@@ -116,7 +132,7 @@ class Game < ApplicationRecord
     ]
     super(options.merge(except: exclude_methods)).tap do |hash|
       hash.merge!(requesting_user_data)
-      hash.merge!(allow_swap: allow_swap?, complete: complete?)
+      hash.merge!(allow_swap: allow_swap?, complete: complete?, vs_computer: vs_computer?)
       hash.merge!(last_move: moves.last&.as_json)
     end
   end
@@ -164,7 +180,7 @@ class Game < ApplicationRecord
 
     if requesting_user_id == initiator.id
       response_data[:you] = initiator.as_json&.except('email')
-      response_data[:them] = opponent.as_json&.except('email')
+      response_data[:them] = computer_opponent_data || opponent.as_json&.except('email')
       response_data[:your_rack] = initiator_rack
       response_data[:your_turn] = (current_player == 'initiator')
       response_data[:your_score] = initiator_score
@@ -183,6 +199,13 @@ class Game < ApplicationRecord
     end
 
     response_data
+  end
+
+  def computer_opponent_data
+    return nil unless vs_computer?
+
+    difficulty_label = ai_difficulty == 'hard' ? 'Hard' : 'Easy'
+    { 'id' => 0, 'username' => "Computer (#{difficulty_label})" }
   end
 
   def toggle_current_user

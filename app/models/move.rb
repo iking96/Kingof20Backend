@@ -19,8 +19,12 @@ class Move < ApplicationRecord
 
   validates :move_number, presence: true
   validates :result, presence: true
-  validates :user, presence: true
+  validates :user, presence: true, unless: :ai_move?
   validates :game, presence: true
+
+  def ai_move?
+    game&.vs_computer? && user.nil?
+  end
 
   validate :pre_processing_valid?, on: :pre_processing
   def pre_processing_valid?
@@ -46,7 +50,7 @@ class Move < ApplicationRecord
       :user_id,
     ]
     super(options.merge(except: exclude_methods)).tap do |hash|
-      hash.merge!(username: user.username)
+      hash.merge!(username: user&.username || 'Computer')
     end
   end
 end
