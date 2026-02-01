@@ -193,6 +193,35 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
     end
 
+    context 'when a move would create multiple expressions' do
+      let(:board) do
+        [
+          [0, 0, 0, 0, 5, 0, 9, 0, 0, 0, 0, 0],
+          [0, 0, 0, 2, 11, 8, 10, 4, 0, 0, 0, 0],
+          [0, 0, 5, 11, 4, 0, 9, 0, 0, 0, 0, 0],
+          [0, 9, 10, 9, 10, 0, 10, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+      end
+
+      let(:rows) { [3, 4] }
+      let(:cols) { [5, 5] }
+      let(:tile_values) { [2, 10] }
+
+      it 'returns correct value' do
+        result_vo = subject
+        expect(result_vo.success?).to(eq(false))
+        expect(result_vo.errors).to(include(:move_creates_multiple_expressions))
+      end
+    end
+
     context 'when a move would create a dangling operation' do
       let(:rows) { [5] }
       let(:cols) { [2] }

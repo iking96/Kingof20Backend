@@ -148,6 +148,14 @@ module PlayLogic
             errors << :move_spans_expressions
           end
 
+          unless check_move_not_multiple_expressions(
+            board: board,
+            rows: move.row_num,
+            cols: move.col_num,
+          )
+            errors << :move_creates_multiple_expressions
+          end
+
           unless check_move_builds_from_placed_tiles(
             board: board,
             rows: move.row_num,
@@ -340,6 +348,29 @@ module PlayLogic
           else
             (rows.min..rows.max).none? do |index|
               board[index][move_col].zero?
+            end
+          end
+        end
+
+        def check_move_not_multiple_expressions(board:, rows:, cols:)
+          return true if rows.count <= 1
+
+          move_is_vertical = rows.uniq.count > 1
+          move_is_horizontal = cols.uniq.count > 1
+
+          rows.zip(cols).all? do |row, col|
+            orientation_result = check_expression_orientation(
+              board: board,
+              row: row,
+              col: col,
+            )
+
+            if move_is_vertical
+              orientation_result.value.include?(:vertical)
+            elsif move_is_horizontal
+              orientation_result.value.include?(:horizontal)
+            else
+              true
             end
           end
         end

@@ -17,6 +17,7 @@ module Error
         move_creates_dangling_operation: 'move on board created dangling operation',
         move_creates_lone_integer: 'move on board created lone integer',
         move_spans_expressions: 'move on board spans expressions',
+        move_creates_multiple_expressions: 'move on board creates multiple expressions',
         move_not_building: 'move does not build from previous tiles',
       }.freeze
 
