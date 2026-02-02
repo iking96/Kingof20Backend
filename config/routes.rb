@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       resources :games do
         resources :moves, only: [:index], to: 'games#moves'
       end
+      post 'moves/ai_move', to: 'moves#ai_move'
       resources :moves
     end
   end

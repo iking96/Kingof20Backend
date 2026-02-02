@@ -44,9 +44,18 @@ module Api
 
       def create
         user = current_resource_owner
-        @game = PlayLogic::GameLogic::GameManager.create_game_or_enqueue_for_user(
-          user: user,
-        )
+
+        if params[:ai_difficulty].present?
+          @game = PlayLogic::GameLogic::GameManager.create_ai_game(
+            user: user,
+            difficulty: params[:ai_difficulty]
+          )
+        else
+          @game = PlayLogic::GameLogic::GameManager.create_game_or_enqueue_for_user(
+            user: user,
+          )
+        end
+
         @game.requesting_user_id = user.id
 
         json_response(game: @game)
