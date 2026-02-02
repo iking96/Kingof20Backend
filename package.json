@@ -16,7 +16,7 @@
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^5.2.3"
   },
   "engines": {
     "node": ">= 23.0.0"
