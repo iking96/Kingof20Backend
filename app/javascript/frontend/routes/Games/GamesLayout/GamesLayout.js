@@ -45,8 +45,12 @@ const GamesLayout = ({ children }) => {
     doFetch();
   };
 
-  const handleCreateGame = () => {
-    doPost();
+  const handleCreateGame = (aiDifficulty = null) => {
+    if (aiDifficulty) {
+      doPost({ ai_difficulty: aiDifficulty });
+    } else {
+      doPost();
+    }
   };
 
   // Get current game ID from URL if we're viewing a specific game

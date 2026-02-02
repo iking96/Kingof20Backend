@@ -4,7 +4,7 @@ import Backend from "react-dnd-html5-backend";
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
-import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
+import { isAuthenticated, getAccessToken } from "frontend/utils/authenticateHelper.js";
 
 import { boardSize, rackSize } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
@@ -40,6 +40,19 @@ const Show = ({
   const [exchanging, setExchanging] = useState(false);
   const [showTileDistribution, setShowTileDistribution] = useState(false);
   const is_authenticated = isAuthenticated();
+
+  const triggerAiMove = () => {
+    fetch("/api/v1/moves/ai_move", {
+      headers: {
+        AUTHORIZATION: `Bearer ${getAccessToken()}`,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      credentials: "same-origin",
+      method: "POST",
+      body: JSON.stringify({ game_id: id })
+    });
+  };
 
   const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
     `/api/v1/games/${id}`,
@@ -77,7 +90,8 @@ const Show = ({
         allow_swap: allow_swap,
         complete: complete,
         your_win: your_win,
-        available_tiles: available_tiles
+        available_tiles: available_tiles,
+        vs_computer: game.vs_computer
       });
       setPlayerData({
         you: you,
@@ -94,6 +108,7 @@ const Show = ({
             return map;
           }, {})
       );
+
     }
   );
 
@@ -125,6 +140,8 @@ const Show = ({
       var status = response.status;
       if (status != 200) {
         alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`);
+      } else if (gameFlowData.vs_computer) {
+        setTimeout(triggerAiMove, 100);
       }
     }
   );
