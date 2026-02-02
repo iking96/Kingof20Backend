@@ -277,6 +277,53 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
     end
   end
 
+  describe 'create_ai_game' do
+    subject { described_class.create_ai_game(user: requesting_user, difficulty: difficulty) }
+    let(:requesting_user) { create(:user) }
+    let(:difficulty) { 'easy' }
+
+    it 'creates a new game' do
+      expect { subject }.to(change { Game.count }.by(1))
+    end
+
+    it 'sets the initiator to the user' do
+      expect(subject.initiator).to(eq(requesting_user))
+    end
+
+    it 'sets opponent to nil' do
+      expect(subject.opponent).to(be_nil)
+    end
+
+    it 'sets the ai_difficulty' do
+      expect(subject.ai_difficulty).to(eq('easy'))
+    end
+
+    it 'marks the game as vs_computer' do
+      expect(subject.vs_computer?).to(eq(true))
+    end
+
+    context 'with hard difficulty' do
+      let(:difficulty) { 'hard' }
+
+      it 'sets the correct difficulty' do
+        expect(subject.ai_difficulty).to(eq('hard'))
+        expect(subject.ai_difficulty_hard?).to(eq(true))
+      end
+    end
+
+    it 'does not create a game queue entry' do
+      expect { subject }.to_not(change { GameQueueEntry.count })
+    end
+
+    it 'initializes the game with proper starting state' do
+      game = subject
+      expect(game.board).to(be_present)
+      expect(game.initiator_rack.size).to(eq(7))
+      expect(game.opponent_rack.size).to(eq(7))
+      expect(game.current_player).to(eq('initiator'))
+    end
+  end
+
   describe 'delete_user_game' do
     subject { described_class.delete_user_game(game_id: game_id, user: requesting_user) }
 

@@ -396,4 +396,59 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       end
     end
   end
+
+  describe 'trigger_ai_move_if_needed' do
+    subject { described_class.trigger_ai_move_if_needed(game) }
+
+    let!(:game) do
+      create(
+        :game_with_user,
+        :with_first_move,
+        opponent: nil,
+        ai_difficulty: :easy,
+        current_player: 'opponent',
+      )
+    end
+
+    it 'makes an AI move when it is the AI turn' do
+      expect { subject }.to(change { game.reload.moves.count }.by(1))
+    end
+
+    it 'toggles the current player back to initiator' do
+      subject
+      game.reload
+      expect(game.current_player).to(eq('initiator'))
+    end
+
+    context 'when it is not the AI turn' do
+      before { game.update!(current_player: 'initiator') }
+
+      it 'does not make a move' do
+        expect(subject).to(be_nil)
+      end
+    end
+
+    context 'when the game is complete' do
+      before { game.update!(stage: 'complete') }
+
+      it 'does not make a move' do
+        expect(subject).to(be_nil)
+      end
+    end
+
+    context 'when the game is not vs computer' do
+      let!(:game) do
+        create(
+          :game_with_user,
+          :with_first_move,
+          opponent: create(:user),
+          current_player: 'opponent',
+        )
+      end
+
+      it 'does not make a move' do
+        expect(subject).to(be_nil)
+      end
+    end
+  end
 end

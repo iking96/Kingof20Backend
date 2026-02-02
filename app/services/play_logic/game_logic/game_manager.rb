@@ -35,6 +35,14 @@ module PlayLogic
           end
         end
 
+        def create_ai_game(user:, difficulty:)
+          Game.create!(
+            initiator: user,
+            opponent: nil,
+            ai_difficulty: difficulty
+          )
+        end
+
         def update_game(game_id:, user:, params:)
           options = params.keys
           game = user.games.find_by!(id: game_id)

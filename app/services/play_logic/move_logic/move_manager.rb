@@ -23,19 +23,22 @@ module PlayLogic
           user.moves.find_by!(id: move_id)
         end
 
-        def create_move_and_update_game(user:, move_info:)
+        def create_move_and_update_game(user:, move_info:, is_ai: false)
           new_move = Move.new(move_info)
 
-          pre_processor_result = MoveLogic::MoveHelpers.move_pre_processor(move: new_move)
-          raise Error::Move::PreProcessingError.new(
-            error_code: pre_processor_result.errors.first
-          ) unless pre_processor_result.success?
+          # Skip preprocessing validation for AI moves
+          unless is_ai
+            pre_processor_result = MoveLogic::MoveHelpers.move_pre_processor(move: new_move)
+            raise Error::Move::PreProcessingError.new(
+              error_code: pre_processor_result.errors.first
+            ) unless pre_processor_result.success?
+          end
 
           Game.transaction do
             move_game = new_move.game
 
-            # Check that user is current player
-            unless move_game.current_user == user
+            # Check that user is current player (skip for AI)
+            unless is_ai || move_game.current_user == user
               raise Error::Move::ProcessingError.new(
                 error_code: :move_not_current_player,
               )
@@ -91,6 +94,14 @@ module PlayLogic
           end
 
           new_move
+        end
+
+        def trigger_ai_move_if_needed(game)
+          game.reload
+          return unless game.current_turn_is_ai? && !game.complete?
+
+          ai_class = game.ai_difficulty_easy? ? Ai::EasyAi : Ai::HardAi
+          ai_class.new(game).make_move
         end
 
         private
