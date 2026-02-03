@@ -1,0 +1,55 @@
+@import "../../../scss/base.scss";
+
+.game-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  flex-shrink: 0;
+
+  .tiles-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+  }
+
+  .stage-indicator {
+    color: $royal-gold;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    background: rgba($royal-gold, 0.15);
+    border-radius: 4px;
+  }
+
+  &.game-over {
+    justify-content: center;
+    padding: 12px 16px;
+
+    .game-over-text {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    &.won {
+      background: rgba($green-color, 0.2);
+
+      .game-over-text {
+        color: $green-color;
+      }
+    }
+
+    &.lost {
+      background: rgba($royal-gold, 0.2);
+
+      .game-over-text {
+        color: $royal-gold;
+      }
+    }
+  }
+}

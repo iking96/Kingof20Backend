@@ -128,7 +128,6 @@ class Game < ApplicationRecord
       :opponent_score,
       :opponent_rack,
       :hidden_from,
-      :stage,
     ]
     super(options.merge(except: exclude_methods)).tap do |hash|
       hash.merge!(requesting_user_data)

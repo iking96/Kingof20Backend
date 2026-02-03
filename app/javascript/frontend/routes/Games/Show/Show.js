@@ -16,6 +16,7 @@ import OptionsMenu from "frontend/components/OptionsMenu";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import ExchangeView from "frontend/components/ExchangeView";
+import GameInfoBar from "frontend/components/GameInfoBar";
 
 import "../../../../scss/game_container.scss";
 
@@ -78,6 +79,7 @@ const Show = ({
       var allow_swap = game.allow_swap;
       var complete = game.complete;
       var your_win = game.your_win;
+      var stage = game.stage;
 
       setBoardValues(board);
       setRackValues(your_rack);
@@ -91,7 +93,8 @@ const Show = ({
         complete: complete,
         your_win: your_win,
         available_tiles: available_tiles,
-        vs_computer: game.vs_computer
+        vs_computer: game.vs_computer,
+        stage: stage
       });
       setPlayerData({
         you: you,
@@ -221,59 +224,59 @@ const Show = ({
   return (
     <div className="game-container">
       <div className="game-content-wrapper">
-      <div className="game-panel">
-        <div className="floating-card">
-          <DndProvider backend={Backend}>
-            <Board
-              boardValues={boardValues}
-              tempBoardValues={tempBoardValues}
-              lastMoveInfo={lastMoveInfo}
-              handleBoardSet={handleBoardSet}
-            />
-
-            <div className="controls-row">
-              <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-
-              <OptionsMenu
-                yourTurn={gameFlowData.your_turn}
-                allowSwap={gameFlowData.allow_swap}
-                gameComplete={gameFlowData.complete}
-                onPass={postPass}
-                onExchange={() => setExchanging(true)}
-                onShowTileDistribution={() => setShowTileDistribution(true)}
+        <div className="game-panel">
+          <div className="floating-card">
+            <DndProvider backend={Backend}>
+              <Board
+                boardValues={boardValues}
+                tempBoardValues={tempBoardValues}
+                lastMoveInfo={lastMoveInfo}
+                handleBoardSet={handleBoardSet}
               />
 
-              <button
-                className="play-btn"
-                onClick={postTilePlacement}
-                disabled={!gameFlowData.your_turn || gameFlowData.complete}
-              >
-                PLAY!
-              </button>
-            </div>
-          </DndProvider>
+              <div className="controls-row">
+                <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
 
-          {gameFlowData.complete && (
-            <div className="game-over-message">
-              Game Over. {gameFlowData.your_win ? "You Win!" : "They Win!"}
-            </div>
-          )}
+                <OptionsMenu
+                  yourTurn={gameFlowData.your_turn}
+                  allowSwap={gameFlowData.allow_swap}
+                  gameComplete={gameFlowData.complete}
+                  onPass={postPass}
+                  onExchange={() => setExchanging(true)}
+                  onShowTileDistribution={() => setShowTileDistribution(true)}
+                />
+
+                <button
+                  className="play-btn"
+                  onClick={postTilePlacement}
+                  disabled={!gameFlowData.your_turn || gameFlowData.complete}
+                >
+                  PLAY!
+                </button>
+              </div>
+            </DndProvider>
+
+          </div>
         </div>
-      </div>
-
-<div className="game-sidebar">
-        <PlayerScoreArea
-          yourTurn={gameFlowData.your_turn}
-          playerUsername={playerData.you?.username}
-          opponentUsername={playerData.them?.username}
-          playerScore={gameFlowData.your_score}
-          opponentScore={gameFlowData.their_score}
-        />
-        <MoveHistorySidebar
-          moves={moves}
-          currentUsername={playerData.you?.username}
-        />
-      </div>
+        <div className="game-sidebar">
+          <GameInfoBar
+            tilesRemaining={gameFlowData.available_tiles?.length || 0}
+            stage={gameFlowData.stage}
+            complete={gameFlowData.complete}
+            yourWin={gameFlowData.your_win}
+          />
+          <PlayerScoreArea
+            yourTurn={gameFlowData.your_turn}
+            playerUsername={playerData.you?.username}
+            opponentUsername={playerData.them?.username}
+            playerScore={gameFlowData.your_score}
+            opponentScore={gameFlowData.their_score}
+          />
+          <MoveHistorySidebar
+            moves={moves}
+            currentUsername={playerData.you?.username}
+          />
+        </div>
       </div>
 
       {exchanging && (

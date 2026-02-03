@@ -85,17 +85,6 @@ $stripe-width: 12px;
   }
 }
 
-.game-over-message {
-  margin-top: 20px;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, $green-color 0%, darken($green-color, 10%) 100%);
-  color: white;
-  border-radius: 12px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba($green-color, 0.3);
-}
 
 .exchange-modal-backdrop {
   position: fixed;
