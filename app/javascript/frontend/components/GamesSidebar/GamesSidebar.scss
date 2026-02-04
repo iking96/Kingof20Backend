@@ -196,6 +196,40 @@
   color: #666;
 }
 
+.game-result {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+
+  &.won {
+    background: rgba($green-color, 0.15);
+    color: $green-color;
+  }
+
+  &.lost {
+    background: rgba($royal-gold, 0.15);
+    color: $royal-gold;
+  }
+}
+
+.game-item.completed {
+  opacity: 0.8;
+
+  &.won {
+    border-left: 3px solid $green-color;
+  }
+
+  &.lost {
+    border-left: 3px solid $royal-gold;
+  }
+}
+
 .empty-state {
   padding: 20px 12px;
   text-align: center;
