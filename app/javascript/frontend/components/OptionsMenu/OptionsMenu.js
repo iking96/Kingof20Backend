@@ -7,6 +7,7 @@ const OptionsMenu = ({
   gameComplete,
   onPass,
   onExchange,
+  onResign,
   onShowTileDistribution,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,6 +40,11 @@ const OptionsMenu = ({
     setIsOpen(false);
   };
 
+  const handleResign = () => {
+    onResign();
+    setIsOpen(false);
+  };
+
   return (
     <div className="options-menu" ref={menuRef}>
       <button
@@ -68,6 +74,10 @@ const OptionsMenu = ({
           <button onClick={handleTileDistribution}>
             <span className="icon">📊</span>
             Tile Distribution
+          </button>
+          <button onClick={handleResign} disabled={gameComplete}>
+            <span className="icon">🏳️</span>
+            Resign
           </button>
         </div>
       )}

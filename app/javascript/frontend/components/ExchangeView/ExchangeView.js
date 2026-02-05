@@ -33,7 +33,7 @@ const ExchangeView = ({ rackValues, postExchange, cancel }) => {
   };
 
   return (
-    <div>
+    <div className="exchange-view">
       <div className="btn-group">
         <button onClick={cancelExchange}>Cancel</button>
         <button onClick={doExchange}>Perform Exchange</button>

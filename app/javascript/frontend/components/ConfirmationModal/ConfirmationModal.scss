@@ -1,0 +1,54 @@
+@import "../../../scss/base.scss";
+
+.confirmation-modal-content {
+  text-align: center;
+
+  .confirmation-message {
+    margin: 0 0 24px 0;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .confirmation-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+
+    button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cancel-btn {
+      background: #f0f0f0;
+      color: #333;
+
+      &:hover {
+        background: #e0e0e0;
+      }
+    }
+
+    .confirm-btn {
+      background: $royal-purple;
+      color: white;
+
+      &:hover {
+        background: darken($royal-purple, 10%);
+      }
+
+      &.danger {
+        background: #dc3545;
+
+        &:hover {
+          background: darken(#dc3545, 10%);
+        }
+      }
+    }
+  }
+}

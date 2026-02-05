@@ -12,6 +12,8 @@ import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import PlayerScoreArea from "frontend/components/PlayerScoreArea";
 import MoveHistorySidebar from "frontend/components/MoveHistorySidebar";
 import TileDistributionModal from "frontend/components/TileDistributionModal";
+import Modal from "frontend/components/Modal";
+import ConfirmationModal from "frontend/components/ConfirmationModal";
 import OptionsMenu from "frontend/components/OptionsMenu";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
@@ -40,6 +42,8 @@ const Show = ({
   const [moves, setMoves] = useState([]);
   const [exchanging, setExchanging] = useState(false);
   const [showTileDistribution, setShowTileDistribution] = useState(false);
+  const [showPassConfirm, setShowPassConfirm] = useState(false);
+  const [showResignConfirm, setShowResignConfirm] = useState(false);
   const is_authenticated = isAuthenticated();
 
   const triggerAiMove = () => {
@@ -181,11 +185,28 @@ const Show = ({
   };
 
   const postPass = () => {
+    setShowPassConfirm(false);
     doPost({
       move_info: {
         game_id: id,
         move_type: "pass"
       }
+    });
+  };
+
+  const postResign = () => {
+    setShowResignConfirm(false);
+    fetch(`/api/v1/games/${id}`, {
+      headers: {
+        AUTHORIZATION: `Bearer ${getAccessToken()}`,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      credentials: "same-origin",
+      method: "PATCH",
+      body: JSON.stringify({ forfit: true })
+    }).then(() => {
+      doFetch();
     });
   };
 
@@ -241,8 +262,9 @@ const Show = ({
                   yourTurn={gameFlowData.your_turn}
                   allowSwap={gameFlowData.allow_swap}
                   gameComplete={gameFlowData.complete}
-                  onPass={postPass}
+                  onPass={() => setShowPassConfirm(true)}
                   onExchange={() => setExchanging(true)}
+                  onResign={() => setShowResignConfirm(true)}
                   onShowTileDistribution={() => setShowTileDistribution(true)}
                 />
 
@@ -280,21 +302,42 @@ const Show = ({
       </div>
 
       {exchanging && (
-        <div className="exchange-modal-backdrop" onClick={(e) => e.target === e.currentTarget && setExchanging(false)}>
-          <div className="exchange-modal">
-            <ExchangeView
-              rackValues={rackValues}
-              postExchange={postExchange}
-              cancel={() => setExchanging(false)}
-            />
-          </div>
-        </div>
+        <Modal title="Exchange Tiles" onClose={() => setExchanging(false)} maxWidth="500px">
+          <ExchangeView
+            rackValues={rackValues}
+            postExchange={postExchange}
+            cancel={() => setExchanging(false)}
+          />
+        </Modal>
       )}
 
       {showTileDistribution && (
         <TileDistributionModal
           availableTiles={gameFlowData.available_tiles}
           onClose={() => setShowTileDistribution(false)}
+        />
+      )}
+
+      {showPassConfirm && (
+        <ConfirmationModal
+          title="Pass Turn"
+          message="Are you sure you want to pass your turn?"
+          confirmText="Pass"
+          cancelText="Cancel"
+          onConfirm={postPass}
+          onCancel={() => setShowPassConfirm(false)}
+        />
+      )}
+
+      {showResignConfirm && (
+        <ConfirmationModal
+          title="Resign"
+          message="Are you sure you want to resign? This will end the game and count as a loss."
+          confirmText="Resign"
+          cancelText="Cancel"
+          onConfirm={postResign}
+          onCancel={() => setShowResignConfirm(false)}
+          variant="danger"
         />
       )}
 
