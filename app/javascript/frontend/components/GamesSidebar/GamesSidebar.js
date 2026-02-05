@@ -110,14 +110,14 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame }) => {
         </div>
       </div>
 
-      {completedGames.length > 0 && (
-        <div className="sidebar-section">
-          <div className="section-header">
-            <span className="header-icon">✓</span>
-            <h3>Completed</h3>
-          </div>
-          <div className="game-list">
-            {completedGames.map(game => (
+      <div className="sidebar-section">
+        <div className="section-header">
+          <span className="header-icon">✓</span>
+          <h3>Completed</h3>
+        </div>
+        <div className="game-list">
+          {completedGames.length > 0 ? (
+            completedGames.map(game => (
               <div
                 key={game.id}
                 className={`game-item completed ${game.your_win ? 'won' : 'lost'} ${currentGameId == game.id ? 'active' : ''}`}
@@ -138,10 +138,12 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame }) => {
                   {game.your_win ? 'W' : 'L'}
                 </div>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <div className="empty-state">No completed games</div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
