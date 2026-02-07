@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
+import useDelete from "frontend/utils/useDelete";
 import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import GamesSidebar from "frontend/components/GamesSidebar";
@@ -32,6 +33,11 @@ const GamesLayout = ({ children }) => {
       doFetch(); // Refresh games list
     }
   );
+
+  // Hide/delete game
+  const { doDelete } = useDelete("/api/v1/games", () => {
+    doFetch(); // Refresh games list after hiding
+  });
 
   useEffect(() => {
     if (!is_authenticated) {
@@ -65,6 +71,7 @@ const GamesLayout = ({ children }) => {
         games={games}
         currentGameId={getCurrentGameId()}
         onCreateGame={handleCreateGame}
+        onHideGame={doDelete}
       />
       <div className="games-content">
         {children}

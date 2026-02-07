@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./GamesSidebar.scss";
 
-const GamesSidebar = ({ games, currentGameId, onCreateGame }) => {
+const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
   const history = useHistory();
   const [showNewGameMenu, setShowNewGameMenu] = useState(false);
 
@@ -19,6 +19,11 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame }) => {
   const handleCreateGame = (aiDifficulty = null) => {
     setShowNewGameMenu(false);
     onCreateGame(aiDifficulty);
+  };
+
+  const handleHideGame = (e, gameId) => {
+    e.stopPropagation();
+    onHideGame(gameId);
   };
 
   return (
@@ -134,8 +139,17 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame }) => {
                     {game.your_score} - {game.their_score}
                   </div>
                 </div>
-                <div className={`game-result ${game.your_win ? 'won' : 'lost'}`}>
-                  {game.your_win ? 'W' : 'L'}
+                <div className="game-result-container">
+                  <div className={`game-result ${game.your_win ? 'won' : 'lost'}`}>
+                    {game.your_win ? 'W' : 'L'}
+                  </div>
+                  <button
+                    className="hide-game-btn"
+                    onClick={(e) => handleHideGame(e, game.id)}
+                    title="Hide game"
+                  >
+                    ×
+                  </button>
                 </div>
               </div>
             ))
