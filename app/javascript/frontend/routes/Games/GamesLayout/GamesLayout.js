@@ -40,10 +40,10 @@ const GamesLayout = ({ children }) => {
   });
 
   useEffect(() => {
-    if (!is_authenticated) {
-      window.location.replace(`/`);
+    // Only fetch games if authenticated
+    if (is_authenticated) {
+      doFetch();
     }
-    doFetch();
   }, [is_authenticated]);
 
   const handleReceivedUpdate = response => {
@@ -72,14 +72,17 @@ const GamesLayout = ({ children }) => {
         currentGameId={getCurrentGameId()}
         onCreateGame={handleCreateGame}
         onHideGame={doDelete}
+        isAuthenticated={is_authenticated}
       />
       <div className="games-content">
         {children}
       </div>
-      <ActionCableConsumer
-        channel={{ channel: 'GamesChannel'}}
-        onReceived={handleReceivedUpdate}
-      />
+      {is_authenticated && (
+        <ActionCableConsumer
+          channel={{ channel: 'GamesChannel'}}
+          onReceived={handleReceivedUpdate}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 
@@ -33,6 +34,7 @@ const Show = ({
     params: { id }
   }
 }) => {
+  const history = useHistory();
   const [boardValues, setBoardValues] = useState(initalBoardValues);
   const [tempBoardValues, setTempBoardValues] = useState(initalBoardValues);
   const [lastMoveInfo, setLastMoveInfo] = useState(null);
@@ -155,10 +157,11 @@ const Show = ({
 
   useEffect(() => {
     if (!is_authenticated) {
-      window.location.replace(`/`);
+      history.replace('/games/how-to-play');
+      return;
     }
     doFetch();
-  }, [is_authenticated, id]);
+  }, [is_authenticated, id, history]);
 
   const handleRackSet = (col, value) => {
     var newRack = rackValues.slice();

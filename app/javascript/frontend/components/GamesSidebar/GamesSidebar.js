@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./GamesSidebar.scss";
 
-const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
+const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated }) => {
   const history = useHistory();
   const [showNewGameMenu, setShowNewGameMenu] = useState(false);
 
@@ -29,11 +29,16 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
   return (
     <div className="games-sidebar">
       <div className="new-game-container">
-        <button className="create-game-btn" onClick={() => setShowNewGameMenu(!showNewGameMenu)}>
+        <button
+          className={`create-game-btn ${!isAuthenticated ? 'disabled' : ''}`}
+          onClick={() => isAuthenticated && setShowNewGameMenu(!showNewGameMenu)}
+          disabled={!isAuthenticated}
+          title={!isAuthenticated ? "Sign in to create a game" : ""}
+        >
           <span className="btn-icon">+</span>
           New Game
         </button>
-        {showNewGameMenu && (
+        {showNewGameMenu && isAuthenticated && (
           <div className="new-game-menu">
             <button onClick={() => handleCreateGame(null)}>
               <span className="menu-icon">&#x1F465;</span>
@@ -78,7 +83,9 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
               </div>
             ))
           ) : (
-            <div className="empty-state">No games waiting for your move</div>
+            <div className="empty-state">
+              {isAuthenticated ? "No games waiting for your move" : "Sign in to see your games"}
+            </div>
           )}
         </div>
       </div>
@@ -110,7 +117,9 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
               </div>
             ))
           ) : (
-            <div className="empty-state">No games waiting for opponent</div>
+            <div className="empty-state">
+              {isAuthenticated ? "No games waiting for opponent" : "Sign in to see your games"}
+            </div>
           )}
         </div>
       </div>
@@ -154,7 +163,9 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame }) => {
               </div>
             ))
           ) : (
-            <div className="empty-state">No completed games</div>
+            <div className="empty-state">
+              {isAuthenticated ? "No completed games" : "Sign in to see your games"}
+            </div>
           )}
         </div>
       </div>

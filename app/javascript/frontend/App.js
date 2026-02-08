@@ -40,7 +40,7 @@ class App extends React.Component {
               exact
               path="/"
               render={() =>
-                this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/login" />
+                this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
               }
             />
             <Route path="/games" render={() => <Games />} />
