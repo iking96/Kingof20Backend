@@ -1,13 +1,15 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import GamesLayout from "./GamesLayout";
-import List from "./List";
+import GamesRedirect from "./GamesRedirect";
 import Show from "./Show";
+import HowToPlay from "frontend/routes/HowToPlay";
 
 export default () => (
   <GamesLayout>
     <Switch>
-      <Route exact path="/games" component={List} />
+      <Route exact path="/games" component={GamesRedirect} />
+      <Route exact path="/games/how-to-play" component={HowToPlay} />
       <Route exact path="/games/:id" component={Show} />
     </Switch>
   </GamesLayout>

@@ -15,7 +15,7 @@ const GamesLayout = ({ children }) => {
   const is_authenticated = isAuthenticated();
 
   // Fetch games list for sidebar
-  const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
+  const { isFetching, doFetch } = useFetch(
     "/api/v1/games",
     ({ json }) => {
       setGames(json.games || []);

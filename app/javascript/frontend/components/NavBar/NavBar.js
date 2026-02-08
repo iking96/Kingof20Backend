@@ -14,7 +14,9 @@ const NavBar = ({ loggedIn, username }) => {
         </div>
 
         <div className="navbar-center">
-          {/* Nav links removed - games are accessible via sidebar */}
+          <Link to="/games/how-to-play" className="nav-link">
+            How to Play
+          </Link>
         </div>
 
         <div className="navbar-right">
