@@ -177,6 +177,32 @@ const Show = ({
     setTempBoardValues(newBoard);
   };
 
+  const recallTiles = () => {
+    const tilesToRecall = [];
+    const newTempBoard = tempBoardValues.map(arr => arr.slice());
+
+    // Collect tiles from temp board and clear them
+    newTempBoard.forEach((row, rowIdx) => {
+      row.forEach((value, colIdx) => {
+        if (value !== 0) {
+          tilesToRecall.push(value);
+          newTempBoard[rowIdx][colIdx] = 0;
+        }
+      });
+    });
+
+    // Return tiles to empty rack slots
+    const newRack = rackValues.slice();
+    for (let i = 0; i < newRack.length && tilesToRecall.length > 0; i++) {
+      if (newRack[i] === 0) {
+        newRack[i] = tilesToRecall.shift();
+      }
+    }
+
+    setTempBoardValues(newTempBoard);
+    setRackValues(newRack);
+  };
+
   const postTilePlacement = () => {
     doPost({
       move_info: {
@@ -266,7 +292,10 @@ const Show = ({
                   allowSwap={gameFlowData.allow_swap}
                   gameComplete={gameFlowData.complete}
                   onPass={() => setShowPassConfirm(true)}
-                  onExchange={() => setExchanging(true)}
+                  onExchange={() => {
+                    recallTiles();
+                    setExchanging(true);
+                  }}
                   onResign={() => setShowResignConfirm(true)}
                   onShowTileDistribution={() => setShowTileDistribution(true)}
                 />
