@@ -5,7 +5,7 @@ module Error
     class PreProcessingError < CustomError
       PRE_PROCESSING_ERRORS = {
         move_pre_processing_error: 'Unable to process your move',
-        move_missing_arguments: 'Move is missing required information',
+        move_missing_arguments: 'Please complete your move before submitting',
         move_input_to_long: 'You can only place up to 3 tiles per turn',
         move_input_mismatch: 'Invalid move data',
         move_input_duplicate: 'Cannot place multiple tiles in the same space',

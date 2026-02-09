@@ -212,7 +212,7 @@ RSpec.describe('Move API', type: :request) do
           "error_code" => "move_missing_arguments",
           "status" => 422,
         ))
-        expect(json["message"]).to(include("Move is missing required information"))
+        expect(json["message"]).to(include("Please complete your move before submitting"))
       end
     end
 
