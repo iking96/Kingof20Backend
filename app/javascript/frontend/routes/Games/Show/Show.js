@@ -15,6 +15,7 @@ import MoveHistorySidebar from "frontend/components/MoveHistorySidebar";
 import TileDistributionModal from "frontend/components/TileDistributionModal";
 import Modal from "frontend/components/Modal";
 import ConfirmationModal from "frontend/components/ConfirmationModal";
+import ErrorModal from "frontend/components/ErrorModal";
 import OptionsMenu from "frontend/components/OptionsMenu";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
@@ -46,6 +47,7 @@ const Show = ({
   const [showTileDistribution, setShowTileDistribution] = useState(false);
   const [showPassConfirm, setShowPassConfirm] = useState(false);
   const [showResignConfirm, setShowResignConfirm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const is_authenticated = isAuthenticated();
 
   const triggerAiMove = () => {
@@ -66,8 +68,9 @@ const Show = ({
     ({ response, json }) => {
       var status = response.status;
       if (status != 200) {
-        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`);
-        window.location.replace(`/`);
+        setErrorMessage("Unable to load game. Redirecting...");
+        setTimeout(() => window.location.replace(`/`), 2000);
+        return;
       }
 
       var game = json.game;
@@ -147,8 +150,12 @@ const Show = ({
     "/api/v1/moves",
     ({ response, json }) => {
       var status = response.status;
-      if (status != 200) {
-        alert(`Server responded with ${status}. JSON: ${JSON.stringify(json)}`);
+      if (status === 422) {
+        // Unprocessable entity - show the validation message
+        setErrorMessage(json?.message || "Invalid move. Please try again.");
+      } else if (status != 200) {
+        // Other errors - generic message
+        setErrorMessage("Something went wrong. Please try again.");
       } else if (gameFlowData.vs_computer) {
         setTimeout(triggerAiMove, 100);
       }
@@ -370,6 +377,14 @@ const Show = ({
           onConfirm={postResign}
           onCancel={() => setShowResignConfirm(false)}
           variant="danger"
+        />
+      )}
+
+      {errorMessage && (
+        <ErrorModal
+          title="Invalid Move"
+          message={errorMessage}
+          onClose={() => setErrorMessage(null)}
         />
       )}
 

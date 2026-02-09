@@ -4,8 +4,8 @@ module Error
   module Move
     class ProcessingError < CustomError
       PROCESSING_ERRORS = {
-        move_processing_error: 'unable to process move',
-        move_not_current_player: 'User is not current player',
+        move_processing_error: 'Unable to process your move',
+        move_not_current_player: "It's not your turn",
       }.freeze
 
       def initialize(error_code: :move_processing_error)

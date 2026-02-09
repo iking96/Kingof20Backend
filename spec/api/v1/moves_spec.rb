@@ -212,7 +212,7 @@ RSpec.describe('Move API', type: :request) do
           "error_code" => "move_missing_arguments",
           "status" => 422,
         ))
-        expect(json["message"]).to(include("missing arguments for pre-processing"))
+        expect(json["message"]).to(include("Move is missing required information"))
       end
     end
 
@@ -227,7 +227,7 @@ RSpec.describe('Move API', type: :request) do
           "error_code" => "move_input_mismatch",
           "status" => 422,
         ))
-        expect(json["message"]).to(include("row, col and tile_value input must be same length"))
+        expect(json["message"]).to(include("Invalid move data"))
       end
     end
 
@@ -242,7 +242,7 @@ RSpec.describe('Move API', type: :request) do
           "error_code" => "move_not_current_player",
           "status" => 422,
         ))
-        expect(json["message"]).to(include("User is not current player"))
+        expect(json["message"]).to(include("It's not your turn"))
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe('Move API', type: :request) do
           "error_code" => "game_tiles_not_on_rack",
           "status" => 422,
         ))
-        expect(json["message"]).to(include("tiles to remove not all in rack"))
+        expect(json["message"]).to(include("Those tiles are not in your rack"))
       end
     end
 
@@ -275,7 +275,7 @@ RSpec.describe('Move API', type: :request) do
             "error_code" => "move_creates_double_digit",
             "status" => 422,
           ))
-          expect(json["message"]).to(include("move on board created double digit"))
+          expect(json["message"]).to(include("Tiles cannot form a two-digit numbers"))
         end
       end
 
@@ -292,7 +292,7 @@ RSpec.describe('Move API', type: :request) do
             "error_code" => "game_board_contains_islands",
             "status" => 422,
           ))
-          expect(json["message"]).to(include("game board contains islands"))
+          expect(json["message"]).to(include("Tiles must connect to existing tiles on the board"))
         end
       end
     end

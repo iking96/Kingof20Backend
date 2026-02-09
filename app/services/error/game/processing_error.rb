@@ -4,21 +4,21 @@ module Error
   module Game
     class ProcessingError < CustomError
       PROCESSING_ERRORS = {
-        game_processing_error: 'unable to process game',
-        game_rack_request_to_long: 'attempt to remove more than allowed tiles during turn',
-        game_tiles_not_on_rack: 'tiles to remove not all in rack',
-        game_space_taken: 'space already occupied on board',
-        game_no_tile_on_starting: 'game board has no tiles on starting space',
-        game_board_contains_islands: 'game board contains islands',
-        game_already_complete: 'move cannot be posted to complete game',
-        game_no_tiles_remain: 'no tiles remain in game',
-        move_creates_double_digit: 'move on board created double digit',
-        move_creates_double_expression: 'move on board created double expression',
-        move_creates_dangling_operation: 'move on board created dangling operation',
-        move_creates_lone_integer: 'move on board created lone integer',
-        move_spans_expressions: 'move on board spans expressions',
-        move_creates_multiple_expressions: 'move on board creates multiple expressions',
-        move_not_building: 'move does not build from previous tiles',
+        game_processing_error: 'Unable to process your move',
+        game_rack_request_too_long: 'Too many tiles were placed this turn',
+        game_tiles_not_on_rack: 'Those tiles are not in your rack',
+        game_space_taken: 'That space is already occupied',
+        game_no_tile_on_starting: 'First move must cover the starting spaces',
+        game_board_contains_islands: 'Tiles must connect to existing tiles on the board',
+        game_already_complete: 'This game has already ended',
+        game_no_tiles_remain: 'No tiles remaining in the game',
+        move_creates_double_digit: 'Tiles cannot form a two-digit numbers',
+        move_creates_double_expression: 'Tiles placed this turn cannot create multiple expressions at once',
+        move_spans_expressions: 'Tiles placed this turn cannot create multiple expressions at once',
+        move_creates_multiple_expressions: 'Tiles placed this turn cannot create multiple expressions at once',
+        move_creates_dangling_operation: 'All tiles placed this turn must contribute to the expression',
+        move_creates_lone_integer: 'All tiles placed this turn must contribute to the expression',
+        move_not_building: 'Tiles must connect to existing tiles on the board',
       }.freeze
 
       def initialize(error_code: :game_processing_error)

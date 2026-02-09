@@ -52,7 +52,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
           let(:stage) { 'complete' }
 
           it 'raises an error' do
-            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'move cannot be posted to complete game'))
+            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'This game has already ended'))
           end
         end
 
@@ -60,7 +60,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
           let(:stage) { 'initiator_forfit' }
 
           it 'raises an error' do
-            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'move cannot be posted to complete game'))
+            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'This game has already ended'))
           end
         end
 
@@ -68,7 +68,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
           let(:stage) { 'opponent_forfit' }
 
           it 'raises an error' do
-            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'move cannot be posted to complete game'))
+            expect { subject }.to(raise_error(Error::Game::ProcessingError, 'This game has already ended'))
           end
         end
       end
@@ -78,7 +78,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       let(:move_user) { initiator_user }
 
       it 'raises an error' do
-        expect { subject }.to(raise_error(Error::Move::ProcessingError, 'User is not current player'))
+        expect { subject }.to(raise_error(Error::Move::ProcessingError, "It's not your turn"))
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         let(:tile_value) { [4, 10] }
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /not all in rack/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /not in your rack/))
         end
       end
 
@@ -267,7 +267,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         let(:tile_value) { [1] }
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /already occupied on board/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /already occupied/))
         end
       end
 
@@ -279,7 +279,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         let(:tile_value) { [4, 11, 5] }
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /game board has no tiles on starting space/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /First move must cover the starting/))
         end
       end
 
@@ -290,7 +290,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         let(:tile_value) { [4] }
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /move on board created double digit/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /cannot form a two-digit/))
         end
       end
     end
@@ -343,7 +343,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         end
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /no tiles remain in game/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /No tiles remaining/))
         end
       end
     end
@@ -391,7 +391,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         end
 
         it 'raises an error' do
-          expect { subject }.to(raise_error(Error::Game::ProcessingError, /no tiles remain in game/))
+          expect { subject }.to(raise_error(Error::Game::ProcessingError, /No tiles remaining/))
         end
       end
     end

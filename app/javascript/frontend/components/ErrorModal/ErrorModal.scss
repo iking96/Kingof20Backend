@@ -1,0 +1,12 @@
+@import "../../../scss/base.scss";
+
+.error-modal-content {
+  text-align: center;
+
+  .error-message {
+    margin: 0;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.5;
+  }
+}

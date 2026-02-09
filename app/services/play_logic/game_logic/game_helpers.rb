@@ -43,7 +43,7 @@ module PlayLogic
         def remove_tiles_from_rack(tiles:, rack:, max:)
           errors = []
           if tiles.count > max
-            errors << :game_rack_request_to_long
+            errors << :game_rack_request_too_long
           end
 
           unless tiles.subtract_once(rack).empty?

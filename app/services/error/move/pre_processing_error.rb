@@ -4,18 +4,18 @@ module Error
   module Move
     class PreProcessingError < CustomError
       PRE_PROCESSING_ERRORS = {
-        move_pre_processing_error: 'unable to pre-process move',
-        move_missing_arguments: 'missing arguments for pre-processing',
-        move_input_to_long: 'move input size must be less than or equal 3',
-        move_input_mismatch: 'row, col and tile_value input must be same length',
-        move_input_duplicate: 'row and col cannot contain duplicates',
-        move_row_col_invalid: "row and col numbers must be in: [0..#{::Game.board_size}]",
-        move_tile_value_invalid: "tile values must be in: #{::Game::TILES_MAPPING.keys}",
-        move_strightness: 'move must be in a stright line',
-        move_swap_input_to_long: "returned tiles size must be less than or equal #{::Game.rack_size}",
-        move_user_does_not_exist: 'id did not exist in User',
-        move_game_does_not_exist: 'id did not exist in Game',
-        move_user_does_not_own_game: 'Game id did not belong to User',
+        move_pre_processing_error: 'Unable to process your move',
+        move_missing_arguments: 'Move is missing required information',
+        move_input_to_long: 'You can only place up to 3 tiles per turn',
+        move_input_mismatch: 'Invalid move data',
+        move_input_duplicate: 'Cannot place multiple tiles in the same space',
+        move_row_col_invalid: 'Tile placement is outside the board',
+        move_tile_value_invalid: 'Invalid tile value',
+        move_strightness: 'Tiles must be placed in a straight line',
+        move_swap_input_to_long: 'Too many tiles selected for exchange',
+        move_user_does_not_exist: 'User not found',
+        move_game_does_not_exist: 'Game not found',
+        move_user_does_not_own_game: 'You are not a player in this game',
       }.freeze
 
       def initialize(error_code: :move_pre_processing_error)

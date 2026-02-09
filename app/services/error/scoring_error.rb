@@ -3,9 +3,9 @@
 module Error
   class ScoringError < CustomError
     SCORING_ERRORS = {
-      expression_scoring_error: 'Unable to score expression',
-      expression_causes_negative: 'Expression contains a negative',
-      expression_causes_fraction: 'Expression contains a fraction',
+      expression_scoring_error: 'Unable to calculate expression',
+      expression_causes_negative: 'Expression cannot result in a negative number',
+      expression_causes_fraction: 'Expression cannot result in a fraction',
     }.freeze
 
     def initialize(error_code: :expression_scoring_error)

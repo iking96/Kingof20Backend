@@ -71,7 +71,7 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
 
       it 'raises an error' do
         expect(subject.success?).to(be_falsey)
-        expect(subject.errors.first).to(eq(:game_rack_request_to_long))
+        expect(subject.errors.first).to(eq(:game_rack_request_too_long))
       end
     end
 
