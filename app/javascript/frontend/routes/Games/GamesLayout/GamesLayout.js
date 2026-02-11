@@ -4,15 +4,13 @@ import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
 import useDelete from "frontend/utils/useDelete";
-import { isAuthenticated } from "frontend/utils/authenticateHelper.js";
 
 import GamesSidebar from "frontend/components/GamesSidebar";
 import "./GamesLayout.scss";
 
-const GamesLayout = ({ children }) => {
+const GamesLayout = ({ children, isAuthenticated }) => {
   const [games, setGames] = useState([]);
   const history = useHistory();
-  const is_authenticated = isAuthenticated();
 
   // Fetch games list for sidebar
   const { isFetching, doFetch } = useFetch(
@@ -40,11 +38,13 @@ const GamesLayout = ({ children }) => {
   });
 
   useEffect(() => {
-    // Only fetch games if authenticated
-    if (is_authenticated) {
+    if (isAuthenticated) {
       doFetch();
+    } else {
+      // Clear games when logged out
+      setGames([]);
     }
-  }, [is_authenticated]);
+  }, [isAuthenticated]);
 
   const handleReceivedUpdate = response => {
     if (isFetching) { return }
@@ -72,12 +72,12 @@ const GamesLayout = ({ children }) => {
         currentGameId={getCurrentGameId()}
         onCreateGame={handleCreateGame}
         onHideGame={doDelete}
-        isAuthenticated={is_authenticated}
+        isAuthenticated={isAuthenticated}
       />
       <div className="games-content">
         {children}
       </div>
-      {is_authenticated && (
+      {isAuthenticated && (
         <ActionCableConsumer
           channel={{ channel: 'GamesChannel'}}
           onReceived={handleReceivedUpdate}

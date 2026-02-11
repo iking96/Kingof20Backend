@@ -5,8 +5,8 @@ import GamesRedirect from "./GamesRedirect";
 import Show from "./Show";
 import HowToPlay from "frontend/routes/HowToPlay";
 
-export default () => (
-  <GamesLayout>
+export default ({ isAuthenticated }) => (
+  <GamesLayout isAuthenticated={isAuthenticated}>
     <Switch>
       <Route exact path="/games" component={GamesRedirect} />
       <Route exact path="/games/how-to-play" component={HowToPlay} />

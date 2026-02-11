@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./NavBar.scss";
 import logo from "frontend/assets/logo-large.png";
 
-const NavBar = ({ loggedIn, username }) => {
+const NavBar = ({ loggedIn, username, onLoginClick, onSignupClick, onLogoutClick }) => {
   return (
     <nav className="modern-navbar">
       <div className="navbar-content">
@@ -28,18 +28,18 @@ const NavBar = ({ loggedIn, username }) => {
                 </div>
                 <span className="username">{username || "User"}</span>
               </div>
-              <Link to="/login" className="btn-logout">
+              <button className="btn-logout" onClick={onLogoutClick}>
                 Logout
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="auth-buttons">
-              <Link to="/login" className="btn-login">
+              <button className="btn-login" onClick={onLoginClick}>
                 Login
-              </Link>
-              <Link to="/signup" className="btn-signup">
+              </button>
+              <button className="btn-signup" onClick={onSignupClick}>
                 Sign Up
-              </Link>
+              </button>
             </div>
           )}
         </div>
