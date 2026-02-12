@@ -1,0 +1,167 @@
+@import '../../../scss/base.scss';
+
+.user-profile-page {
+  min-height: 100%;
+  padding: 40px 20px;
+}
+
+.user-profile-content {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid #e0e0e0;
+}
+
+.loading,
+.error-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.error-state {
+  color: #dc3545;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 15%) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 36px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  .profile-username {
+    margin: 0 0 4px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .join-date {
+    margin: 0;
+    font-size: 14px;
+    color: #888;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px 12px;
+  text-align: center;
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: $royal-purple;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.win-rate-section {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.win-rate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .win-rate-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .win-rate-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: $royal-purple;
+  }
+}
+
+.win-rate-bar {
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.win-rate-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $royal-purple 0%, lighten($royal-purple, 10%) 100%);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.win-loss-counts {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+
+  .wins-count {
+    color: #28a745;
+  }
+
+  .losses-count {
+    color: #dc3545;
+  }
+}
+
+@media (max-width: 500px) {
+  .user-profile-content {
+    padding: 24px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card .stat-value {
+    font-size: 24px;
+  }
+}

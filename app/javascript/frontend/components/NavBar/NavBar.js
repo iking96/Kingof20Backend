@@ -22,12 +22,12 @@ const NavBar = ({ loggedIn, username, onLoginClick, onSignupClick, onLogoutClick
         <div className="navbar-right">
           {loggedIn ? (
             <div className="user-info">
-              <div className="user-profile">
+              <Link to={`/users/${username}`} className="user-profile">
                 <div className="user-avatar">
                   {username ? username.charAt(0).toUpperCase() : "U"}
                 </div>
                 <span className="username">{username || "User"}</span>
-              </div>
+              </Link>
               <button className="btn-logout" onClick={onLogoutClick}>
                 Logout
               </button>

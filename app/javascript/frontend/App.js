@@ -5,7 +5,8 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 //Reference: https://github.com/cpunion/react-actioncable-provider/blob/master/lib/index.js
 import { ActionCableProvider } from "frontend/utils/actionCableProvider";
 
-import Games from "frontend/routes/Games";
+import { GamesLayout, GamesRoutes } from "frontend/routes/Games";
+import UserProfile from "frontend/routes/UserProfile";
 import NavBar from "frontend/components/NavBar";
 import LoginModal from "frontend/components/LoginModal";
 import SignupModal from "frontend/components/SignupModal";
@@ -74,16 +75,19 @@ class App extends React.Component {
             onSignupClick={this.openSignupModal}
             onLogoutClick={this.handleLogout}
           />
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() =>
-                this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
-              }
-            />
-            <Route path="/games" render={() => <Games isAuthenticated={this.state.loggedIn} />} />
-          </Switch>
+          <GamesLayout isAuthenticated={this.state.loggedIn}>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() =>
+                  this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
+                }
+              />
+              <Route path="/games" component={GamesRoutes} />
+              <Route path="/users/:username" component={UserProfile} />
+            </Switch>
+          </GamesLayout>
 
           {this.state.showLoginModal && (
             <LoginModal
