@@ -76,18 +76,8 @@ const UserProfile = () => {
           </div>
 
           <div className="stat-card">
-            <div className="stat-value">{stats.wins}</div>
-            <div className="stat-label">Wins</div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-value">{stats.losses}</div>
-            <div className="stat-label">Losses</div>
-          </div>
-
-          <div className="stat-card">
             <div className="stat-value">{stats.average_score}</div>
-            <div className="stat-label">Avg Score</div>
+            <div className="stat-label">Avg Game Score</div>
           </div>
         </div>
 
