@@ -33,46 +33,35 @@ module Ai
       valid_moves = []
       board_size = Game::BOARD_SIZE
 
-      # Find all valid starting positions
-      (0...board_size).each do |row|
+      if orientation == :horizontal
+        # For each row, find empty positions and try combinations
+        (0...board_size).each do |row|
+          empty_cols = (0...board_size).select { |col| @board[row][col].zero? }
+          next if empty_cols.size < tiles.size
+
+          # Try all combinations of empty positions for placing tiles
+          empty_cols.combination(tiles.size).each do |cols|
+            positions = cols.map { |col| [row, col] }
+            move = build_move(positions, tiles)
+            valid_moves << move if move_is_valid?(move)
+          end
+        end
+      else
+        # For each column, find empty positions and try combinations
         (0...board_size).each do |col|
-          # Check if we can place tiles starting here
-          positions = generate_positions(row, col, tiles.size, orientation)
-          next unless positions_valid?(positions)
-          next unless positions_empty?(positions)
+          empty_rows = (0...board_size).select { |row| @board[row][col].zero? }
+          next if empty_rows.size < tiles.size
 
-          move = build_move(positions, tiles)
-          next unless move_is_valid?(move)
-
-          valid_moves << move
+          # Try all combinations of empty positions for placing tiles
+          empty_rows.combination(tiles.size).each do |rows|
+            positions = rows.map { |row| [row, col] }
+            move = build_move(positions, tiles)
+            valid_moves << move if move_is_valid?(move)
+          end
         end
       end
 
       valid_moves
-    end
-
-    def generate_positions(start_row, start_col, count, orientation)
-      positions = []
-      (0...count).each do |i|
-        if orientation == :horizontal
-          positions << [start_row, start_col + i]
-        else
-          positions << [start_row + i, start_col]
-        end
-      end
-      positions
-    end
-
-    def positions_valid?(positions)
-      positions.all? do |row, col|
-        row >= 0 && row < Game::BOARD_SIZE && col >= 0 && col < Game::BOARD_SIZE
-      end
-    end
-
-    def positions_empty?(positions)
-      positions.all? do |row, col|
-        @board[row][col].zero?
-      end
     end
 
     def build_move(positions, tiles)
