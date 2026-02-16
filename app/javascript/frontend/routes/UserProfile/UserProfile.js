@@ -65,7 +65,7 @@ const UserProfile = () => {
           </div>
           <div className="profile-info">
             <h1 className="profile-username">{username}</h1>
-            <p className="join-date">Member since {joinDate}</p>
+            <p className="join-date">Joined {joinDate}</p>
           </div>
         </div>
 

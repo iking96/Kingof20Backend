@@ -119,7 +119,7 @@
 
 .win-rate-bar {
   height: 12px;
-  background: #e0e0e0;
+  background: #E57373;
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 8px;
@@ -127,7 +127,7 @@
 
 .win-rate-fill {
   height: 100%;
-  background: linear-gradient(90deg, $royal-purple 0%, lighten($royal-purple, 10%) 100%);
+  background: #66BB6A;
   border-radius: 6px;
   transition: width 0.5s ease;
 }
