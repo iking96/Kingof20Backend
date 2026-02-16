@@ -1,9 +1,10 @@
 @import '../../../scss/base.scss';
 
 .how-to-play {
-  min-height: calc(100vh - 64px);
+  flex: 1;
   background: #f8f9fa;
   padding: 40px 20px;
+  overflow-y: auto;
 }
 
 .how-to-play-content {

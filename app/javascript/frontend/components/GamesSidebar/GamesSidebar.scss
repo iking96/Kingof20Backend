@@ -4,12 +4,12 @@
   width: 280px;
   background: #f8f9fa;
   border-right: 1px solid #e0e0e0;
-  height: calc(100vh - 64px); // Account for NavBar height
+  flex-shrink: 0;
+  align-self: stretch;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 16px;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .new-game-container {

@@ -66,46 +66,48 @@ class App extends React.Component {
     const username = Cookies.get("username");
 
     return (
-      <ActionCableProvider url={`${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`}>
-        <BrowserRouter>
-          <NavBar
-            loggedIn={this.state.loggedIn}
-            username={username}
-            onLoginClick={this.openLoginModal}
-            onSignupClick={this.openSignupModal}
-            onLogoutClick={this.handleLogout}
-          />
-          <GamesLayout isAuthenticated={this.state.loggedIn}>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() =>
-                  this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
-                }
+      <BrowserRouter>
+        <div className="App">
+          <ActionCableProvider url={`${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`}>
+            <NavBar
+              loggedIn={this.state.loggedIn}
+              username={username}
+              onLoginClick={this.openLoginModal}
+              onSignupClick={this.openSignupModal}
+              onLogoutClick={this.handleLogout}
+            />
+            <GamesLayout isAuthenticated={this.state.loggedIn}>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() =>
+                    this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
+                  }
+                />
+                <Route path="/games" component={GamesRoutes} />
+                <Route path="/users/:username" component={UserProfile} />
+              </Switch>
+            </GamesLayout>
+
+            {this.state.showLoginModal && (
+              <LoginModal
+                onClose={this.closeModals}
+                onLogin={() => this.setLogin(true)}
+                onSwitchToSignup={this.switchToSignup}
               />
-              <Route path="/games" component={GamesRoutes} />
-              <Route path="/users/:username" component={UserProfile} />
-            </Switch>
-          </GamesLayout>
+            )}
 
-          {this.state.showLoginModal && (
-            <LoginModal
-              onClose={this.closeModals}
-              onLogin={() => this.setLogin(true)}
-              onSwitchToSignup={this.switchToSignup}
-            />
-          )}
-
-          {this.state.showSignupModal && (
-            <SignupModal
-              onClose={this.closeModals}
-              onLogin={() => this.setLogin(true)}
-              onSwitchToLogin={this.switchToLogin}
-            />
-          )}
-        </BrowserRouter>
-      </ActionCableProvider>
+            {this.state.showSignupModal && (
+              <SignupModal
+                onClose={this.closeModals}
+                onLogin={() => this.setLogin(true)}
+                onSwitchToLogin={this.switchToLogin}
+              />
+            )}
+          </ActionCableProvider>
+        </div>
+      </BrowserRouter>
     );
   }
 }
