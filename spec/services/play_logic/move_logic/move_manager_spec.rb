@@ -410,6 +410,19 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
       )
     end
 
+    # Board has [5, 11, 4] at row 2, cols 2-4 (5 × 4 = 20)
+    # Opponent rack is [1, 2, 3, 4, 5, 6, 11]
+    # Valid move: place 11 (×) at (3,2) and 1 at (4,2) to make vertical 5 × 1 = 5
+    let(:stubbed_moves) do
+      [
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
+      ]
+    end
+
+    before do
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(stubbed_moves))
+    end
+
     it 'makes an AI move when it is the AI turn' do
       expect { subject }.to(change { game.reload.moves.count }.by(1))
     end

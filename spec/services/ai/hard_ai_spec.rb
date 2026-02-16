@@ -4,15 +4,23 @@ require 'rails_helper'
 
 RSpec.describe(Ai::HardAi) do
   let(:user) { create(:user) }
-  let(:game) { create(:game, initiator: user, opponent: nil, ai_difficulty: 'hard') }
+  let(:game) { create(:game, :with_first_move, initiator: user, opponent: nil, ai_difficulty: 'hard') }
 
   describe '#make_move' do
     subject { described_class.new(game).make_move }
 
     context 'when valid moves exist' do
+      # Board has [5, 11, 4] at row 2, cols 2-4 (5 × 4 = 20)
+      # Opponent rack is [1, 2, 3, 4, 5, 6, 11]
+      # Valid move: place 11 (×) at (3,2) and 1 at (4,2) to make vertical 5 × 1 = 5
+      let(:stubbed_moves) do
+        [
+          { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
+        ]
+      end
+
       before do
-        game.current_player = 'opponent'
-        game.save!
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(stubbed_moves))
       end
 
       it 'makes a valid move' do
@@ -20,16 +28,14 @@ RSpec.describe(Ai::HardAi) do
       end
 
       it 'creates a move record' do
-        expect { subject }.to(change { Move.count }.by(1))
+        # with_first_move trait creates an initial move, so we check from current count
+        expect { subject }.to(change { game.moves.count }.by(1))
       end
     end
 
     context 'when no valid moves exist' do
       before do
-        game.current_player = 'opponent'
-        # Use only operation tiles - can't form valid expressions with just operators
-        game.opponent_rack = [10, 10, 10, 10, 10, 10, 10]
-        game.save!
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([]))
       end
 
       it 'executes a pass' do
@@ -40,13 +46,20 @@ RSpec.describe(Ai::HardAi) do
   end
 
   describe 'move selection' do
-    it 'prefers moves with lower scores (closer to 20)' do
+    # Board has [5, 11, 4] at row 2, cols 2-4 (5 × 4 = 20)
+    # Opponent rack is [1, 2, 3, 4, 5, 6, 11]
+    let(:stubbed_moves) do
+      [
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
+      ]
+    end
+
+    before do
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(stubbed_moves))
+    end
+
+    it 'is a valid HardAi instance' do
       ai = described_class.new(game)
-
-      # Test the scoring logic directly
-
-      # We can't easily test this without exposing private methods,
-      # but we verify the AI class loads and runs without errors
       expect(ai).to(be_a(Ai::HardAi))
     end
   end
