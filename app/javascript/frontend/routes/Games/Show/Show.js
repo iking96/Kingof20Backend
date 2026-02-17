@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const Backend = isTouchDevice ? TouchBackend : HTML5Backend;
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";

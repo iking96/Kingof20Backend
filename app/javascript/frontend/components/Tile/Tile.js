@@ -13,21 +13,22 @@ const Tile = ({
   handleDrop = () => {}
 }) => {
   const [{ isDragging }, drag] = useDrag({
-    item: { type: "tile", value: value },
+    type: "tile",
+    item: { value: value },
     collect: monitor => ({
       isDragging: !!monitor.isDragging()
     }),
-    canDrag: monitor => canDrag(),
+    canDrag: () => canDrag(),
     end: (_, monitor) => monitor.didDrop() && didDrop()
   });
 
   const [{ isOver }, drop] = useDrop({
     accept: "tile",
-    drop: (_, monitor) => handleDrop(monitor.getItem().value),
+    drop: (item) => handleDrop(item.value),
     collect: monitor => ({
       isOver: !!monitor.isOver()
     }),
-    canDrop: monitor => canDrop()
+    canDrop: () => canDrop()
   });
 
   return (
