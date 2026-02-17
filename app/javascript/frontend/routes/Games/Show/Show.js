@@ -4,8 +4,11 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-const Backend = isTouchDevice ? TouchBackend : HTML5Backend;
+const getBackend = () => {
+  if (typeof window === 'undefined') return HTML5Backend;
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  return isTouchDevice ? TouchBackend : HTML5Backend;
+};
 
 import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
@@ -287,7 +290,7 @@ const Show = ({
       <div className="game-content-wrapper">
         <div className="game-panel">
           <div className="floating-card">
-            <DndProvider backend={Backend}>
+            <DndProvider backend={getBackend()}>
               <Board
                 boardValues={boardValues}
                 tempBoardValues={tempBoardValues}

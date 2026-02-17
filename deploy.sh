@@ -43,8 +43,9 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
     sudo mkdir -p /opt/kingof20
     sudo chown bitnami:bitnami /opt/kingof20
 
-    # Extract application
+    # Extract application (clean JS files first to remove stale files)
     cd /opt/kingof20
+    rm -rf app/javascript
     tar -xzf /home/bitnami/deploy.tar.gz
 
     # Install system dependencies
