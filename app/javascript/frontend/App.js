@@ -20,7 +20,8 @@ class App extends React.Component {
     this.state = {
       loggedIn: isAuthenticated(),
       showLoginModal: false,
-      showSignupModal: false
+      showSignupModal: false,
+      sidebarOpen: false
     };
     this.setLogin = this.setLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -29,6 +30,8 @@ class App extends React.Component {
     this.closeModals = this.closeModals.bind(this);
     this.switchToSignup = this.switchToSignup.bind(this);
     this.switchToLogin = this.switchToLogin.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.closeSidebar = this.closeSidebar.bind(this);
   }
 
   setLogin(loginState) {
@@ -61,6 +64,14 @@ class App extends React.Component {
     this.setState({ showSignupModal: false, showLoginModal: true });
   }
 
+  toggleSidebar() {
+    this.setState(prev => ({ sidebarOpen: !prev.sidebarOpen }));
+  }
+
+  closeSidebar() {
+    this.setState({ sidebarOpen: false });
+  }
+
   render() {
     // TODO: Replace cookie with API call to /api/v1/me
     const username = Cookies.get("username");
@@ -75,8 +86,14 @@ class App extends React.Component {
               onLoginClick={this.openLoginModal}
               onSignupClick={this.openSignupModal}
               onLogoutClick={this.handleLogout}
+              onMenuClick={this.toggleSidebar}
+              menuOpen={this.state.sidebarOpen}
             />
-            <GamesLayout isAuthenticated={this.state.loggedIn}>
+            <GamesLayout
+              isAuthenticated={this.state.loggedIn}
+              sidebarOpen={this.state.sidebarOpen}
+              onCloseSidebar={this.closeSidebar}
+            >
               <Switch>
                 <Route
                   exact

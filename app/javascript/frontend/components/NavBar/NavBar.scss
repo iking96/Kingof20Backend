@@ -1,5 +1,7 @@
 @import '../../../scss/base.scss';
 
+$mobile-breakpoint: 768px;
+
 .modern-navbar {
   background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 10%) 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -20,6 +22,57 @@
 
 .navbar-left {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  gap: 5px;
+  transition: background 0.2s ease;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: flex;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+  }
+
+  &.open {
+    span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    span:nth-child(2) {
+      opacity: 0;
+    }
+
+    span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+  }
 }
 
 .logo-link {

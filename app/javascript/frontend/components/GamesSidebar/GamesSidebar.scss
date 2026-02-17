@@ -1,5 +1,7 @@
 @import '../../../scss/base.scss';
 
+$mobile-breakpoint: 768px;
+
 .games-sidebar {
   width: 280px;
   background: #f8f9fa;
@@ -10,6 +12,20 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
+  transition: transform 0.3s ease;
+
+  @media (max-width: $mobile-breakpoint) {
+    position: fixed;
+    top: 64px; // Height of navbar
+    left: 0;
+    bottom: 0;
+    z-index: 900;
+    transform: translateX(-100%);
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
 }
 
 .new-game-container {

@@ -1,8 +1,11 @@
+$mobile-breakpoint: 768px;
+
 .games-layout {
   display: flex;
   width: 100%;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .games-content {
@@ -11,4 +14,19 @@
   flex-direction: column;
   overflow-y: auto;
   background: #f5f5f5;
+}
+
+.sidebar-overlay {
+  display: none;
+
+  @media (max-width: $mobile-breakpoint) {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 800;
+  }
 }

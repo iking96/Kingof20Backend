@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./GamesSidebar.scss";
 
-const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated }) => {
+const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated, isOpen, onGameSelect }) => {
   const history = useHistory();
   const [showNewGameMenu, setShowNewGameMenu] = useState(false);
 
@@ -14,6 +14,9 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
 
   const handleGameClick = (gameId) => {
     history.push(`/games/${gameId}`);
+    if (onGameSelect) {
+      onGameSelect();
+    }
   };
 
   const handleCreateGame = (aiDifficulty = null) => {
@@ -27,7 +30,7 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
   };
 
   return (
-    <div className="games-sidebar">
+    <div className={`games-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="new-game-container">
         <button
           className={`create-game-btn ${!isAuthenticated ? 'disabled' : ''}`}

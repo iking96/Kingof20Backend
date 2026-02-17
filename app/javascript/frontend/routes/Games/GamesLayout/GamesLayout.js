@@ -8,7 +8,7 @@ import useDelete from "frontend/utils/useDelete";
 import GamesSidebar from "frontend/components/GamesSidebar";
 import "./GamesLayout.scss";
 
-const GamesLayout = ({ children, isAuthenticated }) => {
+const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar }) => {
   const [games, setGames] = useState([]);
   const history = useHistory();
 
@@ -65,14 +65,25 @@ const GamesLayout = ({ children, isAuthenticated }) => {
     return match ? parseInt(match[1]) : null;
   };
 
+  const handleGameSelect = () => {
+    if (onCloseSidebar) {
+      onCloseSidebar();
+    }
+  };
+
   return (
     <div className="games-layout">
+      {sidebarOpen && (
+        <div className="sidebar-overlay" onClick={onCloseSidebar} />
+      )}
       <GamesSidebar
         games={games}
         currentGameId={getCurrentGameId()}
         onCreateGame={handleCreateGame}
         onHideGame={doDelete}
         isAuthenticated={isAuthenticated}
+        isOpen={sidebarOpen}
+        onGameSelect={handleGameSelect}
       />
       <div className="games-content">
         {children}

@@ -3,11 +3,20 @@ import { Link } from "react-router-dom";
 import "./NavBar.scss";
 import logo from "frontend/assets/logo-large.png";
 
-const NavBar = ({ loggedIn, username, onLoginClick, onSignupClick, onLogoutClick }) => {
+const NavBar = ({ loggedIn, username, onLoginClick, onSignupClick, onLogoutClick, onMenuClick, menuOpen }) => {
   return (
     <nav className="modern-navbar">
       <div className="navbar-content">
         <div className="navbar-left">
+          <button
+            className={`hamburger-btn ${menuOpen ? 'open' : ''}`}
+            onClick={onMenuClick}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
           <Link to="/" className="logo-link">
             <img src={logo} alt="King of 20" className="logo-image" />
           </Link>
