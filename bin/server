@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Start all development services with overmind
+# Requires: brew install overmind
+
+# Ensure Redis is running
+if ! pgrep -x redis-server > /dev/null; then
+  echo "Starting Redis..."
+  brew services start redis
+fi
+
+# Start all services
+exec overmind start -f Procfile.dev "$@"
