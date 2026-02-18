@@ -45,3 +45,6 @@ deploy.tar.gz
 
 # Redis
 dump.rdb
+
+# Overmind
+.overmind.sock
