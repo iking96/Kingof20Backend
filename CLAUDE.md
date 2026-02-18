@@ -10,3 +10,4 @@
 
 ## Future Tech Debt
 - **Bundler upgrade**: Currently using Webpacker 5 / Webpack 4 which doesn't transpile node_modules by default. Modern packages ship ES2020+ syntax. Had to add `@babel/plugin-proposal-nullish-coalescing-operator` to support `react-dnd-multi-backend`. Consider migrating to Vite or Webpack 5 for better modern package support.
+- **ActionCable broadcast cleanup**: Remove `after_save :broadcast` callback from `Game` model and broadcast explicitly where needed (e.g., in `MoveManager` after move creation, in `AiMoveJob` after AI move). Callbacks don't work reliably across process boundaries (Sidekiq) and mixing implicit callbacks with explicit broadcasts is confusing.

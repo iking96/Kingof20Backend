@@ -51,19 +51,6 @@ const Show = ({
   const [errorMessage, setErrorMessage] = useState(null);
   const is_authenticated = isAuthenticated();
 
-  const triggerAiMove = () => {
-    fetch("/api/v1/moves/ai_move", {
-      headers: {
-        AUTHORIZATION: `Bearer ${getAccessToken()}`,
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      credentials: "same-origin",
-      method: "POST",
-      body: JSON.stringify({ game_id: id })
-    });
-  };
-
   const { isFetching, hasFetched, fetchError, doFetch } = useFetch(
     `/api/v1/games/${id}`,
     ({ response, json }) => {
@@ -157,8 +144,6 @@ const Show = ({
       } else if (status != 200) {
         // Other errors - generic message
         setErrorMessage("Something went wrong. Please try again.");
-      } else if (gameFlowData.vs_computer) {
-        setTimeout(triggerAiMove, 100);
       }
     }
   );

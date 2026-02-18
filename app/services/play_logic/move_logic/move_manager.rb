@@ -93,6 +93,11 @@ module PlayLogic
             new_move.save!
           end
 
+          # Enqueue AI move job if it's now the AI's turn
+          if new_move.game.vs_computer? && new_move.game.current_turn_is_ai? && !new_move.game.complete?
+            AiMoveJob.perform_later(new_move.game.id)
+          end
+
           new_move
         end
 

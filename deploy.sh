@@ -125,12 +125,17 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
         bundle exec rails db:seed RAILS_ENV=production
     fi
 
-    # Kill any existing Rails processes to avoid port conflicts
+    # Kill any existing Rails and Sidekiq processes to avoid port conflicts
     pkill -f "rails server" || true
     pkill -f "puma" || true
+    pkill -f "sidekiq" || true
 
     # Wait for processes to fully terminate
     sleep 3
+
+    # Start Sidekiq for background job processing
+    echo "🚀 Starting Sidekiq..."
+    nohup bundle exec sidekiq -C config/sidekiq.yml -e production > sidekiq.log 2>&1 &
 
     # Start Rails server in production mode (in background)
     echo "🚀 Starting Rails server..."
@@ -158,6 +163,16 @@ ssh -i ~/.ssh/lightsail_key.pem bitnami@$LIGHTSAIL_IP << 'EOF'
     else
         echo "❌ Failed to start Rails server. Check logs:"
         tail -20 rails.log
+    fi
+
+    # Check if Sidekiq is running
+    SIDEKIQ_PID=$(pgrep -f "sidekiq" | head -1)
+    if [ -n "$SIDEKIQ_PID" ]; then
+        echo "✅ Sidekiq started successfully!"
+        echo "📋 Sidekiq PID: $SIDEKIQ_PID"
+        echo "📄 Sidekiq logs available at: /opt/kingof20/sidekiq.log"
+    else
+        echo "⚠️  Sidekiq may not have started. Check sidekiq.log"
     fi
 
     echo "✅ Deployment complete!"

@@ -42,3 +42,6 @@ deploy.tar.gz
 
 # macOS
 .DS_Store
+
+# Redis
+dump.rdb

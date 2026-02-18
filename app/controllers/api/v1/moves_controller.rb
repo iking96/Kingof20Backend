@@ -34,20 +34,6 @@ module Api
         json_response(@move)
       end
 
-      def ai_move
-        game = Game.find(params[:game_id])
-
-        unless game.current_turn_is_ai? && !game.complete?
-          return json_response(
-            { error: 'Not the AI\'s turn' },
-            :unprocessable_entity
-          )
-        end
-
-        @move = PlayLogic::MoveLogic::MoveManager.trigger_ai_move_if_needed(game)
-        json_response(@move)
-      end
-
       def index_params
         @permitted_params = params.permit(PlayLogic::MoveLogic::MoveManager::MOVE_INDEX_PARAMS).to_h
       end

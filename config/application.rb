@@ -32,6 +32,9 @@ module Kingof20Api
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # Use Sidekiq for background job processing
+    config.active_job.queue_adapter = :sidekiq
+
     # Autoload /lib
     config.paths.add(Rails.root.join('lib').to_s, eager_load: true)
   end
