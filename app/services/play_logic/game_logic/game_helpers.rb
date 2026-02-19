@@ -76,24 +76,15 @@ module PlayLogic
         end
 
         def check_board_legality(board:)
-          errors = []
-
-          unless check_board_on_starting(board: board)
-            errors << :game_no_tile_on_starting
-          end
-
-          unless check_board_for_islands(board: board)
-            errors << :game_board_contains_islands
-          end
-
-          if errors.present?
-            Utilities::CheckResult.new(
-              success: false,
-              error_codes: errors.uniq,
-            )
+          # Note: Island checking removed as redundant.
+          # check_move_builds_from_placed_tiles already ensures all moves
+          # connect to existing tiles, making islands impossible.
+          if check_board_on_starting(board: board)
+            Utilities::CheckResult.new(success: true)
           else
             Utilities::CheckResult.new(
-              success: true,
+              success: false,
+              error_codes: [:game_no_tile_on_starting],
             )
           end
         end
@@ -225,9 +216,10 @@ module PlayLogic
           end
         end
 
+        BOARD_SIZE = Game::BOARD_SIZE
+
         def in_bounds?(row:, col:)
-          (0...Game.board_size).include?(row) &&
-          (0...Game.board_size).include?(col)
+          row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE
         end
 
         private
@@ -237,41 +229,6 @@ module PlayLogic
           (board[2][3] != 0) ||
           (board[3][2] != 0) ||
           (board[3][3] != 0)
-        end
-
-        def check_board_for_islands(board:)
-          visited = Array.new(Game.board_size) { Array.new(Game.board_size) { false } }
-
-          island_found = false
-          (0...Game.board_size).each do |row|
-            (0...Game.board_size).each do |col|
-              next unless board[row][col] != 0 && !visited[row][col]
-
-              return false if island_found
-              island_found = true
-
-              flood_board_island(board: board, visited: visited, row: row, col: col)
-            end
-          end
-
-          true
-        end
-
-        def flood_board_island(board:, visited:, row:, col:)
-          return if !in_bounds?(row: row, col: col) ||
-            board[row][col] == 0 ||
-            visited[row][col] == true
-
-          visited[row][col] = true
-
-          [[1, 0], [-1, 0], [0, 1], [0, -1]].each do |row_delta, col_delta|
-            flood_board_island(
-              board: board,
-              visited: visited,
-              row: row + row_delta,
-              col: col + col_delta
-            )
-          end
         end
 
         def check_move_not_double_digit(board:, rows:, cols:)

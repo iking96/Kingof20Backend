@@ -279,7 +279,7 @@ RSpec.describe('Move API', type: :request) do
         end
       end
 
-      context 'due to its effect on the game-state' do
+      context 'due to move creating lone integer' do
         let(:row_num) { [1] }
         let(:col_num) { [1] }
         let(:tile_value) { [5] }
@@ -289,10 +289,10 @@ RSpec.describe('Move API', type: :request) do
           expect(response).to(have_http_status(422))
           expect(json).to(include(
             "error" => "unprocessable_entity",
-            "error_code" => "game_board_contains_islands",
+            "error_code" => "move_creates_lone_integer",
             "status" => 422,
           ))
-          expect(json["message"]).to(include("Tiles must connect to existing tiles on the board"))
+          expect(json["message"]).to(include("All tiles placed this turn must contribute to the expression"))
         end
       end
     end

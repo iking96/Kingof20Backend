@@ -108,15 +108,9 @@ RSpec.describe(PlayLogic::GameLogic::GameHelpers) do
       end
     end
 
-    context 'when there are islands' do
-      let!(:game) { build(:game, :with_islands) }
-
-      it 'returns correct value' do
-        result_vo = subject
-        expect(result_vo.success?).to(eq(false))
-        expect(result_vo.errors).to(include(:game_board_contains_islands))
-      end
-    end
+    # Note: Island checking was removed from check_board_legality as redundant.
+    # Disconnected moves are now caught by check_move_builds_from_placed_tiles
+    # which returns :move_not_building error. See tests below for that method.
   end
 
   describe 'check_board_with_move_legality' do
