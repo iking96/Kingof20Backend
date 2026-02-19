@@ -218,7 +218,7 @@ module PlayLogic
 
         BOARD_SIZE = Game::BOARD_SIZE
 
-        def in_bounds?(row:, col:)
+        def in_bounds?(row, col)
           row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE
         end
 
@@ -235,7 +235,7 @@ module PlayLogic
           rows.zip(cols).all? do |row, col|
             value = board[row][col]
             [[1, 0], [-1, 0], [0, 1], [0, -1]].all? do |row_delta, col_delta|
-              next true unless in_bounds?(row: row + row_delta, col: col + col_delta)
+              next true unless in_bounds?(row + row_delta, col + col_delta)
               next true unless board[row + row_delta][col + col_delta] != 0
 
               (board[row + row_delta][col + col_delta].number_tile? && value.operation_tile?) ||
@@ -374,66 +374,42 @@ module PlayLogic
         end
 
         def check_expression_orientation(board:, row:, col:)
-          orientations = []
-          directions = []
+          # Check adjacent cells (one step away)
+          down_one = in_bounds?(row + 1, col) && board[row + 1][col] != 0
+          up_one = in_bounds?(row - 1, col) && board[row - 1][col] != 0
+          right_one = in_bounds?(row, col + 1) && board[row][col + 1] != 0
+          left_one = in_bounds?(row, col - 1) && board[row][col - 1] != 0
 
-          if in_bounds?(row: row + 1, col: col) && board[row + 1][col] != 0
-            directions << :down_one
-          end
-
-          if in_bounds?(row: row - 1, col: col) && board[row - 1][col] != 0
-            directions << :up_one
-          end
-
-          if in_bounds?(row: row, col: col + 1) && board[row][col + 1] != 0
-            directions << :right_one
-          end
-
-          if in_bounds?(row: row, col: col - 1) && board[row][col - 1] != 0
-            directions << :left_one
-          end
-
+          # For operation tiles, check if surrounded on both sides
           if board[row][col].operation_tile?
-            expression_vert = directions.include?(:up_one) && directions.include?(:down_one)
-            expression_horz = directions.include?(:left_one) && directions.include?(:right_one)
-
-            orientations << :horizontal if expression_horz
-            orientations << :vertical if expression_vert
-
+            horizontal = left_one && right_one
+            vertical = up_one && down_one
             return Utilities::CheckResult.new(
               success: true,
-              value: orientations,
+              value: build_orientations(horizontal, vertical),
             )
           end
 
-          if in_bounds?(row: row + 2, col: col) && board[row + 2][col] != 0
-            directions << :down_two
-          end
+          # For number tiles, check two steps away
+          down_two = in_bounds?(row + 2, col) && board[row + 2][col] != 0
+          up_two = in_bounds?(row - 2, col) && board[row - 2][col] != 0
+          right_two = in_bounds?(row, col + 2) && board[row][col + 2] != 0
+          left_two = in_bounds?(row, col - 2) && board[row][col - 2] != 0
 
-          if in_bounds?(row: row - 2, col: col) && board[row - 2][col] != 0
-            directions << :up_two
-          end
-
-          if in_bounds?(row: row, col: col + 2) && board[row][col + 2] != 0
-            directions << :right_two
-          end
-
-          if in_bounds?(row: row, col: col - 2) && board[row][col - 2] != 0
-            directions << :left_two
-          end
-
-          expression_left = directions.include?(:left_one) && directions.include?(:left_two)
-          expression_right = directions.include?(:right_one) && directions.include?(:right_two)
-          expression_up = directions.include?(:up_one) && directions.include?(:up_two)
-          expression_down = directions.include?(:down_one) && directions.include?(:down_two)
-
-          orientations << :horizontal if expression_left || expression_right
-          orientations << :vertical if expression_up || expression_down
+          horizontal = (left_one && left_two) || (right_one && right_two)
+          vertical = (up_one && up_two) || (down_one && down_two)
 
           Utilities::CheckResult.new(
             success: true,
-            value: orientations,
+            value: build_orientations(horizontal, vertical),
           )
+        end
+
+        def build_orientations(horizontal, vertical)
+          return [:horizontal, :vertical] if horizontal && vertical
+          return [:horizontal] if horizontal
+          return [:vertical] if vertical
+          []
         end
       end
     end
