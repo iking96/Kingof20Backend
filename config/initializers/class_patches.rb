@@ -18,10 +18,10 @@ end
 
 class Integer
   def number_tile?
-    (1..9).include?(self)
+    self >= 1 && self <= 9
   end
 
   def operation_tile?
-    (10..13).include?(self)
+    self >= 10 && self <= 13
   end
 end

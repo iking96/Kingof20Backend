@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 module Ai
   class MoveFinder
+    # Lightweight struct for move validation (faster than OpenStruct)
+    MockMove = Struct.new(:row_num, :col_num, :tile_value, keyword_init: true)
     def initialize(game)
       @game = game
       @board = game.board.map(&:dup)
@@ -83,7 +83,7 @@ module Ai
       end
 
       # Create mock move object
-      mock_move = OpenStruct.new(
+      mock_move = MockMove.new(
         row_num: move[:row_num],
         col_num: move[:col_num],
         tile_value: move[:tile_value]

@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Profile AI move calculation with stackprof
+# Outputs a speedscope-compatible JSON file
+#
+# Usage:
+#   bin/profile_ai              # Uses most recent vs_computer game
+#   bin/profile_ai GAME_ID      # Uses specific game
+#
+# View results:
+#   Open the .json file at https://speedscope.app
+
+require_relative '../config/environment'
+require 'stackprof'
+
+def find_game(game_id = nil)
+  if game_id
+    Game.find(game_id)
+  else
+    # Find a recent vs_computer game (ai_difficulty is not null)
+    game = Game.where.not(ai_difficulty: nil).where(stage: 'in_progress').order(updated_at: :desc).first
+    game ||= Game.where.not(ai_difficulty: nil).order(updated_at: :desc).first
+
+    unless game
+      puts "No vs_computer games found. Creating a test game..."
+      # Create a minimal test game if none exist
+      user = User.first || User.create!(email: 'test@example.com', password: 'password123')
+      game = Game.create!(
+        initiator: user,
+        ai_difficulty: 'hard'
+      )
+      game.setup_new_game!
+    end
+
+    game
+  end
+end
+
+def profile_ai(game)
+  puts "=" * 60
+  puts "Profiling AI Move Calculation"
+  puts "=" * 60
+  puts
+  puts "Game ID: #{game.id}"
+  puts "Difficulty: #{game.ai_difficulty}"
+  puts "Board state: #{game.board.flatten.count { |c| c != 0 }} tiles placed"
+  puts "AI rack: #{game.opponent_rack.inspect}"
+  puts
+
+  ai_class = game.ai_difficulty == 'hard' ? Ai::HardAi : Ai::EasyAi
+  puts "Using: #{ai_class}"
+  puts
+
+  # Profile just the move finding (not execution)
+  puts "Profiling move finding..."
+  profile_data = StackProf.run(mode: :wall, raw: true) do
+    finder = Ai::MoveFinder.new(game)
+    @valid_moves = finder.find_all_moves
+  end
+
+  puts "Found #{@valid_moves.size} valid moves"
+  puts
+
+  # For HardAi, also profile the scoring
+  if game.ai_difficulty == 'hard' && @valid_moves.any?
+    puts "Profiling move scoring (HardAi)..."
+    scoring_profile = StackProf.run(mode: :wall, raw: true) do
+      ai = Ai::HardAi.new(game)
+      # Access private score_move method for profiling
+      @valid_moves.each { |m| ai.send(:score_move, m) }
+    end
+
+    scoring_file = "tmp/ai_scoring_profile_#{Time.now.strftime('%Y%m%d_%H%M%S')}.json"
+    File.write(scoring_file, JSON.generate(scoring_profile))
+    puts "Scoring profile saved to: #{scoring_file}"
+    puts
+  end
+
+  # Save the main profile as JSON for speedscope
+  output_file = "tmp/ai_move_profile_#{Time.now.strftime('%Y%m%d_%H%M%S')}.json"
+  File.write(output_file, JSON.generate(profile_data))
+
+  puts "=" * 60
+  puts "Profile saved to: #{output_file}"
+  puts
+  puts "View at: https://speedscope.app"
+  puts "  Drag and drop the .json file"
+  puts "=" * 60
+  puts
+
+  # Also print a text summary
+  puts "Top methods by time:"
+  puts "-" * 60
+  StackProf::Report.new(profile_data).print_text(false, 20)
+end
+
+# Run
+game_id = ARGV[0]&.to_i
+game = find_game(game_id)
+profile_ai(game)
