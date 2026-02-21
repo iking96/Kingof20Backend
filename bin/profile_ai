@@ -52,32 +52,17 @@ def profile_ai(game)
   puts "Using: #{ai_class}"
   puts
 
-  # Profile just the move finding (not execution)
-  puts "Profiling move finding..."
+  # Profile the full AI decision (find + score + select, without executing)
+  puts "Profiling AI decision (find + score + select)..."
   profile_data = StackProf.run(mode: :wall, raw: true) do
-    finder = Ai::MoveFinder.new(game)
-    @valid_moves = finder.find_all_moves
-  end
-
-  puts "Found #{@valid_moves.size} valid moves"
-  puts
-
-  # For HardAi, also profile the scoring
-  if game.ai_difficulty == 'hard' && @valid_moves.any?
-    puts "Profiling move scoring (HardAi)..."
-    scoring_profile = StackProf.run(mode: :wall, raw: true) do
-      ai = Ai::HardAi.new(game)
-      # Access private score_move method for profiling
-      @valid_moves.each { |m| ai.send(:score_move, m) }
+    valid_moves = Ai::MoveFinder.new(game).find_all_moves
+    if valid_moves.any? && game.ai_difficulty == 'hard'
+      ai = ai_class.new(game)
+      valid_moves.max_by { |m| ai.send(:score_move, m) }
     end
-
-    scoring_file = "tmp/ai_scoring_profile_#{Time.now.strftime('%Y%m%d_%H%M%S')}.json"
-    File.write(scoring_file, JSON.generate(scoring_profile))
-    puts "Scoring profile saved to: #{scoring_file}"
-    puts
   end
 
-  # Save the main profile as JSON for speedscope
+  # Save the profile as JSON for speedscope
   output_file = "tmp/ai_move_profile_#{Time.now.strftime('%Y%m%d_%H%M%S')}.json"
   File.write(output_file, JSON.generate(profile_data))
 

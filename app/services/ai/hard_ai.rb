@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 module Ai
   class HardAi < BaseAi
     # Bonus for moves closer to center
@@ -59,7 +57,7 @@ module Ai
       end
 
       # Create a mock move object for scoring
-      mock_move = OpenStruct.new(
+      mock_move = MoveFinder::MockMove.new(
         row_num: move[:row_num],
         col_num: move[:col_num],
         tile_value: move[:tile_value]

@@ -29,31 +29,104 @@ module Ai
 
     private
 
+    STARTING_ROWS = [2, 3].freeze
+    STARTING_COLS = [2, 3].freeze
+
+    def board_empty?
+      @board[2][2].zero? && @board[2][3].zero? && @board[3][2].zero? && @board[3][3].zero?
+    end
+
+    def positions_near_gaps_horizontal(row, empty_cols, num_tiles)
+      gap_edges = empty_cols.select do |col|
+        (col > 0 && !@board[row][col - 1].zero?) ||
+          (col < Game::BOARD_SIZE - 1 && !@board[row][col + 1].zero?)
+      end
+      return [] if gap_edges.empty?
+
+      max_distance = num_tiles - 1
+      empty_cols.select do |col|
+        gap_edges.any? { |edge| (col - edge).abs <= max_distance }
+      end
+    end
+
+    def positions_near_gaps_vertical(col, empty_rows, num_tiles)
+      gap_edges = empty_rows.select do |row|
+        (row > 0 && !@board[row - 1][col].zero?) ||
+          (row < Game::BOARD_SIZE - 1 && !@board[row + 1][col].zero?)
+      end
+      return [] if gap_edges.empty?
+
+      max_distance = num_tiles - 1
+      empty_rows.select do |row|
+        gap_edges.any? { |edge| (row - edge).abs <= max_distance }
+      end
+    end
+
+    def find_empty_board_placements(tiles)
+      return [] if tiles.size != 3
+
+      valid_moves = []
+
+      # Horizontal: rows 2-3, positions 0-5 (extending from starting cols 2-3)
+      STARTING_ROWS.each do |row|
+        positions_range = [0, 2 - (tiles.size - 1)].max..[3 + (tiles.size - 1), Game::BOARD_SIZE - 1].min
+        empty_cols = positions_range.select { |col| @board[row][col].zero? }
+
+        empty_cols.each_cons(tiles.size) do |cols|
+          next unless cols.any? { |c| STARTING_COLS.include?(c) }
+
+          positions = cols.map { |col| [row, col] }
+          move = build_move(positions, tiles)
+          valid_moves << move if move_is_valid?(move)
+        end
+      end
+
+      # Vertical: cols 2-3, positions 0-5 (extending from starting rows 2-3)
+      STARTING_COLS.each do |col|
+        positions_range = [0, 2 - (tiles.size - 1)].max..[3 + (tiles.size - 1), Game::BOARD_SIZE - 1].min
+        empty_rows = positions_range.select { |row| @board[row][col].zero? }
+
+        empty_rows.each_cons(tiles.size) do |rows|
+          next unless rows.any? { |r| STARTING_ROWS.include?(r) }
+
+          positions = rows.map { |row| [row, col] }
+          move = build_move(positions, tiles)
+          valid_moves << move if move_is_valid?(move)
+        end
+      end
+
+      valid_moves
+    end
+
     def find_placements_for_tiles(tiles, orientation)
+      return find_empty_board_placements(tiles) if board_empty?
+
       valid_moves = []
       board_size = Game::BOARD_SIZE
 
       if orientation == :horizontal
-        # For each row, find empty positions and try combinations
         (0...board_size).each do |row|
           empty_cols = (0...board_size).select { |col| @board[row][col].zero? }
           next if empty_cols.size < tiles.size
 
-          # Try all combinations of empty positions for placing tiles
-          empty_cols.combination(tiles.size).each do |cols|
+          pruned_cols = positions_near_gaps_horizontal(row, empty_cols, tiles.size)
+          next if pruned_cols.size < tiles.size
+
+          pruned_cols.each_cons(tiles.size) do |cols|
             positions = cols.map { |col| [row, col] }
             move = build_move(positions, tiles)
             valid_moves << move if move_is_valid?(move)
           end
         end
       else
-        # For each column, find empty positions and try combinations
         (0...board_size).each do |col|
           empty_rows = (0...board_size).select { |row| @board[row][col].zero? }
           next if empty_rows.size < tiles.size
 
-          # Try all combinations of empty positions for placing tiles
-          empty_rows.combination(tiles.size).each do |rows|
+          pruned_rows = positions_near_gaps_vertical(col, empty_rows, tiles.size)
+          next if pruned_rows.size < tiles.size
+
+          pruned_rows.each_cons(tiles.size) do |rows|
             positions = rows.map { |row| [row, col] }
             move = build_move(positions, tiles)
             valid_moves << move if move_is_valid?(move)
