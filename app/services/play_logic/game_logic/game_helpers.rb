@@ -333,8 +333,7 @@ module PlayLogic
         end
 
         def check_move_builds_from_placed_tiles(board:, rows:, cols:)
-          first_move = board.sum { |row| row.count { |cell| !cell.zero? } } <= 3
-          return true if first_move
+          return true if board.lazy.flat_map { |row| row }.reject(&:zero?).take(4).count <= 3
 
           move_row = rows.first
           move_col = cols.first
