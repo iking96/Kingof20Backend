@@ -21,7 +21,8 @@ class App extends React.Component {
       loggedIn: isAuthenticated(),
       showLoginModal: false,
       showSignupModal: false,
-      sidebarOpen: false
+      sidebarOpen: false,
+      cableUrl: `${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`
     };
     this.setLogin = this.setLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
@@ -35,13 +36,21 @@ class App extends React.Component {
   }
 
   setLogin(loginState) {
-    this.setState({ loggedIn: loginState });
+    // Update cable URL on login to use new access token
+    this.setState({
+      loggedIn: loginState,
+      cableUrl: `${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`
+    });
   }
 
   handleLogout() {
     Cookies.remove("access_token");
     Cookies.remove("username");
-    this.setState({ loggedIn: false });
+    // Clear cable URL on logout to disconnect
+    this.setState({
+      loggedIn: false,
+      cableUrl: null
+    });
   }
 
   openLoginModal() {
@@ -79,7 +88,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="App">
-          <ActionCableProvider url={`${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`}>
+          <ActionCableProvider url={this.state.cableUrl}>
             <NavBar
               loggedIn={this.state.loggedIn}
               username={username}

@@ -17,17 +17,21 @@ class ActionCableProvider extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    // Props not changed
-    if (state.cable === props.cable && state.url === props.url) {
-      return;
+    // If using url prop and it hasn't changed, keep existing cable
+    if (!props.cable && state.url === props.url && state.cable) {
+      return null;
     }
 
-    // cable is created by self, disconnect it
-    if (state.cable) {
+    // If using cable prop and it hasn't changed, keep it
+    if (props.cable && state.cable === props.cable) {
+      return null;
+    }
+
+    // Disconnect existing cable if we created it (not passed via props)
+    if (state.cable && !props.cable) {
       state.cable.disconnect();
     }
 
-    // create or assign cable
     return {
       cable: props.cable || actioncable.createConsumer(props.url),
       url: props.url
@@ -49,31 +53,22 @@ class ActionCableProvider extends Component {
 
 class ActionCableController extends Component {
   componentDidMount() {
-    var onReceived = this.props.onReceived;
-
-    var onInitialized = this.props.onInitialized;
-
-    var onConnected = this.props.onConnected;
-
-    var onDisconnected = this.props.onDisconnected;
-
-    var onRejected = this.props.onRejected;
-
+    // Use arrow functions to always access current props (avoids stale closures)
     this.cable = this.props.cable.subscriptions.create(this.props.channel, {
       received: data => {
-        onReceived && onReceived(data);
+        this.props.onReceived && this.props.onReceived(data);
       },
       initialized: () => {
-        onInitialized && onInitialized();
+        this.props.onInitialized && this.props.onInitialized();
       },
       connected: () => {
-        onConnected && onConnected();
+        this.props.onConnected && this.props.onConnected();
       },
       disconnected: () => {
-        onDisconnected && onDisconnected();
+        this.props.onDisconnected && this.props.onDisconnected();
       },
       rejected: () => {
-        onRejected && onRejected();
+        this.props.onRejected && this.props.onRejected();
       }
     });
   }

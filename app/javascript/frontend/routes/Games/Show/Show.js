@@ -247,11 +247,10 @@ const Show = ({
     );
   };
 
-  const handleReceivedUpdate = response => {
-    if (isFetching) {
-      return;
+  const handleReceivedUpdate = () => {
+    if (!isFetching) {
+      doFetch();
     }
-    doFetch();
   };
 
   if (!hasFetched) {
