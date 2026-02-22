@@ -2,15 +2,11 @@
 @import 'base.scss';
 
 $rack-gap: 6px;
-$rack-padding: 8px;
-$rack-bg-color: $royal-purple;
 
 #js-rack {
   display: inline-flex;
-  padding: $rack-padding;
-  background-color: $rack-bg-color;
-  border-radius: 8px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  background-color: transparent;
   align-items: center;
 
   .rack {
@@ -19,29 +15,36 @@ $rack-bg-color: $royal-purple;
   }
 
   .tile {
-    @include coloredSquare($tile-size, transparent);
+    @include responsiveTile();
+    background-color: transparent;
     border: none;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font: $tile-font;
+    font-size: calc(var(--tile-size) * 0.45);
     text-align: center;
     color: $decal-font-color;
     position: relative;
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 
     .decal {
-      @include coloredSquare(100%, #f5f5f5);
+      width: 100%;
+      height: 100%;
+      background-color: #f5f5f5;
       text-align: center;
-      line-height: $tile-size;
+      line-height: var(--tile-size);
       text-transform: uppercase;
       overflow: visible;
       position: absolute;
       top: 0px;
       left: 0px;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       &.temp {
         background-color: #ffd54f;
@@ -49,7 +52,9 @@ $rack-bg-color: $royal-purple;
     }
 
     .highlight {
-      @include coloredSquare(100%, #ffd54f);
+      width: 100%;
+      height: 100%;
+      background-color: #ffd54f;
       opacity: 0.4;
       position: absolute;
       top: 0px;

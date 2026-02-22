@@ -17,29 +17,66 @@ const PlayerCard = ({ username, score, isActive }) => {
   );
 };
 
+const GameStatusBar = ({ tilesRemaining, stage, complete, yourWin }) => {
+  const getStageLabel = () => {
+    if (stage === "end_round_one") return "One more Round";
+    if (stage === "end_round_two") return "Final Round";
+    return null;
+  };
+
+  const stageLabel = getStageLabel();
+
+  if (complete) {
+    return (
+      <div className={`game-status-bar game-over ${yourWin ? "won" : "lost"}`}>
+        Game Over - {yourWin ? "You Won!" : "You Lost"}
+      </div>
+    );
+  }
+
+  return (
+    <div className="game-status-bar">
+      {stageLabel && <span className="stage-indicator">{stageLabel}</span>}
+      <span>{tilesRemaining} tiles remaining</span>
+    </div>
+  );
+};
+
 const PlayerScoreArea = ({
   yourTurn,
   playerUsername,
   opponentUsername,
   playerScore,
   opponentScore,
+  tilesRemaining,
+  stage,
+  complete,
+  yourWin,
 }) => {
   return (
-    <div className="player-score-area">
-      <PlayerCard
-        username={playerUsername}
-        score={playerScore}
-        isActive={yourTurn}
-      />
+    <div className="player-score-area-wrapper">
+      <div className="player-score-area">
+        <PlayerCard
+          username={playerUsername}
+          score={playerScore}
+          isActive={yourTurn}
+        />
 
-      <div className="vs-divider">
-        <span>VS</span>
+        <div className="vs-divider">
+          <span>VS</span>
+        </div>
+
+        <PlayerCard
+          username={opponentUsername}
+          score={opponentScore}
+          isActive={!yourTurn && opponentUsername}
+        />
       </div>
-
-      <PlayerCard
-        username={opponentUsername}
-        score={opponentScore}
-        isActive={!yourTurn && opponentUsername}
+      <GameStatusBar
+        tilesRemaining={tilesRemaining}
+        stage={stage}
+        complete={complete}
+        yourWin={yourWin}
       />
     </div>
   );

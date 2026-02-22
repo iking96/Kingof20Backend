@@ -17,11 +17,10 @@ import TileDistributionModal from "frontend/components/TileDistributionModal";
 import Modal from "frontend/components/Modal";
 import ConfirmationModal from "frontend/components/ConfirmationModal";
 import ErrorModal from "frontend/components/ErrorModal";
-import OptionsMenu from "frontend/components/OptionsMenu";
+import MoreMenu from "frontend/components/MoreMenu";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import ExchangeView from "frontend/components/ExchangeView";
-import GameInfoBar from "frontend/components/GameInfoBar";
 
 import "../../../../scss/game_container.scss";
 
@@ -46,6 +45,7 @@ const Show = ({
   const [moves, setMoves] = useState([]);
   const [exchanging, setExchanging] = useState(false);
   const [showTileDistribution, setShowTileDistribution] = useState(false);
+  const [showMoveHistory, setShowMoveHistory] = useState(false);
   const [showPassConfirm, setShowPassConfirm] = useState(false);
   const [showResignConfirm, setShowResignConfirm] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -265,65 +265,92 @@ const Show = ({
 
   return (
     <div className="game-container">
-      <div className="game-content-wrapper">
-        <div className="game-panel">
-          <div className="floating-card">
-            <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+      <PlayerScoreArea
+        yourTurn={gameFlowData.your_turn}
+        playerUsername={playerData.you?.username}
+        opponentUsername={playerData.them?.username}
+        playerScore={gameFlowData.your_score}
+        opponentScore={gameFlowData.their_score}
+        tilesRemaining={gameFlowData.available_tiles?.length || 0}
+        stage={gameFlowData.stage}
+        complete={gameFlowData.complete}
+        yourWin={gameFlowData.your_win}
+      />
+      <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+        <div className="game-content-wrapper">
+          <div className="game-panel">
+            <div className="floating-card">
               <Board
                 boardValues={boardValues}
                 tempBoardValues={tempBoardValues}
                 lastMoveInfo={lastMoveInfo}
                 handleBoardSet={handleBoardSet}
               />
-
-              <div className="controls-row">
-                <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
-
-                <OptionsMenu
-                  yourTurn={gameFlowData.your_turn}
-                  allowSwap={gameFlowData.allow_swap}
-                  gameComplete={gameFlowData.complete}
-                  onPass={() => setShowPassConfirm(true)}
-                  onExchange={() => {
-                    recallTiles();
-                    setExchanging(true);
-                  }}
-                  onResign={() => setShowResignConfirm(true)}
-                  onShowTileDistribution={() => setShowTileDistribution(true)}
-                />
-
-                <button
-                  className="play-btn"
-                  onClick={postTilePlacement}
-                  disabled={!gameFlowData.your_turn || gameFlowData.complete}
-                >
-                  PLAY!
-                </button>
-              </div>
-            </DndProvider>
-
+            </div>
           </div>
         </div>
-        <div className="game-sidebar">
-          <GameInfoBar
-            tilesRemaining={gameFlowData.available_tiles?.length || 0}
-            stage={gameFlowData.stage}
-            complete={gameFlowData.complete}
-            yourWin={gameFlowData.your_win}
-          />
-          <PlayerScoreArea
-            yourTurn={gameFlowData.your_turn}
-            playerUsername={playerData.you?.username}
-            opponentUsername={playerData.them?.username}
-            playerScore={gameFlowData.your_score}
-            opponentScore={gameFlowData.their_score}
-          />
+
+        <div className="game-controls">
+          <div className="tile-ledge">
+            <TileRack rackValues={rackValues} handleRackSet={handleRackSet} />
+          </div>
+          <div className="options-bar">
+            <MoreMenu
+              gameComplete={gameFlowData.complete}
+              onResign={() => setShowResignConfirm(true)}
+              onShowTileDistribution={() => setShowTileDistribution(true)}
+              onShowMoveHistory={() => setShowMoveHistory(true)}
+            />
+
+            <button
+              className="option-btn"
+              onClick={() => setShowPassConfirm(true)}
+              disabled={!gameFlowData.your_turn || gameFlowData.complete}
+            >
+              <span className="icon">⏭</span>
+              <span className="label">Pass</span>
+            </button>
+
+            <button
+              className="play-btn"
+              onClick={postTilePlacement}
+              disabled={!gameFlowData.your_turn || gameFlowData.complete}
+            >
+              PLAY!
+            </button>
+
+            <button
+              className="option-btn"
+              onClick={() => {
+                recallTiles();
+                setExchanging(true);
+              }}
+              disabled={!gameFlowData.your_turn || gameFlowData.complete || !gameFlowData.allow_swap}
+            >
+              <span className="icon">🔄</span>
+              <span className="label">Swap</span>
+            </button>
+
+            <button
+              className="option-btn"
+              onClick={recallTiles}
+              disabled={gameFlowData.complete}
+            >
+              <span className="icon">↩</span>
+              <span className="label">Recall</span>
+            </button>
+          </div>
+        </div>
+      </DndProvider>
+
+      {showMoveHistory && (
+        <Modal title="Move History" onClose={() => setShowMoveHistory(false)} maxWidth="400px">
           <MoveHistorySidebar
             moves={moves}
             currentUsername={playerData.you?.username}
           />
-        </div>
-      </div>
+        </Modal>
+      )}
 
       {exchanging && (
         <Modal title="Exchange Tiles" onClose={() => setExchanging(false)} maxWidth="500px">

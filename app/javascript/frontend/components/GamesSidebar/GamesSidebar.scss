@@ -1,4 +1,5 @@
 @import '../../../scss/base.scss';
+@import '../../../scss/tile.scss';
 
 $mobile-breakpoint: 768px;
 
@@ -16,9 +17,11 @@ $mobile-breakpoint: 768px;
 
   @media (max-width: $mobile-breakpoint) {
     position: fixed;
-    top: 64px; // Height of navbar
+    top: 64px;
     left: 0;
     bottom: 0;
+    width: 280px;
+    max-width: 85vw;
     z-index: 900;
     transform: translateX(-100%);
 

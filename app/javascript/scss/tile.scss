@@ -1,6 +1,6 @@
-// Tile variables - no CSS output, just shared values
+// Tile variables - SCSS variables for static values
 $tile-num: 12;
-$tile-size: 40px;
+$tile-size: 40px; // Fallback, actual size from CSS custom property
 $tile-color: black;
 $starting-tile-color: #888;
 $tile-border-color: #666;
@@ -8,8 +8,31 @@ $tile-border-width: 2px;
 $tile-font: bold 70%/1.5 "Open Sans", sans-serif;
 $decal-font-color: black;
 
+// CSS Custom Properties for responsive sizing
+:root {
+  --tile-size: 42px;
+  --board-tiles: 12;
+  --rack-tiles: 7;
+  --board-width: calc(var(--tile-size) * var(--board-tiles));
+  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
+  --tile-border-width: 2px;
+}
+
+// Mobile: slightly smaller tiles
+@media (max-width: 768px) {
+  :root {
+    --tile-size: 40px;
+  }
+}
+
 @mixin coloredSquare($size, $color) {
   width: $size;
   height: $size;
   background-color: $color;
+}
+
+// Mixin for responsive tiles using CSS custom properties
+@mixin responsiveTile() {
+  width: var(--tile-size);
+  height: var(--tile-size);
 }

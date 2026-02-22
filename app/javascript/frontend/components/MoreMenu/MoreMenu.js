@@ -1,19 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./OptionsMenu.scss";
+import "./MoreMenu.scss";
 
-const OptionsMenu = ({
-  yourTurn,
-  allowSwap,
+const MoreMenu = ({
   gameComplete,
-  onPass,
-  onExchange,
   onResign,
   onShowTileDistribution,
+  onShowMoveHistory,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-
-  const isDisabled = !yourTurn || gameComplete;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -25,18 +20,13 @@ const OptionsMenu = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handlePass = () => {
-    onPass();
-    setIsOpen(false);
-  };
-
-  const handleExchange = () => {
-    onExchange();
-    setIsOpen(false);
-  };
-
   const handleTileDistribution = () => {
     onShowTileDistribution();
+    setIsOpen(false);
+  };
+
+  const handleMoveHistory = () => {
+    onShowMoveHistory();
     setIsOpen(false);
   };
 
@@ -46,35 +36,28 @@ const OptionsMenu = ({
   };
 
   return (
-    <div className="options-menu" ref={menuRef}>
+    <div className="more-menu" ref={menuRef}>
       <button
-        className="options-trigger"
+        className="more-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        title="Game Options"
       >
-        ☰
+        <span className="icon">☰</span>
+        <span className="label">More</span>
       </button>
 
       {isOpen && (
-        <div className="options-dropdown">
-          <button onClick={handlePass} disabled={isDisabled}>
-            <span className="icon">⏭</span>
-            Pass Turn
-          </button>
-          <button
-            onClick={handleExchange}
-            disabled={isDisabled || !allowSwap}
-          >
-            <span className="icon">🔄</span>
-            Exchange Tiles
-          </button>
-          <hr className="divider" />
+        <div className="more-dropdown">
           <button onClick={handleTileDistribution}>
             <span className="icon">📊</span>
             Tile Distribution
           </button>
+          <button onClick={handleMoveHistory}>
+            <span className="icon">📜</span>
+            Move History
+          </button>
+          <hr className="divider" />
           <button onClick={handleResign} disabled={gameComplete}>
             <span className="icon">🏳️</span>
             Resign
@@ -85,4 +68,4 @@ const OptionsMenu = ({
   );
 };
 
-export default React.memo(OptionsMenu);
+export default React.memo(MoreMenu);

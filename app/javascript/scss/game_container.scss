@@ -1,4 +1,5 @@
 @import "./base.scss";
+@import "./tile.scss";
 
 $stripe-color-1: darken($royal-purple, 20%);
 $stripe-color-2: darken($royal-purple, 30%);
@@ -6,11 +7,11 @@ $stripe-width: 12px;
 
 .game-container {
   width: 100%;
-  min-width: fit-content;
   flex: 1;
-  padding: 12px;
   box-sizing: border-box;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: repeating-linear-gradient(
     -45deg,
     $stripe-color-1,
@@ -20,11 +21,17 @@ $stripe-width: 12px;
   );
 
   .game-content-wrapper {
+    flex: 1;
     display: flex;
     align-items: flex-start;
-    gap: 16px;
-    max-width: 800px;
+    justify-content: center;
+    gap: 20px;
+    width: fit-content;
+    max-width: 100%;
     margin: 0 auto;
+    overflow: auto;
+    padding: 8px;
+    box-sizing: border-box;
   }
 
   .game-panel {
@@ -32,55 +39,97 @@ $stripe-width: 12px;
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
-  }
-
-  .game-sidebar {
-    width: 280px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    // Height matches game panel: board (484px) + rack (40px) + controls (~60px)
-    max-height: 584px;
-    overflow: hidden;
+    width: var(--board-width);
   }
 
   .floating-card {
-    padding: 8px;
     width: 100%;
     box-sizing: border-box;
   }
 }
 
-.controls-row {
+
+// Game controls - Words With Friends style layout (fixed at bottom)
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.tile-ledge {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 6px;
+  background: darken($royal-purple, 5%);
+  box-sizing: border-box;
+}
+
+.options-bar {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-
-  button {
-    margin: 0;
-  }
+  padding: 8px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background: $royal-purple;
+  box-sizing: border-box;
 
   .play-btn {
-    background: $royal-gold;
-    color: #1a1a1a;
+    background: linear-gradient(180deg, #ffd966 0%, #e6b800 100%);
+    color: #5c4a00;
     border: none;
-    padding: 12px 32px;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: 10px 32px;
+    border-radius: 50px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     letter-spacing: 1px;
+    margin: 0;
 
     &:hover:not(:disabled) {
-      background: lighten($royal-gold, 10%);
+      background: linear-gradient(180deg, #ffe080 0%, #f0c620 100%);
     }
 
     &:disabled {
       opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    margin: 0;
+
+    .icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    &:hover:not(:disabled) {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
     }
   }
