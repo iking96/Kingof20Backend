@@ -1,3 +1,14 @@
+:root {
+  --tile-size: 42px;
+  --board-tiles: 12;
+  --rack-tiles: 7;
+  --board-width: calc(var(--tile-size) * var(--board-tiles));
+  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
+  --tile-border-width: 2px; }
+
+@media (max-width: 768px) {
+  :root {
+    --tile-size: 40px; } }
 /* Colors */
 /* Make whole site full page width */
 * {
@@ -14,41 +25,43 @@ a {
 
 #js-rack {
   display: inline-flex;
-  padding: 8px;
-  background-color: #7851a9;
-  border-radius: 8px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  background-color: transparent;
   align-items: center; }
   #js-rack .rack {
     display: flex;
     gap: 6px; }
   #js-rack .tile {
-    width: 40px;
-    height: 40px;
+    width: min(var(--tile-size), 11cqi);
+    height: min(var(--tile-size), 11cqi);
     background-color: transparent;
     border: none;
-    display: inline-block;
-    font: bold 70%/1.5 "Open Sans", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: black;
     position: relative;
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); }
+    container-type: size; }
     #js-rack .tile .decal {
       width: 100%;
       height: 100%;
       background-color: #f5f5f5;
       text-align: center;
-      line-height: 40px;
       text-transform: uppercase;
       overflow: visible;
       position: absolute;
       top: 0px;
       left: 0px;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      font-weight: 700; }
+      font-family: "Open Sans", sans-serif;
+      font-weight: 700;
+      font-size: 30cqmin;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
       #js-rack .tile .decal.temp {
         background-color: #ffd54f; }
     #js-rack .tile .highlight {

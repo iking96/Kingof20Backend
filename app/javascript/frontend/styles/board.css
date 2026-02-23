@@ -1,31 +1,49 @@
+:root {
+  --tile-size: 42px;
+  --board-tiles: 12;
+  --rack-tiles: 7;
+  --board-width: calc(var(--tile-size) * var(--board-tiles));
+  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
+  --tile-border-width: 2px; }
+
+@media (max-width: 768px) {
+  :root {
+    --tile-size: 40px; } }
 #js-board {
-  width: 480px;
-  height: 480px;
+  width: min(var(--board-width), 100cqw, 100cqh);
+  height: min(var(--board-width), 100cqw, 100cqh);
+  aspect-ratio: 1;
   background-color: #1a1a1a;
-  min-width: 480px;
-  min-height: 480px;
-  margin: 0 auto;
-  box-sizing: content-box;
+  box-sizing: border-box;
   border-radius: 4px;
-  border-top: 2px solid #666;
-  border-left: 2px solid #666; }
+  border-top: var(--tile-border-width) solid #666;
+  border-left: var(--tile-border-width) solid #666; }
   #js-board .board {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: repeat(12, 1fr);
     background-color: #1a1a1a; }
     #js-board .board .row {
-      height: 40px; }
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      height: auto; }
   #js-board .tile {
-    width: 40px;
-    height: 40px;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
     background-color: #1a1a1a;
     border: none;
-    border-right: 2px solid #666;
-    border-bottom: 2px solid #666;
-    display: inline-block;
-    font: bold 70%/1.5 "Open Sans", sans-serif;
+    border-right: var(--tile-border-width) solid #666;
+    border-bottom: var(--tile-border-width) solid #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: black;
     position: relative;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    container-type: size; }
     #js-board .tile.starting {
       background-color: #444; }
     #js-board .tile .decal {
@@ -33,14 +51,18 @@
       height: 100%;
       background-color: #f5f5f5;
       text-align: center;
-      line-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-transform: uppercase;
       overflow: visible;
       position: absolute;
-      top: 0px;
-      left: 0px;
+      top: 0;
+      left: 0;
       border-radius: 3px;
-      font-weight: 700; }
+      font-family: "Open Sans", sans-serif;
+      font-weight: 700;
+      font-size: 30cqmin; }
       #js-board .tile .decal.temp {
         background-color: #ffd54f; }
       #js-board .tile .decal.last-move {
@@ -51,8 +73,8 @@
       background-color: #ffd54f;
       opacity: 0.4;
       position: absolute;
-      top: 0px;
-      left: 0px;
+      top: 0;
+      left: 0;
       border-radius: 4px; }
 
 /*# sourceMappingURL=board.css.map */

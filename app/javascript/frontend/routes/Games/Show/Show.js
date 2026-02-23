@@ -279,14 +279,12 @@ const Show = ({
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
         <div className="game-content-wrapper">
           <div className="game-panel">
-            <div className="floating-card">
-              <Board
-                boardValues={boardValues}
-                tempBoardValues={tempBoardValues}
-                lastMoveInfo={lastMoveInfo}
-                handleBoardSet={handleBoardSet}
-              />
-            </div>
+            <Board
+              boardValues={boardValues}
+              tempBoardValues={tempBoardValues}
+              lastMoveInfo={lastMoveInfo}
+              handleBoardSet={handleBoardSet}
+            />
           </div>
         </div>
 
