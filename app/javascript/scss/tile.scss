@@ -10,19 +10,10 @@ $decal-font-color: black;
 
 // CSS Custom Properties for responsive sizing
 :root {
-  --tile-size: 42px;
+  --tile-size: 52px;
   --board-tiles: 12;
-  --rack-tiles: 7;
   --board-width: calc(var(--tile-size) * var(--board-tiles));
-  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
   --tile-border-width: 2px;
-}
-
-// Mobile: slightly smaller tiles
-@media (max-width: 768px) {
-  :root {
-    --tile-size: 40px;
-  }
 }
 
 @mixin coloredSquare($size, $color) {

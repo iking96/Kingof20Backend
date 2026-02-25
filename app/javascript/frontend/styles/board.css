@@ -1,14 +1,9 @@
 :root {
-  --tile-size: 42px;
+  --tile-size: 52px;
   --board-tiles: 12;
-  --rack-tiles: 7;
   --board-width: calc(var(--tile-size) * var(--board-tiles));
-  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
   --tile-border-width: 2px; }
 
-@media (max-width: 768px) {
-  :root {
-    --tile-size: 40px; } }
 #js-board {
   width: min(var(--board-width), 100cqw, 100cqh);
   height: min(var(--board-width), 100cqw, 100cqh);
