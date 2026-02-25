@@ -5,8 +5,8 @@
   --tile-border-width: 2px; }
 
 #js-board {
-  width: min(var(--board-width), 100cqw, 100cqh);
-  height: min(var(--board-width), 100cqw, 100cqh);
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
   aspect-ratio: 1;
   background-color: #1a1a1a;
   box-sizing: border-box;

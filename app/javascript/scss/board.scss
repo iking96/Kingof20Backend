@@ -3,9 +3,9 @@
 $board-bg-color: #1a1a1a;
 
 #js-board {
-  // Use container-based sizing that respects available space
-  width: min(var(--board-width), 100cqw, 100cqh);
-  height: min(var(--board-width), 100cqw, 100cqh);
+  // Scale to fill available container space (square, limited by smaller dimension)
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
   aspect-ratio: 1;
   background-color: $board-bg-color;
   box-sizing: border-box;

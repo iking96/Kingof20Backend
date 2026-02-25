@@ -13,16 +13,11 @@ a {
   text-decoration: none; }
 
 :root {
-  --tile-size: 42px;
+  --tile-size: 52px;
   --board-tiles: 12;
-  --rack-tiles: 7;
   --board-width: calc(var(--tile-size) * var(--board-tiles));
-  --rack-width: calc(var(--tile-size) * var(--rack-tiles));
   --tile-border-width: 2px; }
 
-@media (max-width: 768px) {
-  :root {
-    --tile-size: 40px; } }
 .game-container {
   width: 100%;
   flex: 1;
@@ -30,7 +25,9 @@ a {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: repeating-linear-gradient(-45deg, #473064, #473064 12px, #2f1f42 12px, #2f1f42 24px); }
+  background: repeating-linear-gradient(-45deg, #473064, #473064 12px, #2f1f42 12px, #2f1f42 24px);
+  container-type: size;
+  container-name: game-container; }
   .game-container .game-content-wrapper {
     flex: 1;
     display: flex;
@@ -61,27 +58,30 @@ a {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 6px;
+  align-items: center;
+  padding: clamp(6px, 1cqh, 16px);
   background: #6c4998;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  container-type: inline-size;
+  container-name: tile-ledge; }
 
 .options-bar {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 8px;
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  gap: clamp(8px, 1.5cqw, 20px);
+  padding: clamp(8px, 1.2cqh, 16px);
+  padding-bottom: clamp(8px, 1.2cqh, 16px);
   background: #7851a9;
   box-sizing: border-box; }
   .options-bar .play-btn {
     background: linear-gradient(180deg, #ffd966 0%, #e6b800 100%);
     color: #5c4a00;
     border: none;
-    padding: 10px 32px;
+    padding: clamp(8px, 1.2cqh, 14px) clamp(24px, 4cqw, 40px);
     border-radius: 50px;
-    font-size: 14px;
+    font-size: clamp(12px, 1.5cqh, 18px);
     font-weight: 700;
     cursor: pointer;
     letter-spacing: 1px;
@@ -96,17 +96,17 @@ a {
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 4px 8px;
+    padding: clamp(4px, 0.5cqh, 8px) clamp(6px, 1cqw, 12px);
     border: none;
     background: transparent;
     color: white;
     cursor: pointer;
     margin: 0; }
     .options-bar .option-btn .icon {
-      font-size: 20px;
+      font-size: clamp(16px, 2.5cqh, 28px);
       line-height: 1; }
     .options-bar .option-btn .label {
-      font-size: 10px;
+      font-size: clamp(8px, 1cqh, 14px);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px; }

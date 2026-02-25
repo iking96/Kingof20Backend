@@ -10,8 +10,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 6px 16px;
+  gap: clamp(12px, 2cqw, 32px);
+  padding: clamp(6px, 1.5cqh, 20px) clamp(12px, 2cqw, 32px);
   background: darken($royal-purple, 10%);
 
   .vs-divider {
@@ -70,8 +70,8 @@
   }
 
   .avatar {
-    width: 28px;
-    height: 28px;
+    width: clamp(28px, 5cqh, 64px);
+    height: clamp(28px, 5cqh, 64px);
     border-radius: 50%;
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     display: flex;
@@ -79,7 +79,7 @@
     justify-content: center;
     color: white;
     font-weight: bold;
-    font-size: 12px;
+    font-size: clamp(11px, 2cqh, 24px);
     border: 2px solid white;
     flex-shrink: 0;
   }
@@ -91,12 +91,12 @@
 
     .username {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 11px;
+      font-size: clamp(10px, 1.8cqh, 22px);
     }
 
     .score {
       color: white;
-      font-size: 16px;
+      font-size: clamp(16px, 3.5cqh, 40px);
       font-weight: bold;
       line-height: 1.1;
     }
