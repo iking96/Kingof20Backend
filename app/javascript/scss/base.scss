@@ -17,9 +17,10 @@ $royal-gold: #d4af37;
   padding: 0;
 }
 
-/* Set global font */
+/* Set global font and prevent overscroll bounce */
 body {
   font-family: "Raleway";
+  overscroll-behavior: none;
 }
 
 /* No link underlines */
