@@ -4,9 +4,14 @@
   margin: 0;
   padding: 0; }
 
+/* Prevent overscroll bounce on iOS */
+html {
+  overscroll-behavior: none; }
+
 /* Set global font */
 body {
-  font-family: "Raleway"; }
+  font-family: "Raleway";
+  overscroll-behavior: none; }
 
 /* No link underlines */
 a {
@@ -59,8 +64,8 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(6px, 1cqh, 16px);
-  background: #6c4998;
+  padding: clamp(8px, 1cqh, 16px);
+  background: linear-gradient(0deg, #7851a9 0%, #a083c4 3%, #7851a9 8%, #533875 15%, transparent 18%, transparent 100%);
   box-sizing: border-box;
   container-type: inline-size;
   container-name: tile-ledge; }

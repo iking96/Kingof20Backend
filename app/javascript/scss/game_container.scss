@@ -62,8 +62,17 @@ $stripe-width: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(6px, 1cqh, 16px);
-  background: darken($royal-purple, 5%);
+  padding: clamp(8px, 1cqh, 16px);
+  // Ledge effect: shine at bottom edge (where tiles sit), fading to transparent
+  background: linear-gradient(
+    0deg,
+    $royal-purple 0%,
+    lighten($royal-purple, 15%) 3%,
+    $royal-purple 8%,
+    darken($royal-purple, 15%) 15%,
+    transparent 18%,
+    transparent 100%
+  );
   box-sizing: border-box;
   // Enable container queries for rack tile scaling
   container-type: inline-size;
@@ -78,7 +87,7 @@ $stripe-width: 12px;
   gap: clamp(8px, 1.5cqw, 20px);
   padding: clamp(8px, 1.2cqh, 16px);
   padding-bottom: clamp(8px, 1.2cqh, 16px);
-  background: $royal-purple;
+  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 10%) 100%);
   box-sizing: border-box;
 
   .play-btn {
