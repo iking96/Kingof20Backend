@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import "./GamesSidebar.scss";
 
 const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated, isOpen, onGameSelect }) => {
@@ -31,6 +31,11 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
 
   return (
     <div className={`games-sidebar ${isOpen ? 'open' : ''}`}>
+      <Link to="/games/how-to-play" className="how-to-play-link" onClick={onGameSelect}>
+        <span className="link-icon">?</span>
+        How to Play
+      </Link>
+
       <div className="new-game-container">
         <button
           className={`create-game-btn ${!isAuthenticated ? 'disabled' : ''}`}

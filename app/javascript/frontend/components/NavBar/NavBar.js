@@ -22,12 +22,6 @@ const NavBar = ({ loggedIn, username, onLoginClick, onSignupClick, onLogoutClick
           </Link>
         </div>
 
-        <div className="navbar-center">
-          <Link to="/games/how-to-play" className="nav-link">
-            How to Play
-          </Link>
-        </div>
-
         <div className="navbar-right">
           {loggedIn ? (
             <div className="user-info">
