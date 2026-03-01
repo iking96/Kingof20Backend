@@ -22,7 +22,7 @@
     }
 
     .label {
-      font-size: 10px;
+      font-size: clamp(8px, 1cqh, 14px);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;

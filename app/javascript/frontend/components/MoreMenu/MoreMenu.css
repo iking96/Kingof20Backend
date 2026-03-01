@@ -1,0 +1,91 @@
+/* Colors */
+/* Make whole site full page width */
+* {
+  margin: 0;
+  padding: 0; }
+
+/* Prevent overscroll bounce on iOS */
+html {
+  overscroll-behavior: none; }
+
+/* Set global font */
+body {
+  font-family: "Raleway";
+  overscroll-behavior: none; }
+
+/* No link underlines */
+a {
+  text-decoration: none; }
+
+.more-menu {
+  position: relative; }
+  .more-menu .more-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    margin: 0; }
+    .more-menu .more-trigger .icon {
+      font-size: 20px;
+      line-height: 1;
+      transform: translateY(-2px); }
+    .more-menu .more-trigger .label {
+      font-size: clamp(8px, 1cqh, 14px);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px; }
+    .more-menu .more-trigger:hover {
+      opacity: 0.8; }
+  .more-menu .more-dropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 12px;
+    min-width: 200px;
+    overflow: hidden;
+    z-index: 100;
+    animation: slideUp 0.15s ease; }
+    .more-menu .more-dropdown button {
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      background: white;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #333;
+      transition: background 0.15s ease; }
+      .more-menu .more-dropdown button:hover:not(:disabled) {
+        background: #f5f5f5; }
+      .more-menu .more-dropdown button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed; }
+      .more-menu .more-dropdown button .icon {
+        font-size: 18px;
+        width: 24px;
+        text-align: center; }
+    .more-menu .more-dropdown .divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 4px 0; }
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px); }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); } }
+
+/*# sourceMappingURL=MoreMenu.css.map */
