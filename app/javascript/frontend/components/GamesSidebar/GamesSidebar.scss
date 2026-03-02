@@ -314,13 +314,15 @@ $mobile-breakpoint: 768px;
   }
 }
 
-.game-item.completed:hover {
-  .game-result {
-    opacity: 0;
-  }
+@media (hover: hover) {
+  .game-item.completed:hover {
+    .game-result {
+      opacity: 0;
+    }
 
-  .hide-game-btn {
-    opacity: 1;
+    .hide-game-btn {
+      opacity: 1;
+    }
   }
 }
 

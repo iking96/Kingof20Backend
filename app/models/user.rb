@@ -24,11 +24,6 @@ class User < ApplicationRecord
     false
   end
 
-  # Inform Devise that password is required
-  def password_required?
-    true
-  end
-
   def games
     Game.where('initiator_id = ? or opponent_id = ?', id, id)
   end

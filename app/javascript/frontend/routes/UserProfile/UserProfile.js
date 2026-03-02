@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Cookies from "js-cookie";
+import { getAccessToken } from "frontend/utils/authenticateHelper.js";
+import usePatch from "frontend/utils/usePatch";
 import "./UserProfile.scss";
 
 const UserProfile = () => {
@@ -7,15 +10,56 @@ const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [editingEmail, setEditingEmail] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [saveMessage, setSaveMessage] = useState(null);
+
+  const { isPatching, doPatch } = usePatch("/api/v1/users/me");
+
+  const currentUsername = Cookies.get("username");
+
+  const handleSaveEmail = () => {
+    setSaveMessage(null);
+    doPatch({ user: { email: emailInput } }, ({ response, json }) => {
+      if (response.ok) {
+        setUser({ ...user, email: json.user.email });
+        setEditingEmail(false);
+        setSaveMessage({ type: "success", text: "Email updated successfully" });
+      } else {
+        setSaveMessage({ type: "error", text: json.errors?.[0] || "Failed to update email" });
+      }
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEmail(false);
+    setEmailInput(user?.email || "");
+    setSaveMessage(null);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
+      const isOwn = currentUsername && currentUsername === usernameParam;
+      setIsOwnProfile(isOwn);
+
       try {
-        const response = await fetch(`/api/v1/users/${encodeURIComponent(usernameParam)}`);
+        const url = isOwn ? "/api/v1/users/me" : `/api/v1/users/${encodeURIComponent(usernameParam)}`;
+        const opts = isOwn
+          ? {
+              headers: {
+                AUTHORIZATION: `Bearer ${getAccessToken()}`,
+                Accept: "application/json"
+              }
+            }
+          : {};
+
+        const response = await fetch(url, opts);
         const data = await response.json();
 
         if (response.ok) {
           setUser(data.user);
+          setEmailInput(data.user.email || "");
         } else {
           setError(data.error || "User not found");
         }
@@ -27,7 +71,7 @@ const UserProfile = () => {
     };
 
     fetchUser();
-  }, [usernameParam]);
+  }, [usernameParam, currentUsername]);
 
   if (loading) {
     return (
@@ -97,6 +141,56 @@ const UserProfile = () => {
             <span className="losses-count">{stats.losses}L</span>
           </div>
         </div>
+
+        {isOwnProfile && (
+          <div className="email-section">
+            <div className="section-title">Email</div>
+            {saveMessage && (
+              <div className={`save-message ${saveMessage.type}`}>
+                {saveMessage.text}
+              </div>
+            )}
+            {editingEmail ? (
+              <div className="email-edit-form">
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="Enter your email"
+                  className="email-input"
+                />
+                <div className="email-buttons">
+                  <button
+                    className="cancel-btn"
+                    onClick={handleCancelEdit}
+                    disabled={isPatching}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="save-btn"
+                    onClick={handleSaveEmail}
+                    disabled={isPatching}
+                  >
+                    {isPatching ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="email-display">
+                <span className="email-value">
+                  {user.email || "No email set"}
+                </span>
+                <button
+                  className="edit-btn"
+                  onClick={() => setEditingEmail(true)}
+                >
+                  {user.email ? "Change" : "Add"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

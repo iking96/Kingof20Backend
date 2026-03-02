@@ -16,6 +16,8 @@ Rails.application.routes.draw do
         resources :moves, only: [:index], to: 'games#moves'
       end
       resources :moves
+      get 'users/me', to: 'users#me'
+      patch 'users/me', to: 'users#update_me'
       resources :users, only: [:show], param: :username
     end
   end

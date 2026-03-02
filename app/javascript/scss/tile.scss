@@ -10,7 +10,7 @@ $decal-font-color: black;
 
 // CSS Custom Properties for responsive sizing
 :root {
-  --tile-size: 52px;
+  --tile-size: 48px;
   --board-tiles: 12;
   --board-width: calc(var(--tile-size) * var(--board-tiles));
   --tile-border-width: 2px;

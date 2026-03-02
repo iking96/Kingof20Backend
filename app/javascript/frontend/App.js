@@ -10,6 +10,7 @@ import UserProfile from "frontend/routes/UserProfile";
 import NavBar from "frontend/components/NavBar";
 import LoginModal from "frontend/components/LoginModal";
 import SignupModal from "frontend/components/SignupModal";
+import ConfirmationModal from "frontend/components/ConfirmationModal";
 import { isAuthenticated, getAccessToken } from "frontend/utils/authenticateHelper.js";
 import { config } from "frontend/utils/constants.js";
 import Cookies from "js-cookie";
@@ -21,6 +22,7 @@ class App extends React.Component {
       loggedIn: isAuthenticated(),
       showLoginModal: false,
       showSignupModal: false,
+      showLogoutModal: false,
       sidebarOpen: false,
       cableUrl: `${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`
     };
@@ -28,6 +30,7 @@ class App extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.openLoginModal = this.openLoginModal.bind(this);
     this.openSignupModal = this.openSignupModal.bind(this);
+    this.openLogoutModal = this.openLogoutModal.bind(this);
     this.closeModals = this.closeModals.bind(this);
     this.switchToSignup = this.switchToSignup.bind(this);
     this.switchToLogin = this.switchToLogin.bind(this);
@@ -49,8 +52,13 @@ class App extends React.Component {
     // Clear cable URL on logout to disconnect
     this.setState({
       loggedIn: false,
+      showLogoutModal: false,
       cableUrl: null
     });
+  }
+
+  openLogoutModal() {
+    this.setState({ showLogoutModal: true });
   }
 
   openLoginModal() {
@@ -62,7 +70,7 @@ class App extends React.Component {
   }
 
   closeModals() {
-    this.setState({ showLoginModal: false, showSignupModal: false });
+    this.setState({ showLoginModal: false, showSignupModal: false, showLogoutModal: false });
   }
 
   switchToSignup() {
@@ -94,7 +102,7 @@ class App extends React.Component {
               username={username}
               onLoginClick={this.openLoginModal}
               onSignupClick={this.openSignupModal}
-              onLogoutClick={this.handleLogout}
+              onLogoutClick={this.openLogoutModal}
               onMenuClick={this.toggleSidebar}
               menuOpen={this.state.sidebarOpen}
             />
@@ -129,6 +137,17 @@ class App extends React.Component {
                 onClose={this.closeModals}
                 onLogin={() => this.setLogin(true)}
                 onSwitchToLogin={this.switchToLogin}
+              />
+            )}
+
+            {this.state.showLogoutModal && (
+              <ConfirmationModal
+                title="Logout"
+                message="Are you sure you want to logout?"
+                confirmText="Logout"
+                cancelText="Cancel"
+                onConfirm={this.handleLogout}
+                onCancel={this.closeModals}
               />
             )}
           </ActionCableProvider>
