@@ -104,6 +104,7 @@ const SignupModal = ({ onClose, onLogin, onSwitchToLogin }) => {
               value={password.value}
               onChange={password.handleChange}
               required
+              minLength={6}
             />
           </div>
           <div className="form-field">

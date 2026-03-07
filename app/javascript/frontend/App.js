@@ -11,6 +11,8 @@ import NavBar from "frontend/components/NavBar";
 import LoginModal from "frontend/components/LoginModal";
 import SignupModal from "frontend/components/SignupModal";
 import ConfirmationModal from "frontend/components/ConfirmationModal";
+import ForgotPasswordModal from "frontend/components/ForgotPasswordModal";
+import ResetPasswordModal from "frontend/components/ResetPasswordModal";
 import { isAuthenticated, getAccessToken } from "frontend/utils/authenticateHelper.js";
 import { config } from "frontend/utils/constants.js";
 import Cookies from "js-cookie";
@@ -18,11 +20,18 @@ import Cookies from "js-cookie";
 class App extends React.Component {
   constructor(props) {
     super(props);
+    // Check for password reset token in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetToken = urlParams.get('reset_password_token');
+
     this.state = {
       loggedIn: isAuthenticated(),
       showLoginModal: false,
       showSignupModal: false,
       showLogoutModal: false,
+      showForgotPasswordModal: false,
+      showResetPasswordModal: !!resetToken,
+      resetPasswordToken: resetToken,
       sidebarOpen: false,
       cableUrl: `${config.url.API_WS_ROOT}?access_token=${getAccessToken()}`
     };
@@ -31,9 +40,11 @@ class App extends React.Component {
     this.openLoginModal = this.openLoginModal.bind(this);
     this.openSignupModal = this.openSignupModal.bind(this);
     this.openLogoutModal = this.openLogoutModal.bind(this);
+    this.openForgotPasswordModal = this.openForgotPasswordModal.bind(this);
     this.closeModals = this.closeModals.bind(this);
     this.switchToSignup = this.switchToSignup.bind(this);
     this.switchToLogin = this.switchToLogin.bind(this);
+    this.handlePasswordResetSuccess = this.handlePasswordResetSuccess.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.closeSidebar = this.closeSidebar.bind(this);
   }
@@ -69,8 +80,28 @@ class App extends React.Component {
     this.setState({ showSignupModal: true, showLoginModal: false });
   }
 
+  openForgotPasswordModal() {
+    this.setState({ showForgotPasswordModal: true, showLoginModal: false });
+  }
+
   closeModals() {
-    this.setState({ showLoginModal: false, showSignupModal: false, showLogoutModal: false });
+    this.setState({
+      showLoginModal: false,
+      showSignupModal: false,
+      showLogoutModal: false,
+      showForgotPasswordModal: false,
+      showResetPasswordModal: false,
+      resetPasswordToken: null
+    });
+    // Clean up URL if there was a reset token
+    if (window.location.search.includes('reset_password_token')) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }
+
+  handlePasswordResetSuccess() {
+    this.closeModals();
+    this.openLoginModal();
   }
 
   switchToSignup() {
@@ -78,7 +109,7 @@ class App extends React.Component {
   }
 
   switchToLogin() {
-    this.setState({ showSignupModal: false, showLoginModal: true });
+    this.setState({ showSignupModal: false, showForgotPasswordModal: false, showLoginModal: true });
   }
 
   toggleSidebar() {
@@ -115,9 +146,13 @@ class App extends React.Component {
                 <Route
                   exact
                   path="/"
-                  render={() =>
-                    this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />
-                  }
+                  render={() => {
+                    // Don't redirect if showing reset password modal (preserve URL with token)
+                    if (this.state.showResetPasswordModal) {
+                      return null;
+                    }
+                    return this.state.loggedIn ? <Redirect to="/games" /> : <Redirect to="/games/how-to-play" />;
+                  }}
                 />
                 <Route path="/games" component={GamesRoutes} />
                 <Route path="/users/:username" component={UserProfile} />
@@ -129,6 +164,22 @@ class App extends React.Component {
                 onClose={this.closeModals}
                 onLogin={() => this.setLogin(true)}
                 onSwitchToSignup={this.switchToSignup}
+                onForgotPassword={this.openForgotPasswordModal}
+              />
+            )}
+
+            {this.state.showForgotPasswordModal && (
+              <ForgotPasswordModal
+                onClose={this.closeModals}
+                onBackToLogin={this.switchToLogin}
+              />
+            )}
+
+            {this.state.showResetPasswordModal && (
+              <ResetPasswordModal
+                resetToken={this.state.resetPasswordToken}
+                onClose={this.closeModals}
+                onSuccess={this.handlePasswordResetSuccess}
               />
             )}
 

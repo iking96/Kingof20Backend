@@ -5,7 +5,7 @@ import useField from "frontend/utils/useField";
 import { CLIENT_ID } from "frontend/utils/constants.js";
 import "./LoginModal.scss";
 
-const LoginModal = ({ onClose, onLogin, onSwitchToSignup }) => {
+const LoginModal = ({ onClose, onLogin, onSwitchToSignup, onForgotPassword }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const username = useField("");
@@ -82,6 +82,11 @@ const LoginModal = ({ onClose, onLogin, onSwitchToSignup }) => {
             {isLoading ? "Logging in..." : "Log In"}
           </button>
         </form>
+        <div className="forgot-password">
+          <button type="button" className="link-btn" onClick={onForgotPassword}>
+            Forgot password?
+          </button>
+        </div>
         <div className="signup-prompt">
           No account?{" "}
           <button type="button" className="link-btn" onClick={onSwitchToSignup}>

@@ -33,6 +33,7 @@ gem 'sidekiq'
 gem 'devise'
 gem 'doorkeeper'
 gem 'dotenv-rails', groups: [:development, :test, :production]
+gem 'resend'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

@@ -10,7 +10,8 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiVersion.new(version: 1, default: true), path: 'v1' do
       devise_for :users, controllers: {
         registrations: 'api/v1/users/registrations',
-      }, skip: [:sessions, :password]
+        passwords: 'api/v1/users/passwords',
+      }, skip: [:sessions]
 
       resources :games do
         resources :moves, only: [:index], to: 'games#moves'
