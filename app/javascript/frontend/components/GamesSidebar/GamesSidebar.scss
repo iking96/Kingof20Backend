@@ -286,14 +286,19 @@ $mobile-breakpoint: 768px;
   font-size: 12px;
   font-weight: 700;
 
-  &.won {
+  &.win {
     background: rgba($green-color, 0.15);
     color: $green-color;
   }
 
-  &.lost {
+  &.loss {
     background: rgba($royal-gold, 0.15);
     color: $royal-gold;
+  }
+
+  &.tie {
+    background: rgba(#888, 0.15);
+    color: #888;
   }
 }
 
@@ -329,12 +334,16 @@ $mobile-breakpoint: 768px;
 .game-item.completed {
   opacity: 0.8;
 
-  &.won {
+  &.win {
     border-left: 3px solid $green-color;
   }
 
-  &.lost {
+  &.loss {
     border-left: 3px solid $royal-gold;
+  }
+
+  &.tie {
+    border-left: 3px solid #888;
   }
 }
 

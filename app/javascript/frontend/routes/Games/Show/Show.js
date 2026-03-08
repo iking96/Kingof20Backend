@@ -75,7 +75,7 @@ const Show = ({
       var their_score = game.their_score;
       var allow_swap = game.allow_swap;
       var complete = game.complete;
-      var your_win = game.your_win;
+      var your_result = game.your_result;
       var stage = game.stage;
 
       setBoardValues(board);
@@ -88,7 +88,7 @@ const Show = ({
         their_score: their_score,
         allow_swap: allow_swap,
         complete: complete,
-        your_win: your_win,
+        your_result: your_result,
         available_tiles: available_tiles,
         vs_computer: game.vs_computer,
         stage: stage

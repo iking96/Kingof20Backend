@@ -142,7 +142,7 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
             completedGames.map(game => (
               <div
                 key={game.id}
-                className={`game-item completed ${game.your_win ? 'won' : 'lost'} ${currentGameId == game.id ? 'active' : ''}`}
+                className={`game-item completed ${game.your_result} ${currentGameId == game.id ? 'active' : ''}`}
                 onClick={() => handleGameClick(game.id)}
               >
                 <div className="game-avatar">
@@ -157,8 +157,8 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
                   </div>
                 </div>
                 <div className="game-result-container">
-                  <div className={`game-result ${game.your_win ? 'won' : 'lost'}`}>
-                    {game.your_win ? 'W' : 'L'}
+                  <div className={`game-result ${game.your_result}`}>
+                    {game.your_result === 'win' ? 'W' : game.your_result === 'tie' ? 'T' : 'L'}
                   </div>
                   <button
                     className="hide-game-btn"

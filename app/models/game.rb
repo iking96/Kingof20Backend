@@ -177,6 +177,8 @@ class Game < ApplicationRecord
   def requesting_user_data
     response_data = {}
 
+    winner = determine_winner
+
     if requesting_user_id == initiator.id
       response_data[:you] = initiator.as_json&.except('email')
       response_data[:them] = computer_opponent_data || opponent.as_json&.except('email')
@@ -184,7 +186,11 @@ class Game < ApplicationRecord
       response_data[:your_turn] = (current_player == 'initiator')
       response_data[:your_score] = initiator_score
       response_data[:their_score] = opponent_score
-      response_data[:your_win] = (determine_winner == 'initiator')
+      response_data[:your_result] = if winner == 'tie'
+        'tie'
+      else
+        (winner == 'initiator' ? 'win' : 'loss')
+      end
     end
 
     if opponent && requesting_user_id == opponent.id
@@ -194,7 +200,11 @@ class Game < ApplicationRecord
       response_data[:your_turn] = (current_player == 'opponent')
       response_data[:your_score] = opponent_score
       response_data[:their_score] = initiator_score
-      response_data[:your_win] = (determine_winner == 'opponent')
+      response_data[:your_result] = if winner == 'tie'
+        'tie'
+      else
+        (winner == 'opponent' ? 'win' : 'loss')
+      end
     end
 
     response_data

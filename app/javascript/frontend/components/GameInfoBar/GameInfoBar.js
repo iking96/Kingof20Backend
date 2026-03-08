@@ -1,7 +1,7 @@
 import React from "react";
 import "./GameInfoBar.scss";
 
-const GameInfoBar = ({ tilesRemaining, stage, complete, yourWin }) => {
+const GameInfoBar = ({ tilesRemaining, stage, complete, yourResult }) => {
   const getStageLabel = () => {
     if (stage === "end_round_one") return "Tiles Empty";
     if (stage === "end_round_two") return "Final Round";
@@ -11,10 +11,12 @@ const GameInfoBar = ({ tilesRemaining, stage, complete, yourWin }) => {
   const stageLabel = getStageLabel();
 
   if (complete) {
+    const resultClass = yourResult === 'win' ? 'won' : yourResult === 'tie' ? 'tied' : 'lost';
+    const resultText = yourResult === 'win' ? 'You Won!' : yourResult === 'tie' ? "It's a Tie!" : 'You Lost';
     return (
-      <div className={`game-info-bar game-over ${yourWin ? "won" : "lost"}`}>
+      <div className={`game-info-bar game-over ${resultClass}`}>
         <span className="game-over-text">
-          Game Over - {yourWin ? "You Won!" : "You Lost"}
+          Game Over - {resultText}
         </span>
       </div>
     );

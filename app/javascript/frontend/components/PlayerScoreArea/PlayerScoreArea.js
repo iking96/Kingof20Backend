@@ -17,7 +17,7 @@ const PlayerCard = ({ username, score, isActive }) => {
   );
 };
 
-const GameStatusBar = ({ tilesRemaining, stage, complete, yourWin }) => {
+const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult }) => {
   const getStageLabel = () => {
     if (stage === "end_round_one") return "One more Round";
     if (stage === "end_round_two") return "Final Round";
@@ -27,9 +27,11 @@ const GameStatusBar = ({ tilesRemaining, stage, complete, yourWin }) => {
   const stageLabel = getStageLabel();
 
   if (complete) {
+    const resultClass = yourResult === 'win' ? 'won' : yourResult === 'tie' ? 'tied' : 'lost';
+    const resultText = yourResult === 'win' ? 'You Won!' : yourResult === 'tie' ? "It's a Tie!" : 'You Lost';
     return (
-      <div className={`game-status-bar game-over ${yourWin ? "won" : "lost"}`}>
-        Game Over - {yourWin ? "You Won!" : "You Lost"}
+      <div className={`game-status-bar game-over ${resultClass}`}>
+        Game Over - {resultText}
       </div>
     );
   }
@@ -51,7 +53,7 @@ const PlayerScoreArea = ({
   tilesRemaining,
   stage,
   complete,
-  yourWin,
+  yourResult,
 }) => {
   return (
     <div className="player-score-area-wrapper">
@@ -76,7 +78,7 @@ const PlayerScoreArea = ({
         tilesRemaining={tilesRemaining}
         stage={stage}
         complete={complete}
-        yourWin={yourWin}
+        yourResult={yourResult}
       />
     </div>
   );
