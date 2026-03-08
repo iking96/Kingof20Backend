@@ -38,9 +38,22 @@ RSpec.describe(Ai::HardAi) do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([]))
       end
 
-      it 'executes a pass' do
-        subject
-        expect(Move.last.move_type).to(eq('pass'))
+      context 'and swapping is available' do
+        it 'executes a swap' do
+          subject
+          expect(Move.last.move_type).to(eq('swap'))
+        end
+      end
+
+      context 'and swapping is not available' do
+        before do
+          allow(game).to(receive(:allow_swap?).and_return(false))
+        end
+
+        it 'executes a pass' do
+          subject
+          expect(Move.last.move_type).to(eq('pass'))
+        end
       end
     end
   end
@@ -61,6 +74,44 @@ RSpec.describe(Ai::HardAi) do
     it 'is a valid HardAi instance' do
       ai = described_class.new(game)
       expect(ai).to(be_a(Ai::HardAi))
+    end
+  end
+
+  describe 'swap behavior' do
+    subject { described_class.new(game).make_move }
+
+    context 'when best move scores above threshold' do
+      let(:bad_move) do
+        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] }
+      end
+
+      before do
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([bad_move]))
+        # Stub calculate_move_score to return a high (bad) score
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(15))
+      end
+
+      it 'executes a swap instead of the bad move' do
+        subject
+        expect(Move.last.move_type).to(eq('swap'))
+      end
+    end
+
+    context 'when best move scores at or below threshold' do
+      let(:good_move) do
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
+      end
+
+      before do
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([good_move]))
+        # Stub calculate_move_score to return a low (good) score
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(5))
+      end
+
+      it 'executes the move' do
+        subject
+        expect(Move.last.move_type).to(eq('tile_placement'))
+      end
     end
   end
 end
