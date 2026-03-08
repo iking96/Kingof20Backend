@@ -38,9 +38,22 @@ RSpec.describe(Ai::EasyAi) do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([]))
       end
 
-      it 'executes a pass' do
-        subject
-        expect(Move.last.move_type).to(eq('pass'))
+      context 'and swapping is available' do
+        it 'executes a swap' do
+          subject
+          expect(Move.last.move_type).to(eq('swap'))
+        end
+      end
+
+      context 'and swapping is not available' do
+        before do
+          allow(game).to(receive(:allow_swap?).and_return(false))
+        end
+
+        it 'executes a pass' do
+          subject
+          expect(Move.last.move_type).to(eq('pass'))
+        end
       end
     end
   end

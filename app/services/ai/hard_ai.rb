@@ -35,14 +35,13 @@ module Ai
 
     private
 
+    # Hard AI uses additional heuristics beyond just game score
     def score_move(move)
       score = 0.0
 
       # Primary: Minimize distance from 20 (lower score = better)
-      # The game awards points as |20 - expression_result|
-      # So we want moves that get closest to 20 (score of 0)
       move_score = calculate_move_score(move)
-      score -= move_score # Lower game score is better, so subtract
+      score -= move_score
 
       # Secondary: Prefer moves closer to board center
       center = Game::BOARD_SIZE / 2.0
@@ -59,57 +58,6 @@ module Ai
       score += move[:tile_value].size * TILE_USAGE_WEIGHT
 
       score
-    end
-
-    def calculate_move_score(move)
-      # Simulate placing the move on a copy of the board and calculate score
-      test_board = @board.map(&:dup)
-      move[:row_num].each_with_index do |row, i|
-        col = move[:col_num][i]
-        tile = move[:tile_value][i]
-        test_board[row][col] = tile
-      end
-
-      # Create a mock move object for scoring
-      mock_move = MoveFinder::MockMove.new(
-        row_num: move[:row_num],
-        col_num: move[:col_num],
-        tile_value: move[:tile_value]
-      )
-
-      result = PlayLogic::GameLogic::GameHelpers.score_board_with_move(
-        board: test_board,
-        move: mock_move
-      )
-
-      result.success? ? result.value : 999
-    end
-
-    # Filter out moves that are dominated by shorter moves at the same position.
-    # A longer move is dominated if a shorter prefix scores strictly better.
-    # Equal scores favor the longer move (uses more tiles, disposes of "overs").
-    def filter_superset_moves(moves)
-      dominated = Set.new
-
-      moves.each do |longer|
-        moves.each do |shorter|
-          next if shorter[:tile_value].size >= longer[:tile_value].size
-          next unless prefix_of?(shorter, longer)
-
-          shorter_score = calculate_move_score(shorter)
-          longer_score = calculate_move_score(longer)
-
-          # Only cull if shorter scores STRICTLY better
-          dominated.add(longer) if shorter_score < longer_score
-        end
-      end
-
-      moves.reject { |m| dominated.include?(m) }
-    end
-
-    def prefix_of?(shorter, longer)
-      shorter[:row_num] == longer[:row_num].first(shorter[:tile_value].size) &&
-        shorter[:col_num] == longer[:col_num].first(shorter[:tile_value].size)
     end
 
     def can_swap?
