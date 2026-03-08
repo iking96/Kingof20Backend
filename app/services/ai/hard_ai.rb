@@ -9,6 +9,7 @@ module Ai
 
     def make_move
       valid_moves = find_all_valid_moves
+      valid_moves = filter_superset_moves(valid_moves)
 
       if valid_moves.empty?
         execute_pass
@@ -69,6 +70,33 @@ module Ai
       )
 
       result.success? ? result.value : 999
+    end
+
+    # Filter out moves that are dominated by shorter moves at the same position.
+    # A longer move is dominated if a shorter prefix scores strictly better.
+    # Equal scores favor the longer move (uses more tiles, disposes of "overs").
+    def filter_superset_moves(moves)
+      dominated = Set.new
+
+      moves.each do |longer|
+        moves.each do |shorter|
+          next if shorter[:tile_value].size >= longer[:tile_value].size
+          next unless prefix_of?(shorter, longer)
+
+          shorter_score = calculate_move_score(shorter)
+          longer_score = calculate_move_score(longer)
+
+          # Only cull if shorter scores STRICTLY better
+          dominated.add(longer) if shorter_score < longer_score
+        end
+      end
+
+      moves.reject { |m| dominated.include?(m) }
+    end
+
+    def prefix_of?(shorter, longer)
+      shorter[:row_num] == longer[:row_num].first(shorter[:tile_value].size) &&
+        shorter[:col_num] == longer[:col_num].first(shorter[:tile_value].size)
     end
   end
 end
