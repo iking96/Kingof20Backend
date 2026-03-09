@@ -1,0 +1,58 @@
+@import "../../../scss/base.scss";
+
+.landscape-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 20%) 100%);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+
+  .landscape-overlay-content {
+    text-align: center;
+    color: white;
+    padding: 20px;
+
+    .rotate-icon {
+      font-size: 64px;
+      display: block;
+      margin-bottom: 20px;
+      animation: tilt 1.5s ease-in-out infinite;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+  }
+}
+
+@keyframes tilt {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-15deg);
+  }
+  75% {
+    transform: rotate(15deg);
+  }
+}
+
+// Show overlay only on small screens in landscape
+// max-height detects landscape (height < width on phones)
+// max-width captures large phones like iPhone 14 Pro Max (932px in landscape width)
+@media (max-width: 1000px) and (max-height: 500px) and (orientation: landscape) {
+  .landscape-overlay {
+    display: flex;
+  }
+}

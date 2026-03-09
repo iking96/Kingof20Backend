@@ -21,6 +21,7 @@ import MoreMenu from "frontend/components/MoreMenu";
 import Board from "frontend/components/Board";
 import TileRack from "frontend/components/TileRack";
 import ExchangeView from "frontend/components/ExchangeView";
+import LandscapeOverlay from "frontend/components/LandscapeOverlay";
 
 import "../../../../scss/game_container.scss";
 
@@ -402,6 +403,8 @@ const Show = ({
         channel={{ channel: "GamesChannel" }}
         onReceived={handleReceivedUpdate}
       />
+
+      <LandscapeOverlay />
     </div>
   );
 };
