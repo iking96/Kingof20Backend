@@ -4,10 +4,12 @@ module Ai
   class MoveFinder
     # Lightweight struct for move validation (faster than OpenStruct)
     MockMove = Struct.new(:row_num, :col_num, :tile_value, keyword_init: true)
-    def initialize(game)
+
+    # Initialize with either a game object, or a custom board/rack for lookahead simulation
+    def initialize(game, board: nil, rack: nil)
       @game = game
-      @board = game.board.map(&:dup)
-      @rack = game.opponent_rack.dup
+      @board = board ? board.map(&:dup) : game.board.map(&:dup)
+      @rack = rack ? rack.dup : game.opponent_rack.dup
     end
 
     def find_all_moves

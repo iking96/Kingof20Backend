@@ -57,4 +57,67 @@ RSpec.describe(Ai::EasyAi) do
       end
     end
   end
+
+  describe 'swap behavior' do
+    subject { described_class.new(game).make_move }
+
+    context 'when best move scores above threshold' do
+      let(:bad_move) do
+        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] }
+      end
+
+      before do
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([bad_move]))
+        # Stub calculate_move_score to return a high (bad) score
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(15))
+      end
+
+      it 'executes a swap instead of the bad move' do
+        subject
+        expect(Move.last.move_type).to(eq('swap'))
+      end
+    end
+
+    context 'when best move scores at or below threshold' do
+      let(:good_move) do
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
+      end
+
+      before do
+        allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([good_move]))
+        # Stub calculate_move_score to return a low (good) score
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(5))
+      end
+
+      it 'executes the move' do
+        subject
+        expect(Move.last.move_type).to(eq('tile_placement'))
+      end
+    end
+  end
+
+  describe 'deterministic behavior' do
+    let(:moves) do
+      [
+        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] },
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
+      ]
+    end
+
+    before do
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(moves))
+    end
+
+    it 'always picks the same best move (no randomness)' do
+      # Run multiple times and verify consistent behavior
+      ai1 = described_class.new(game)
+      ai2 = described_class.new(game)
+
+      # Both should select the same move via score_move
+      move1 = moves.max_by { |m| ai1.send(:score_move, m) }
+      move2 = moves.max_by { |m| ai2.send(:score_move, m) }
+
+      expect(move1).to(eq(move2))
+    end
+  end
 end

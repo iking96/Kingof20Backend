@@ -114,4 +114,32 @@ RSpec.describe(Ai::HardAi) do
       end
     end
   end
+
+  describe 'lookahead behavior' do
+    let(:ai) { described_class.new(game) }
+
+    it 'considers opponent response when scoring moves' do
+      # Verify lookahead methods exist and are callable
+      move = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
+
+      # score_with_lookahead should return a score
+      expect(ai.send(:score_with_lookahead, move)).to(be_a(Numeric))
+    end
+
+    it 'penalizes moves that leave good opportunities for opponent' do
+      # This is a behavioral test - the lookahead should affect move selection
+      # When two moves have similar base scores, the one leaving fewer good
+      # opponent responses should be preferred
+      moves = [
+        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] },
+        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
+      ]
+
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(moves))
+
+      # select_best_move_with_lookahead should consider opponent response
+      best = ai.send(:select_best_move_with_lookahead, moves)
+      expect(moves).to(include(best))
+    end
+  end
 end

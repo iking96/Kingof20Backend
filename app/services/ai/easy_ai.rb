@@ -2,8 +2,12 @@
 
 module Ai
   class EasyAi < BaseAi
-    # Never play a move scoring worse than this
-    MAX_ACCEPTABLE_SCORE = 10
+    # Bonus for moves closer to center
+    CENTER_BONUS_WEIGHT = 0.5
+    # Bonus for using more tiles (develops rack)
+    TILE_USAGE_WEIGHT = 2
+    # Only swap if best move scores worse than this (swap penalty is 10)
+    SWAP_THRESHOLD = 10
     # Minimum tiles in bag to consider swapping
     MIN_BAG_SIZE_FOR_SWAP = 10
 
@@ -12,57 +16,54 @@ module Ai
       valid_moves = filter_superset_moves(valid_moves)
 
       if valid_moves.empty?
-        if can_swap?
+        can_swap? ? execute_swap : execute_pass
+      else
+        best_move = valid_moves.max_by { |m| score_move(m) }
+        best_game_score = calculate_move_score(best_move)
+
+        if best_game_score > SWAP_THRESHOLD && can_swap?
           execute_swap
         else
-          execute_pass
-        end
-      else
-        # Filter to only acceptable moves (score <= 10)
-        acceptable_moves = valid_moves.select { |m| calculate_move_score(m) <= MAX_ACCEPTABLE_SCORE }
-
-        if acceptable_moves.empty?
-          # All moves are bad - swap if possible, otherwise play best available
-          if can_swap?
-            execute_swap
-          else
-            best_move = valid_moves.min_by { |m| calculate_move_score(m) }
-            execute_move(best_move)
-          end
-        else
-          # Weighted random: better moves are more likely to be picked
-          execute_move(weighted_random_move(acceptable_moves))
+          execute_move(best_move)
         end
       end
     end
 
     private
 
+    # Score a move using game score plus secondary heuristics
+    def score_move(move)
+      score = 0.0
+
+      # Primary: Minimize distance from 20 (lower score = better)
+      move_score = calculate_move_score(move)
+      score -= move_score
+
+      # Secondary: Prefer moves closer to board center
+      center = Game::BOARD_SIZE / 2.0
+      rows = move[:row_num]
+      cols = move[:col_num]
+      avg_row = rows.sum.to_f / rows.size
+      avg_col = cols.sum.to_f / cols.size
+      distance_from_center = Math.sqrt((avg_row - center)**2 + (avg_col - center)**2)
+      max_distance = Math.sqrt(2) * center
+      center_score = (max_distance - distance_from_center) / max_distance
+      score += center_score * CENTER_BONUS_WEIGHT
+
+      # Tertiary: Prefer using more tiles (develops rack faster)
+      score += move[:tile_value].size * TILE_USAGE_WEIGHT
+
+      score
+    end
+
     def can_swap?
       @game.allow_swap? && @game.available_tiles.size >= MIN_BAG_SIZE_FOR_SWAP
     end
 
     def execute_swap
-      # Simple swap: just swap random tiles (no sophisticated analysis like Hard AI)
-      tiles_to_swap = @rack.sample([3, @rack.size].min)
+      # Simple swap: just swap random tiles (no sophisticated analysis)
+      tiles_to_swap = @rack.sample([4, @rack.size].min)
       execute_move(move_type: 'swap', returned_tiles: tiles_to_swap)
-    end
-
-    # Weighted random selection: better moves (lower scores) are more likely
-    # A move scoring 0 has weight 11, scoring 5 has weight 6, scoring 10 has weight 1
-    def weighted_random_move(moves)
-      weights = moves.map { |m| (MAX_ACCEPTABLE_SCORE + 1) - calculate_move_score(m) }
-      total_weight = weights.sum
-
-      random_value = rand * total_weight
-      cumulative = 0
-
-      moves.each_with_index do |move, i|
-        cumulative += weights[i]
-        return move if random_value < cumulative
-      end
-
-      moves.last # Fallback (shouldn't reach here)
     end
   end
 end

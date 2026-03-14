@@ -2,14 +2,17 @@
 
 module Ai
   class HardAi < BaseAi
-    # Bonus for moves closer to center
-    CENTER_BONUS_WEIGHT = 0.5
-    # Bonus for using more tiles (develops rack)
-    TILE_USAGE_WEIGHT = 2
     # Only swap if best move scores worse than this (swap penalty is 10)
     SWAP_THRESHOLD = 10
     # Minimum tiles in bag to consider swapping
     MIN_BAG_SIZE_FOR_SWAP = 10
+    # Only evaluate top N moves for lookahead (performance optimization)
+    LOOKAHEAD_CANDIDATES = 10
+    # Weight for penalizing moves that leave good opportunities for opponent
+    # Keep this low - it's a tiebreaker, not the primary decision factor
+    OPPONENT_PENALTY_WEIGHT = 0.1
+    # Minimum tiles to swap (swapping just 1 tile is inefficient for a 10-point penalty)
+    MIN_SWAP_TILES = 2
 
     def make_move
       valid_moves = find_all_valid_moves
@@ -22,7 +25,7 @@ module Ai
           execute_pass
         end
       else
-        best_move = valid_moves.max_by { |m| score_move(m) }
+        best_move = select_best_move_with_lookahead(valid_moves)
         best_game_score = calculate_move_score(best_move)
 
         if best_game_score > SWAP_THRESHOLD && can_swap?
@@ -35,29 +38,34 @@ module Ai
 
     private
 
-    # Hard AI uses additional heuristics beyond just game score
-    def score_move(move)
-      score = 0.0
+    def select_best_move_with_lookahead(valid_moves)
+      # Sort by base score (lower = better), take top candidates
+      candidates = valid_moves.sort_by { |m| calculate_move_score(m) }.first(LOOKAHEAD_CANDIDATES)
 
-      # Primary: Minimize distance from 20 (lower score = better)
-      move_score = calculate_move_score(move)
-      score -= move_score
+      candidates.max_by { |move| score_with_lookahead(move) }
+    end
 
-      # Secondary: Prefer moves closer to board center
-      center = Game::BOARD_SIZE / 2.0
-      rows = move[:row_num]
-      cols = move[:col_num]
-      avg_row = rows.sum.to_f / rows.size
-      avg_col = cols.sum.to_f / cols.size
-      distance_from_center = Math.sqrt((avg_row - center)**2 + (avg_col - center)**2)
-      max_distance = Math.sqrt(2) * center
-      center_score = (max_distance - distance_from_center) / max_distance
-      score += center_score * CENTER_BONUS_WEIGHT
+    def score_with_lookahead(move)
+      base_score = -calculate_move_score(move) # Negate so higher = better
 
-      # Tertiary: Prefer using more tiles (develops rack faster)
-      score += move[:tile_value].size * TILE_USAGE_WEIGHT
+      # Simulate this move on the board
+      simulated_board = apply_move_to_board(move)
 
-      score
+      # Get human player's rack (AI "cheats" — common in single-player games)
+      # The AI plays as "opponent", so the human is "initiator"
+      human_rack = @game.initiator_rack.dup
+
+      # Find human's best response using their real tiles
+      opponent_moves = find_moves_for_rack(simulated_board, human_rack)
+      if opponent_moves.any?
+        best_opponent_score = opponent_moves.map { |m| calculate_move_score_on_board(m, simulated_board) }.min
+        # Penalize if opponent has a good response (low score = good for them)
+        if best_opponent_score < 10
+          base_score -= (10 - best_opponent_score) * OPPONENT_PENALTY_WEIGHT
+        end
+      end
+
+      base_score
     end
 
     def can_swap?
@@ -92,8 +100,12 @@ module Ai
       threshold = better_moves.size / 2
       bad_tiles = sorted_tiles.select { |t| tile_frequency[t] < threshold }.take(3)
 
-      # Ensure at least 1 tile to swap
-      bad_tiles.presence || [sorted_tiles.first]
+      # Ensure we swap at least MIN_SWAP_TILES (swapping just 1 is inefficient)
+      if bad_tiles.size < MIN_SWAP_TILES
+        bad_tiles = sorted_tiles.first(MIN_SWAP_TILES)
+      end
+
+      bad_tiles
     end
 
     def identify_bad_tiles_by_heuristics
@@ -115,7 +127,14 @@ module Ai
         bad_tiles.concat(numbers.take(excess))
       end
 
-      bad_tiles.uniq.take(3).presence || @rack.take(1)
+      bad_tiles = bad_tiles.uniq.take(3)
+
+      # Ensure we swap at least MIN_SWAP_TILES (swapping just 1 is inefficient)
+      if bad_tiles.size < MIN_SWAP_TILES
+        bad_tiles = @rack.first(MIN_SWAP_TILES)
+      end
+
+      bad_tiles
     end
   end
 end
