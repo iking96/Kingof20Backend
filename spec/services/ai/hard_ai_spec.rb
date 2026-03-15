@@ -10,25 +10,19 @@ RSpec.describe(Ai::HardAi) do
     subject { described_class.new(game).make_move }
 
     context 'when valid moves exist' do
-      # Board has [5, 11, 4] at row 2, cols 2-4 (5 × 4 = 20)
-      # Opponent rack is [1, 2, 3, 4, 5, 6, 11]
-      # Valid move: place 11 (×) at (3,2) and 1 at (4,2) to make vertical 5 × 1 = 5
       let(:stubbed_moves) do
-        [
-          { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
-        ]
+        [{ move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }]
       end
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(stubbed_moves))
       end
 
-      it 'makes a valid move' do
+      it 'makes a valid move without error' do
         expect { subject }.to_not(raise_error)
       end
 
       it 'creates a move record' do
-        # with_first_move trait creates an initial move, so we check from current count
         expect { subject }.to(change { game.moves.count }.by(1))
       end
     end
@@ -46,9 +40,7 @@ RSpec.describe(Ai::HardAi) do
       end
 
       context 'and swapping is not available' do
-        before do
-          allow(game).to(receive(:allow_swap?).and_return(false))
-        end
+        before { allow(game).to(receive(:allow_swap?).and_return(false)) }
 
         it 'executes a pass' do
           subject
@@ -59,53 +51,48 @@ RSpec.describe(Ai::HardAi) do
   end
 
   describe 'move selection' do
-    # Board has [5, 11, 4] at row 2, cols 2-4 (5 × 4 = 20)
-    # Opponent rack is [1, 2, 3, 4, 5, 6, 11]
-    let(:stubbed_moves) do
-      [
-        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
-      ]
-    end
+    it 'is deterministic — always picks the lowest equity move' do
+      move_a = { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [5] }
+      move_b = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 4] }
 
-    before do
-      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(stubbed_moves))
-    end
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([move_a, move_b]))
+      allow_any_instance_of(described_class).to(receive(:move_equity).with(move_a).and_return(10))
+      allow_any_instance_of(described_class).to(receive(:move_equity).with(move_b).and_return(3))
+      # Stub lookahead to pass through equity-based ranking without interference
+      allow_any_instance_of(described_class).to(receive(:score_with_lookahead) { |_, _m, eq| -eq })
 
-    it 'is a valid HardAi instance' do
-      ai = described_class.new(game)
-      expect(ai).to(be_a(Ai::HardAi))
+      described_class.new(game).make_move
+      expect(Move.last.tile_value).to(eq([11, 4]))
     end
   end
 
   describe 'swap behavior' do
     subject { described_class.new(game).make_move }
 
-    context 'when best move scores above threshold' do
+    context 'when best move equity exceeds SWAP_PENALTY' do
       let(:bad_move) do
         { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] }
       end
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([bad_move]))
-        # Stub calculate_move_score to return a high (bad) score
-        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(15))
+        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(15))
       end
 
-      it 'executes a swap instead of the bad move' do
+      it 'executes a swap' do
         subject
         expect(Move.last.move_type).to(eq('swap'))
       end
     end
 
-    context 'when best move scores at or below threshold' do
+    context 'when best move equity is at or below SWAP_PENALTY' do
       let(:good_move) do
         { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
       end
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([good_move]))
-        # Stub calculate_move_score to return a low (good) score
-        allow_any_instance_of(described_class).to(receive(:calculate_move_score).and_return(5))
+        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(5))
       end
 
       it 'executes the move' do
@@ -115,31 +102,28 @@ RSpec.describe(Ai::HardAi) do
     end
   end
 
-  describe 'lookahead behavior' do
-    let(:ai) { described_class.new(game) }
-
+  describe 'lookahead tiebreaker' do
     it 'considers opponent response when scoring moves' do
-      # Verify lookahead methods exist and are callable
+      ai = described_class.new(game)
       move = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
-
-      # score_with_lookahead should return a score
-      expect(ai.send(:score_with_lookahead, move)).to(be_a(Numeric))
+      expect(ai.send(:score_with_lookahead, move, 5)).to(be_a(Numeric))
     end
 
-    it 'penalizes moves that leave good opportunities for opponent' do
-      # This is a behavioral test - the lookahead should affect move selection
-      # When two moves have similar base scores, the one leaving fewer good
-      # opponent responses should be preferred
-      moves = [
-        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [1] },
-        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] },
-      ]
+    it 'prefers the move that leaves the opponent in a weaker position' do
+      move_a = { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [5] }
+      move_b = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 4] }
 
-      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return(moves))
+      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([move_a, move_b]))
+      # Equal equity — lookahead is the tiebreaker
+      allow_any_instance_of(described_class).to(receive(:move_equity).and_return(5))
+      # move_a leaves opponent a great response; move_b leaves opponent weaker
+      allow_any_instance_of(described_class).to(receive(:score_with_lookahead)
+        .with(move_a, 5).and_return(-8.0))
+      allow_any_instance_of(described_class).to(receive(:score_with_lookahead)
+        .with(move_b, 5).and_return(-3.0))
 
-      # select_best_move_with_lookahead should consider opponent response
-      best = ai.send(:select_best_move_with_lookahead, moves)
-      expect(moves).to(include(best))
+      described_class.new(game).make_move
+      expect(Move.last.tile_value).to(eq([11, 4]))
     end
   end
 end

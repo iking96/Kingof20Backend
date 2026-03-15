@@ -2,6 +2,14 @@
 
 module Ai
   class BaseAi
+    SWAP_PENALTY = 10
+    MIN_SWAP_TILES = 2
+    MIN_BAG_SIZE_FOR_SWAP = 10
+    # Worst possible single-move score: |20 - 0| or |20 - 40|
+    LEAVE_NO_MOVES_PENALTY = 20
+    # Limit equity evaluation (expensive MoveFinder calls) to top N moves by immediate score
+    EQUITY_CANDIDATES = 15
+
     def initialize(game)
       @game = game
       @rack = game.opponent_rack.dup
@@ -29,13 +37,23 @@ module Ai
       execute_move(move_type: 'pass')
     end
 
+    def execute_swap
+      tiles = best_swap_tiles
+      execute_move(move_type: 'swap', returned_tiles: tiles)
+    end
+
+    def can_swap?
+      @game.allow_swap? && @game.available_tiles.size >= MIN_BAG_SIZE_FOR_SWAP
+    end
+
     def find_all_valid_moves
       Ai::MoveFinder.new(@game).find_all_moves
     end
 
-    # Calculate the game score for a move (lower = better, 0 = perfect)
-    def calculate_move_score(move)
-      test_board = @board.map(&:dup)
+    # Calculate the game score for a move (lower = better, 0 = perfect).
+    # Accepts an optional board; defaults to the current game board.
+    def calculate_move_score(move, board = @board)
+      test_board = board.map(&:dup)
       move[:row_num].each_with_index do |row, i|
         col = move[:col_num][i]
         tile = move[:tile_value][i]
@@ -56,6 +74,44 @@ module Ai
       result.success? ? result.value : 999
     end
 
+    # Equity of a move: immediate score + best score achievable from leave rack on resulting board.
+    # Lower equity = better move.
+    def move_equity(move)
+      immediate = calculate_move_score(move)
+      resulting_board = apply_move_to_board(move)
+      leave_rack = @rack.subtract_once(move[:tile_value])
+      immediate + best_available_score(resulting_board, leave_rack)
+    end
+
+    # Best game score achievable from the given rack on the given board.
+    # Returns LEAVE_NO_MOVES_PENALTY if no moves are available.
+    def best_available_score(board, rack)
+      return LEAVE_NO_MOVES_PENALTY if rack.empty?
+      moves = find_moves_for_rack(board, rack)
+      return LEAVE_NO_MOVES_PENALTY if moves.empty?
+      moves.map { |m| calculate_move_score(m, board) }.min
+    end
+
+    # Returns the tiles to discard when swapping.
+    # Keeps the subset of rack tiles that has the best potential three-tile combo score.
+    # Always discards at least MIN_SWAP_TILES tiles.
+    def best_swap_tiles
+      best_score = Float::INFINITY
+      best_kept = []
+
+      (0..(@rack.size - MIN_SWAP_TILES)).each do |keep_count|
+        @rack.combination(keep_count).each do |kept_subset|
+          score = best_combo_score(kept_subset)
+          if score < best_score
+            best_score = score
+            best_kept = kept_subset
+          end
+        end
+      end
+
+      @rack.subtract_once(best_kept)
+    end
+
     # Filter out moves that are dominated by shorter moves at the same position.
     # A longer move is dominated if a shorter prefix scores strictly better.
     def filter_superset_moves(moves)
@@ -69,7 +125,6 @@ module Ai
           shorter_score = calculate_move_score(shorter)
           longer_score = calculate_move_score(longer)
 
-          # Only cull if shorter scores STRICTLY better
           dominated.add(longer) if shorter_score < longer_score
         end
       end
@@ -93,25 +148,40 @@ module Ai
       new_board
     end
 
-    # Calculate move score on a specific board (for lookahead simulation)
-    def calculate_move_score_on_board(move, board)
-      mock_move = MoveFinder::MockMove.new(
-        row_num: move[:row_num],
-        col_num: move[:col_num],
-        tile_value: move[:tile_value]
-      )
-
-      result = PlayLogic::GameLogic::GameHelpers.score_board_with_move(
-        board: board,
-        move: mock_move
-      )
-
-      result.success? ? result.value : 999
-    end
-
     # Find valid moves for a specific board and rack (for lookahead simulation)
     def find_moves_for_rack(board, rack)
       Ai::MoveFinder.new(@game, board: board, rack: rack).find_all_moves
+    end
+
+    private
+
+    # Best three-tile combo score achievable from the given rack in isolation.
+    # Returns LEAVE_NO_MOVES_PENALTY if no valid three-tile expression exists.
+    def best_combo_score(rack)
+      return LEAVE_NO_MOVES_PENALTY if rack.size < 3
+
+      best = LEAVE_NO_MOVES_PENALTY
+      rack.combination(3).each do |combo|
+        combo.permutation.each do |perm|
+          next unless perm[0].number_tile? && perm[1].operation_tile? && perm[2].number_tile?
+          score = evaluate_three_tile_expression(perm[0], perm[1], perm[2])
+          best = [best, score].min if score
+        end
+      end
+      best
+    end
+
+    def evaluate_three_tile_expression(a, op, b)
+      case op
+      when 10 then (Game::TWENTY - (a + b)).abs           # +
+      when 11 then (Game::TWENTY - (a * b)).abs           # ×
+      when 12
+        return nil if a - b < 0                           # no negatives
+        (Game::TWENTY - (a - b)).abs                      # -
+      when 13
+        return nil if b.zero? || a % b != 0               # must divide evenly
+        (Game::TWENTY - (a / b)).abs                      # ÷
+      end
     end
   end
 end
