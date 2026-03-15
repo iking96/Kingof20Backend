@@ -282,6 +282,8 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
     let(:requesting_user) { create(:user) }
     let(:difficulty) { 'easy' }
 
+    before { allow(AiMoveJob).to(receive(:perform_later)) }
+
     it 'creates a new game' do
       expect { subject }.to(change { Game.count }.by(1))
     end
@@ -320,7 +322,32 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
       expect(game.board).to(be_present)
       expect(game.initiator_rack.size).to(eq(7))
       expect(game.opponent_rack.size).to(eq(7))
-      expect(game.current_player).to(eq('initiator'))
+    end
+
+    context 'when the AI goes first (coin flip)' do
+      before { allow(described_class).to(receive(:ai_goes_first?).and_return(true)) }
+
+      it 'creates the game with current_player set to opponent' do
+        expect(subject.current_player).to(eq('opponent'))
+      end
+
+      it 'enqueues AiMoveJob' do
+        game = subject
+        expect(AiMoveJob).to(have_received(:perform_later).with(game.id))
+      end
+    end
+
+    context 'when the human goes first (coin flip)' do
+      before { allow(described_class).to(receive(:ai_goes_first?).and_return(false)) }
+
+      it 'creates the game with current_player set to initiator' do
+        expect(subject.current_player).to(eq('initiator'))
+      end
+
+      it 'does not enqueue AiMoveJob' do
+        subject
+        expect(AiMoveJob).not_to(have_received(:perform_later))
+      end
     end
   end
 

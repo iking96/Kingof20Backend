@@ -36,11 +36,22 @@ module PlayLogic
         end
 
         def create_ai_game(user:, difficulty:)
-          Game.create!(
-            initiator: user,
-            opponent: nil,
-            ai_difficulty: difficulty
-          )
+          if ai_goes_first?
+            game = Game.create!(
+              initiator: user,
+              opponent: nil,
+              ai_difficulty: difficulty,
+              current_player: 'opponent'
+            )
+            AiMoveJob.perform_later(game.id)
+            game
+          else
+            Game.create!(
+              initiator: user,
+              opponent: nil,
+              ai_difficulty: difficulty
+            )
+          end
         end
 
         def update_game(game_id:, user:, params:)
@@ -64,6 +75,12 @@ module PlayLogic
           game.hide_from_user(user: user)
           game.save!
           game
+        end
+
+        private
+
+        def ai_goes_first?
+          [true, false].sample
         end
       end
     end

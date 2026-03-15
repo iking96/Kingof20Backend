@@ -76,8 +76,12 @@ module Ai
 
     # Equity of a move: immediate score + best score achievable from leave rack on resulting board.
     # Lower equity = better move.
+    # On an empty board, skip leave evaluation — a 3-tile board offers too few connection points
+    # for the leave rack, causing false LEAVE_NO_MOVES_PENALTY and spurious swap decisions.
     def move_equity(move)
       immediate = calculate_move_score(move)
+      return immediate if board_empty?
+
       resulting_board = apply_move_to_board(move)
       leave_rack = @rack.subtract_once(move[:tile_value])
       immediate + best_available_score(resulting_board, leave_rack)
@@ -135,6 +139,10 @@ module Ai
     def prefix_of?(shorter, longer)
       shorter[:row_num] == longer[:row_num].first(shorter[:tile_value].size) &&
         shorter[:col_num] == longer[:col_num].first(shorter[:tile_value].size)
+    end
+
+    def board_empty?
+      @board[2][2].zero? && @board[2][3].zero? && @board[3][2].zero? && @board[3][3].zero?
     end
 
     # Apply a move to the board and return a new board state
