@@ -46,12 +46,6 @@
     z-index: 100;
     animation: slideUp 0.15s ease;
 
-    @media (max-width: 768px) {
-      left: 0;
-      transform: none;
-      animation: slideUpMobile 0.15s ease;
-    }
-
     button {
       width: 100%;
       padding: 14px 16px;
@@ -109,5 +103,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// Top-level media query ensures this compiles after the base .more-dropdown rule
+// in the Webpacker bundle, preventing the base rule from overriding mobile styles.
+@media (max-width: 768px) {
+  .more-menu .more-dropdown {
+    left: 0;
+    transform: none;
+    animation: slideUpMobile 0.15s ease;
   }
 }
