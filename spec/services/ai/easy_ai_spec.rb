@@ -60,7 +60,7 @@ RSpec.describe(Ai::EasyAi) do
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([bad_move]))
-        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(15))
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(bad_move).and_return(15))
       end
 
       it 'executes a swap instead of playing' do
@@ -76,7 +76,7 @@ RSpec.describe(Ai::EasyAi) do
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([good_move]))
-        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(5))
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(good_move).and_return(5))
       end
 
       it 'executes the move' do
@@ -93,9 +93,9 @@ RSpec.describe(Ai::EasyAi) do
     before do
       allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves)
         .and_return([good_move, terrible_move]))
-      allow_any_instance_of(described_class).to(receive(:move_equity)
+      allow_any_instance_of(described_class).to(receive(:calculate_move_score)
         .with(good_move).and_return(2))
-      allow_any_instance_of(described_class).to(receive(:move_equity)
+      allow_any_instance_of(described_class).to(receive(:calculate_move_score)
         .with(terrible_move).and_return(2 + Ai::EasyAi::QUALITY_FLOOR + 1))
       allow_any_instance_of(described_class).to(receive(:filter_superset_moves) { |_, m| m })
     end
