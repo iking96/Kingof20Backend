@@ -2,7 +2,7 @@
 
 module Ai
   class EasyAi < BaseAi
-    # Never pick a move with equity more than this above the best available
+    # Never pick a move with score more than this above the best available
     QUALITY_FLOOR = 5
     # Number of top moves to randomly pick from (rubber-banding adjusts this)
     K_LOSING  = 1   # AI is losing — play near-optimally to stay competitive
@@ -20,22 +20,20 @@ module Ai
         return
       end
 
-      candidates = valid_moves.sort_by { |m| calculate_move_score(m) }.first(EQUITY_CANDIDATES)
-      moves_with_equity = candidates.map { |m| [m, move_equity(m)] }
-      best_equity = moves_with_equity.map(&:last).min
+      scored = valid_moves.map { |m| [m, calculate_move_score(m)] }.sort_by(&:last)
+      best_score = scored.first.last
 
-      if can_swap? && SWAP_PENALTY < best_equity
+      if can_swap? && SWAP_PENALTY < best_score
         execute_swap
         return
       end
 
-      floor_threshold = best_equity + QUALITY_FLOOR
-      filtered = moves_with_equity.select { |_, eq| eq <= floor_threshold }
+      floor_threshold = best_score + QUALITY_FLOOR
+      filtered = scored.select { |_, s| s <= floor_threshold }
       k = rubber_band_k
-      top_k = filtered.sort_by(&:last).first(k)
-      selected_move, = top_k.sample
+      selected, = filtered.first(k).sample
 
-      execute_move(selected_move)
+      execute_move(selected)
     end
 
     private
