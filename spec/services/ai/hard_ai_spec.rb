@@ -51,15 +51,18 @@ RSpec.describe(Ai::HardAi) do
   end
 
   describe 'move selection' do
-    it 'is deterministic — always picks the lowest equity move' do
+    it 'always picks the lowest-scoring move' do
+      # move_a is a prefix of move_b (same start position), but move_a scores 10 and move_b scores 3.
+      # filter_superset_moves only removes longer moves dominated by shorter ones (shorter_score < longer_score).
+      # Since move_a (10) is NOT < move_b (3), move_a does not dominate move_b — both survive the filter.
+      # Use allow_any_instance_of (not expect) — stubs are consumed by both filter_superset_moves
+      # and the main scoring loop; call count must not be constrained.
       move_a = { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [5] }
       move_b = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 4] }
 
       allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([move_a, move_b]))
-      allow_any_instance_of(described_class).to(receive(:move_equity).with(move_a).and_return(10))
-      allow_any_instance_of(described_class).to(receive(:move_equity).with(move_b).and_return(3))
-      # Stub lookahead to pass through equity-based ranking without interference
-      allow_any_instance_of(described_class).to(receive(:score_with_lookahead) { |_, _m, eq| -eq })
+      allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(move_a).and_return(10))
+      allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(move_b).and_return(3))
 
       described_class.new(game).make_move
       expect(Move.last.tile_value).to(eq([11, 4]))
@@ -76,7 +79,7 @@ RSpec.describe(Ai::HardAi) do
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([bad_move]))
-        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(15))
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(bad_move).and_return(15))
       end
 
       it 'executes a swap' do
@@ -92,38 +95,13 @@ RSpec.describe(Ai::HardAi) do
 
       before do
         allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([good_move]))
-        allow_any_instance_of(described_class).to(receive(:move_equity).and_return(5))
+        allow_any_instance_of(described_class).to(receive(:calculate_move_score).with(good_move).and_return(5))
       end
 
       it 'executes the move' do
         subject
         expect(Move.last.move_type).to(eq('tile_placement'))
       end
-    end
-  end
-
-  describe 'lookahead tiebreaker' do
-    it 'considers opponent response when scoring moves' do
-      ai = described_class.new(game)
-      move = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] }
-      expect(ai.send(:score_with_lookahead, move, 5)).to(be_a(Numeric))
-    end
-
-    it 'prefers the move that leaves the opponent in a weaker position' do
-      move_a = { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [5] }
-      move_b = { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 4] }
-
-      allow_any_instance_of(Ai::MoveFinder).to(receive(:find_all_moves).and_return([move_a, move_b]))
-      # Equal equity — lookahead is the tiebreaker
-      allow_any_instance_of(described_class).to(receive(:move_equity).and_return(5))
-      # move_a leaves opponent a great response; move_b leaves opponent weaker
-      allow_any_instance_of(described_class).to(receive(:score_with_lookahead)
-        .with(move_a, 5).and_return(-8.0))
-      allow_any_instance_of(described_class).to(receive(:score_with_lookahead)
-        .with(move_b, 5).and_return(-3.0))
-
-      described_class.new(game).make_move
-      expect(Move.last.tile_value).to(eq([11, 4]))
     end
   end
 end
