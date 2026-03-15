@@ -7,8 +7,6 @@ module Ai
     MIN_BAG_SIZE_FOR_SWAP = 10
     # Worst possible single-move score: |20 - 0| or |20 - 40|
     LEAVE_NO_MOVES_PENALTY = 20
-    # Limit equity evaluation (expensive MoveFinder calls) to top N moves by immediate score
-    EQUITY_CANDIDATES = 15
 
     def initialize(game)
       @game = game
@@ -74,28 +72,6 @@ module Ai
       result.success? ? result.value : 999
     end
 
-    # Equity of a move: immediate score + best score achievable from leave rack on resulting board.
-    # Lower equity = better move.
-    # On an empty board, skip leave evaluation — a 3-tile board offers too few connection points
-    # for the leave rack, causing false LEAVE_NO_MOVES_PENALTY and spurious swap decisions.
-    def move_equity(move)
-      immediate = calculate_move_score(move)
-      return immediate if board_empty?
-
-      resulting_board = apply_move_to_board(move)
-      leave_rack = @rack.subtract_once(move[:tile_value])
-      immediate + best_available_score(resulting_board, leave_rack)
-    end
-
-    # Best game score achievable from the given rack on the given board.
-    # Returns LEAVE_NO_MOVES_PENALTY if no moves are available.
-    def best_available_score(board, rack)
-      return LEAVE_NO_MOVES_PENALTY if rack.empty?
-      moves = find_moves_for_rack(board, rack)
-      return LEAVE_NO_MOVES_PENALTY if moves.empty?
-      moves.map { |m| calculate_move_score(m, board) }.min
-    end
-
     # Returns the tiles to discard when swapping.
     # Keeps the subset of rack tiles that has the best potential three-tile combo score.
     # Always discards at least MIN_SWAP_TILES tiles.
@@ -139,26 +115,6 @@ module Ai
     def prefix_of?(shorter, longer)
       shorter[:row_num] == longer[:row_num].first(shorter[:tile_value].size) &&
         shorter[:col_num] == longer[:col_num].first(shorter[:tile_value].size)
-    end
-
-    def board_empty?
-      @board[2][2].zero? && @board[2][3].zero? && @board[3][2].zero? && @board[3][3].zero?
-    end
-
-    # Apply a move to the board and return a new board state
-    def apply_move_to_board(move, board = @board)
-      new_board = board.map(&:dup)
-      move[:row_num].each_with_index do |row, i|
-        col = move[:col_num][i]
-        tile = move[:tile_value][i]
-        new_board[row][col] = tile
-      end
-      new_board
-    end
-
-    # Find valid moves for a specific board and rack (for lookahead simulation)
-    def find_moves_for_rack(board, rack)
-      Ai::MoveFinder.new(@game, board: board, rack: rack).find_all_moves
     end
 
     private

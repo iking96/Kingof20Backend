@@ -8,47 +8,6 @@ RSpec.describe(Ai::BaseAi) do
   let(:game) { create(:game, :with_first_move, initiator: user, opponent: nil, ai_difficulty: 'easy') }
   let(:ai) { Ai::EasyAi.new(game) }
 
-  describe '#best_available_score' do
-    it 'returns LEAVE_NO_MOVES_PENALTY for an empty rack' do
-      expect(ai.send(:best_available_score, game.board, []))
-        .to(eq(Ai::BaseAi::LEAVE_NO_MOVES_PENALTY))
-    end
-
-    it 'returns LEAVE_NO_MOVES_PENALTY when no moves are found' do
-      allow(ai).to(receive(:find_moves_for_rack).and_return([]))
-      expect(ai.send(:best_available_score, game.board, [1, 2, 3]))
-        .to(eq(Ai::BaseAi::LEAVE_NO_MOVES_PENALTY))
-    end
-
-    it 'returns the minimum available move score' do
-      moves = [
-        { move_type: 'tile_placement', row_num: [3], col_num: [2], tile_value: [5] },
-        { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 4] },
-      ]
-      allow(ai).to(receive(:find_moves_for_rack).and_return(moves))
-      allow(ai).to(receive(:calculate_move_score).and_return(8, 3))
-      expect(ai.send(:best_available_score, game.board, [5, 11, 4])).to(eq(3))
-    end
-  end
-
-  describe '#move_equity' do
-    let(:move) { { move_type: 'tile_placement', row_num: [3, 4], col_num: [2, 2], tile_value: [11, 1] } }
-
-    it 'returns immediate score plus leave score' do
-      allow(ai).to(receive(:calculate_move_score).with(move).and_return(5))
-      allow(ai).to(receive(:best_available_score).and_return(8))
-      expect(ai.send(:move_equity, move)).to(eq(13))
-    end
-
-    it 'computes leave rack by subtracting played tiles from rack' do
-      # Default opponent_rack: [1, 2, 3, 4, 5, 6, 11]; move uses [11, 1]; leave: [2, 3, 4, 5, 6]
-      expected_leave = game.opponent_rack.subtract_once([11, 1])
-      allow(ai).to(receive(:calculate_move_score).and_return(0))
-      expect(ai).to(receive(:best_available_score).with(anything, expected_leave).and_return(0))
-      ai.send(:move_equity, move)
-    end
-  end
-
   describe '#best_swap_tiles' do
     it 'swaps at least MIN_SWAP_TILES tiles' do
       result = ai.send(:best_swap_tiles)
