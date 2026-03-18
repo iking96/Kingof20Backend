@@ -109,7 +109,7 @@
 // Top-level media query ensures this compiles after the base .more-dropdown rule
 // in the Webpacker bundle, preventing the base rule from overriding mobile styles.
 @media (max-width: 768px) {
-  .more-menu .more-dropdown {
+  .more-menu .more-dropdown.more-dropdown {
     left: 0;
     transform: none;
     animation: slideUpMobile 0.15s ease;
