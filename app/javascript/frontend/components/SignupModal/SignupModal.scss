@@ -1,4 +1,5 @@
-@import "../../../scss/base.scss";
+@use "sass:color";
+@use "../../../scss/base" as *;
 
 .signup-modal-content {
   form {
@@ -58,7 +59,7 @@
     transition: background 0.2s ease;
 
     &:hover:not(:disabled) {
-      background: darken($royal-purple, 10%);
+      background: color.adjust($royal-purple, $lightness: -10%);
     }
 
     &:disabled {

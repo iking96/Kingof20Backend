@@ -1,4 +1,5 @@
-@import "../../../scss/base.scss";
+@use "sass:color";
+@use "../../../scss/base" as *;
 
 .player-score-area-wrapper {
   width: 100%;
@@ -12,7 +13,7 @@
   justify-content: center;
   gap: clamp(12px, 2cqw, 32px);
   padding: clamp(6px, 1.5cqh, 20px) clamp(12px, 2cqw, 32px);
-  background: darken($royal-purple, 10%);
+  background: color.adjust($royal-purple, $lightness: -10%);
 
   .vs-divider {
     color: rgba(255, 255, 255, 0.6);
@@ -29,7 +30,7 @@
   justify-content: center;
   gap: 16px;
   padding: 4px 16px;
-  background: darken($royal-purple, 15%);
+  background: color.adjust($royal-purple, $lightness: -15%);
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
   font-weight: 500;
@@ -49,7 +50,7 @@
     }
 
     &.lost {
-      background: darken($royal-gold, 10%);
+      background: color.adjust($royal-gold, $lightness: -10%);
     }
   }
 }

@@ -1,4 +1,4 @@
-@import "../../../scss/base.scss";
+@use "../../../scss/base" as *;
 
 .error-modal-content {
   text-align: center;

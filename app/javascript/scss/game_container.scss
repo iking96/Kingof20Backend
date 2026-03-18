@@ -1,8 +1,9 @@
-@import "./base.scss";
-@import "./tile.scss";
+@use "sass:color";
+@use "./base" as *;
+@use "./tile" as *;
 
-$stripe-color-1: darken($royal-purple, 20%);
-$stripe-color-2: darken($royal-purple, 30%);
+$stripe-color-1: color.adjust($royal-purple, $lightness: -20%);
+$stripe-color-2: color.adjust($royal-purple, $lightness: -30%);
 $stripe-width: 12px;
 
 .game-container {
@@ -67,9 +68,9 @@ $stripe-width: 12px;
   background: linear-gradient(
     0deg,
     $royal-purple 0%,
-    lighten($royal-purple, 15%) 3%,
+    color.adjust($royal-purple, $lightness: 15%) 3%,
     $royal-purple 8%,
-    darken($royal-purple, 15%) 15%,
+    color.adjust($royal-purple, $lightness: -15%) 15%,
     transparent 18%,
     transparent 100%
   );
@@ -87,7 +88,7 @@ $stripe-width: 12px;
   gap: clamp(8px, 1.5cqw, 20px);
   padding: clamp(8px, 1.2cqh, 16px);
   padding-bottom: clamp(8px, 1.2cqh, 16px);
-  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 10%) 100%);
+  background: linear-gradient(135deg, $royal-purple 0%, color.adjust($royal-purple, $lightness: -10%) 100%);
   box-sizing: border-box;
 
   .play-btn {
@@ -184,7 +185,7 @@ $stripe-width: 12px;
       color: white;
 
       &:hover {
-        background: darken($royal-purple, 10%);
+        background: color.adjust($royal-purple, $lightness: -10%);
       }
     }
   }

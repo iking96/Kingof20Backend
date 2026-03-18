@@ -1,4 +1,4 @@
-@import 'base.scss';
+@use 'base' as *;
 
 @mixin coloredSquare($size, $color) {
   width: $size;

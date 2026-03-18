@@ -1,4 +1,5 @@
-@import '../../../scss/base.scss';
+@use "sass:color";
+@use '../../../scss/base' as *;
 
 .how-to-play {
   flex: 1;
@@ -33,7 +34,7 @@
     color: #333;
     margin: 0 0 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid lighten($royal-purple, 40%);
+    border-bottom: 2px solid color.adjust($royal-purple, $lightness: 40%);
   }
 
   p {
@@ -67,7 +68,7 @@
 .play-now-btn {
   display: inline-block;
   padding: 14px 40px;
-  background: linear-gradient(135deg, $royal-purple 0%, darken($royal-purple, 10%) 100%);
+  background: linear-gradient(135deg, $royal-purple 0%, color.adjust($royal-purple, $lightness: -10%) 100%);
   color: white;
   text-decoration: none;
   border-radius: 8px;

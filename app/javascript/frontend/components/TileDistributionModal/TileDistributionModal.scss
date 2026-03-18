@@ -1,4 +1,4 @@
-@import "../../../scss/base.scss";
+@use "../../../scss/base" as *;
 
 .modal-content {
   table {

@@ -1,4 +1,5 @@
-@import "../../../scss/base.scss";
+@use "sass:color";
+@use "../../../scss/base" as *;
 
 .move-history-sidebar {
   display: flex;
@@ -42,11 +43,11 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: lighten($royal-purple, 30%);
+      background: color.adjust($royal-purple, $lightness: 30%);
       border-radius: 3px;
 
       &:hover {
-        background: lighten($royal-purple, 20%);
+        background: color.adjust($royal-purple, $lightness: 20%);
       }
     }
   }
@@ -69,11 +70,11 @@
     border-radius: 10px;
 
     &.your-move {
-      background: linear-gradient(135deg, lighten($royal-purple, 35%) 0%, lighten($royal-purple, 40%) 100%);
+      background: linear-gradient(135deg, color.adjust($royal-purple, $lightness: 35%) 0%, color.adjust($royal-purple, $lightness: 40%) 100%);
       margin-left: 20px;
 
       .move-player {
-        color: darken($royal-purple, 10%);
+        color: color.adjust($royal-purple, $lightness: -10%);
       }
     }
 

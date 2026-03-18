@@ -1,5 +1,5 @@
-@import 'tile.scss';
-@import 'base.scss';
+@use 'tile' as *;
+@use 'base' as *;
 
 $rack-gap: 6px;
 

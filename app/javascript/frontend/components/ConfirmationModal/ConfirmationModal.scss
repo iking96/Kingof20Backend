@@ -1,4 +1,5 @@
-@import "../../../scss/base.scss";
+@use "sass:color";
+@use "../../../scss/base" as *;
 
 .confirmation-modal-content {
   text-align: center;
@@ -39,14 +40,14 @@
       color: white;
 
       &:hover {
-        background: darken($royal-purple, 10%);
+        background: color.adjust($royal-purple, $lightness: -10%);
       }
 
       &.danger {
         background: #dc3545;
 
         &:hover {
-          background: darken(#dc3545, 10%);
+          background: color.adjust(#dc3545, $lightness: -10%);
         }
       }
     }
