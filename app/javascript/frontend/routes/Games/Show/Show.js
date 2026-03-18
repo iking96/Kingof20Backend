@@ -275,7 +275,7 @@ const Show = ({
         tilesRemaining={gameFlowData.available_tiles?.length || 0}
         stage={gameFlowData.stage}
         complete={gameFlowData.complete}
-        yourResult={gameFlowData.yourResult}
+        yourResult={gameFlowData.your_result}
       />
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
         <div className="game-content-wrapper">
