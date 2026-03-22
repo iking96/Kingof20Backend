@@ -83,7 +83,7 @@ $stripe-width: 12px;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 9px;
+  padding: 8px;
   background: linear-gradient(135deg, $royal-purple 0%, color.adjust($royal-purple, $lightness: -10%) 100%);
   box-sizing: border-box;
 
@@ -91,7 +91,7 @@ $stripe-width: 12px;
     background: linear-gradient(180deg, #ffd966 0%, #e6b800 100%);
     color: #5c4a00;
     border: none;
-    padding: 9px 24px;
+    padding: 8px 24px;
     border-radius: 50px;
     font-size: 16px;
     font-weight: 700;

@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 12px 12px;
+  padding: 9px 12px;
   background: color.adjust($royal-purple, $lightness: -10%);
 
   .vs-divider {
@@ -77,8 +77,8 @@
   }
 
   .avatar {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     display: flex;
@@ -86,7 +86,7 @@
     justify-content: center;
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 13px;
     border: 2px solid white;
     flex-shrink: 0;
   }
@@ -98,12 +98,12 @@
 
     .username {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 14px;
+      font-size: 12px;
     }
 
     .score {
       color: white;
-      font-size: 28px;
+      font-size: 22px;
       font-weight: bold;
       line-height: 1.1;
     }
