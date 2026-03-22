@@ -94,6 +94,9 @@
       margin-bottom: 4px;
 
       .move-player {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         font-weight: 600;
         font-size: 13px;
       }
@@ -102,6 +105,17 @@
         font-size: 14px;
         font-weight: 700;
         color: #333;
+      }
+
+      .move-type-pill {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: $pill-swap-pass-bg;
+        color: $pill-swap-pass-color;
       }
     }
 
