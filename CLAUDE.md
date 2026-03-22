@@ -3,10 +3,55 @@
 ## Keeping This File Current
 When making significant changes to the codebase — especially AI logic, game mechanics, or architecture — update the relevant sections of this file. This file is the primary context source for new Claude sessions.
 
+## Game Rules
+
+### Goal
+Players build interlocking math expressions on the board. Each turn's score is `|20 - expression_result|`. Lowest cumulative score wins.
+
+### Tiles
+- Number tiles: 1–9 (single digits only — adjacent numbers never combine into multi-digit values)
+- Operation tiles: + × − ÷
+- Digital tile IDs: 1–9 = numbers, 10=+, 11=×, 12=−, 13=÷
+- Rack size: 7 tiles (physical game uses 5; digital uses 7)
+
+### Expression Rules
+- Expressions are read **strictly left to right or top to bottom** — **no order of operations**
+  - `4 + 9 × 2 = 26` (not 22)
+- Expressions must be **linear**: one contiguous row or one contiguous column, never diagonal
+- Valid structure alternates numbers and operators: `num op num op num ...`
+- **No fractions** — a division that would produce a non-integer is not a legal move
+- **Extraneous operators rule**: board tiles adjacent to a new expression that don't syntactically participate in it are simply ignored — they do not invalidate the move
+  - Example: placing `3` to form `3 + 2 × 4 = 20` is legal even if a stray `/` from another expression sits next to it on the board
+
+### Placement Rules
+- All tiles placed in a single turn must lie in **one row or one column**
+- **Only one expression may be formed per turn** — placing tiles that would create two separate valid expressions is illegal
+- After the first move, every play must incorporate at least one tile already on the board (extending an existing expression or crossing one perpendicularly)
+- First move: must cover at least one designated starting space; must use exactly 3 tiles (1 operator + 2 numbers)
+- Tiles already placed on the board cannot be moved or replaced
+
+### Scoring
+- Score per turn: `|20 - expression_result|` (0 = perfect)
+- When a player extends an existing expression, their score is based on the **entire resulting expression**
+- Swap or pass penalty: **10 points**
+
+### Turn Options
+- **Place tiles**: play 1–3 tiles to form or extend an expression
+- **Swap**: return any tiles to the bag and draw replacements; 10-point penalty
+- **Pass**: skip the turn; 10-point penalty
+
+### End Game
+- When the bag empties, each player gets **2 more turns** (tracked as `end_round_one` → `end_round_two` → `complete`)
+- The game may end with tiles remaining on racks
+- Player with the lowest total score wins
+
+### Digital-Specific
+- The human player is always `initiator`; AI or opponent is `opponent`
+- Game stages: `in_play` → `end_round_one` → `end_round_two` → `complete` (also `initiator_forfit` / `opponent_forfit`)
+
 ## Game Mechanics Reference
 - Board: 12×12 grid
 - Rack size: 7 tiles
-- Tile values: 1–9 are numbers, 10=+, 11=×, 12=−, 13=÷
 - Move scoring: `|20 - expression_result|` (lower = better, 0 = perfect)
 - Swap penalty: 10 points (returns tiles to bag, draws new ones)
 - Turn options: place tiles, swap, or pass
