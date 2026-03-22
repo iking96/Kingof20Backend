@@ -20,9 +20,6 @@ $stripe-width: 12px;
     $stripe-color-2 $stripe-width,
     $stripe-color-2 ($stripe-width * 2)
   );
-  // Enable container queries for score area and controls scaling
-  container-type: size;
-  container-name: game-container;
 
   .game-content-wrapper {
     flex: 1;
@@ -63,7 +60,7 @@ $stripe-width: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: clamp(8px, 1cqh, 16px);
+  padding: 8px;
   // Ledge effect: shine at bottom edge (where tiles sit), fading to transparent
   background: linear-gradient(
     0deg,
@@ -85,9 +82,8 @@ $stripe-width: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 1.5cqw, 20px);
-  padding: clamp(8px, 1.2cqh, 16px);
-  padding-bottom: clamp(8px, 1.2cqh, 16px);
+  gap: 8px;
+  padding: 9px;
   background: linear-gradient(135deg, $royal-purple 0%, color.adjust($royal-purple, $lightness: -10%) 100%);
   box-sizing: border-box;
 
@@ -95,9 +91,9 @@ $stripe-width: 12px;
     background: linear-gradient(180deg, #ffd966 0%, #e6b800 100%);
     color: #5c4a00;
     border: none;
-    padding: clamp(8px, 1.2cqh, 14px) clamp(24px, 4cqw, 40px);
+    padding: 9px 24px;
     border-radius: 50px;
-    font-size: clamp(16px, 1.5cqh, 18px);
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     letter-spacing: 1px;
@@ -118,7 +114,7 @@ $stripe-width: 12px;
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: clamp(4px, 0.5cqh, 8px) clamp(6px, 1cqw, 12px);
+    padding: 4px 6px;
     border: none;
     background: transparent;
     color: white;
@@ -126,12 +122,12 @@ $stripe-width: 12px;
     margin: 0;
 
     .icon {
-      font-size: clamp(16px, 2.5cqh, 28px);
+      font-size: 20px;
       line-height: 1;
     }
 
     .label {
-      font-size: clamp(8px, 1cqh, 14px);
+      font-size: 8px;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
