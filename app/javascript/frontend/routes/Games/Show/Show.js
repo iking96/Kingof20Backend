@@ -23,6 +23,10 @@ import TileRack from "frontend/components/TileRack";
 import ExchangeView from "frontend/components/ExchangeView";
 import LandscapeOverlay from "frontend/components/LandscapeOverlay";
 
+import passIcon from "frontend/assets/icons/icon-pass.png";
+import swapIcon from "frontend/assets/icons/icon-swap.png";
+import recallIcon from "frontend/assets/icons/icon-recall.png";
+
 import "../../../../scss/game_container.scss";
 
 const initalBoardValues = Array.from({ length: boardSize }, () =>
@@ -308,7 +312,7 @@ const Show = ({
               onClick={() => setShowPassConfirm(true)}
               disabled={!gameFlowData.your_turn || gameFlowData.complete}
             >
-              <span className="icon">⏭</span>
+              <img src={passIcon} className="icon" alt="" aria-hidden="true" />
               <span className="label">Pass</span>
             </button>
 
@@ -328,7 +332,7 @@ const Show = ({
               }}
               disabled={!gameFlowData.your_turn || gameFlowData.complete || !gameFlowData.allow_swap}
             >
-              <span className="icon">🔄</span>
+              <img src={swapIcon} className="icon" alt="" aria-hidden="true" />
               <span className="label">Swap</span>
             </button>
 
@@ -337,7 +341,7 @@ const Show = ({
               onClick={recallTiles}
               disabled={gameFlowData.complete}
             >
-              <span className="icon">↩</span>
+              <img src={recallIcon} className="icon" alt="" aria-hidden="true" />
               <span className="label">Recall</span>
             </button>
           </div>

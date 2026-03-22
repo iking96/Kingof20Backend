@@ -16,9 +16,8 @@
     margin: 0;
 
     .icon {
-      font-size: 20px;
-      line-height: 1;
-      transform: translateY(-2px);
+      width: 20px;
+      height: 20px;
     }
 
     .label {
@@ -70,16 +69,11 @@
       }
 
       .icon {
-        font-size: 18px;
-        width: 24px;
-        text-align: center;
+        width: 18px;
+        height: 18px;
+        filter: invert(1);
+        flex-shrink: 0;
       }
-    }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 4px 0;
     }
   }
 }

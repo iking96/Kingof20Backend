@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./MoreMenu.scss";
+import moreIcon from "frontend/assets/icons/icon-more.png";
+import tileDistIcon from "frontend/assets/icons/icon-tile-distribution.png";
+import moveHistoryIcon from "frontend/assets/icons/icon-move-history.png";
+import resignIcon from "frontend/assets/icons/icon-resign.png";
 
 const MoreMenu = ({
   gameComplete,
@@ -43,23 +47,22 @@ const MoreMenu = ({
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <span className="icon">☰</span>
+        <img src={moreIcon} className="icon" alt="" aria-hidden="true" />
         <span className="label">More</span>
       </button>
 
       {isOpen && (
         <div className="more-dropdown">
           <button onClick={handleTileDistribution}>
-            <span className="icon">📊</span>
+            <img src={tileDistIcon} className="icon" alt="" aria-hidden="true" />
             Tile Distribution
           </button>
           <button onClick={handleMoveHistory}>
-            <span className="icon">📜</span>
+            <img src={moveHistoryIcon} className="icon" alt="" aria-hidden="true" />
             Move History
           </button>
-          <hr className="divider" />
           <button onClick={handleResign} disabled={gameComplete}>
-            <span className="icon">🏳️</span>
+            <img src={resignIcon} className="icon" alt="" aria-hidden="true" />
             Resign
           </button>
         </div>
