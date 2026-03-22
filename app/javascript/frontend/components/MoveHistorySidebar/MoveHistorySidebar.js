@@ -46,9 +46,7 @@ const MoveHistorySidebar = ({ moves, currentUsername }) => {
                         <span className="move-type-pill">{pillText}</span>
                       )}
                     </div>
-                    {!isSpecialMove && (
-                      <span className="move-result">{move.result}</span>
-                    )}
+                    <span className="move-result">{move.result}</span>
                   </div>
                   <div className="move-time">
                     {humanizedDate(new Date(move.created_at))}
