@@ -2,6 +2,7 @@
 
 module Ai
   class EasyAi < BaseAi
+    SWAP_THRESHOLD = 8
     # Never pick a move with score more than this above the best available
     QUALITY_FLOOR = 5
     # Number of top moves to randomly pick from (rubber-banding adjusts this)

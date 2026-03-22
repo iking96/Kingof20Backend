@@ -2,6 +2,7 @@
 
 module Ai
   class HardAi < BaseAi
+    SWAP_THRESHOLD = 6
     def make_move
       valid_moves = find_all_valid_moves
       valid_moves = filter_superset_moves(valid_moves)
