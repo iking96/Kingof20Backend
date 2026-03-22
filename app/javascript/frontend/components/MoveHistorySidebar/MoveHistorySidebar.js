@@ -27,22 +27,35 @@ const MoveHistorySidebar = ({ moves, currentUsername }) => {
           {moves
             .slice(0)
             .reverse()
-            .map((move, index) => (
-              <div
-                className={`move-item ${
-                  move.username === currentUsername ? "your-move" : "their-move"
-                }`}
-                key={index}
-              >
-                <div className="move-info">
-                  <span className="move-player">{move.username}</span>
-                  <span className="move-result">{move.result}</span>
+            .map((move, index) => {
+              const isSpecialMove = move.move_type === 'swap' || move.move_type === 'pass';
+              const pillText = isSpecialMove
+                ? (move.move_type === 'swap' ? 'Swapped' : 'Passed')
+                : null;
+              return (
+                <div
+                  className={`move-item ${
+                    move.username === currentUsername ? "your-move" : "their-move"
+                  }`}
+                  key={index}
+                >
+                  <div className="move-info">
+                    <div className="move-player">
+                      {move.username}
+                      {isSpecialMove && (
+                        <span className="move-type-pill">{pillText}</span>
+                      )}
+                    </div>
+                    {!isSpecialMove && (
+                      <span className="move-result">{move.result}</span>
+                    )}
+                  </div>
+                  <div className="move-time">
+                    {humanizedDate(new Date(move.created_at))}
+                  </div>
                 </div>
-                <div className="move-time">
-                  {humanizedDate(new Date(move.created_at))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </div>
     </div>
