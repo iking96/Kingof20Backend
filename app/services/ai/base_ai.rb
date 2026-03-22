@@ -2,7 +2,7 @@
 
 module Ai
   class BaseAi
-    SWAP_PENALTY = 10
+    SWAP_THRESHOLD = 10
     MIN_SWAP_TILES = 2
     MIN_BAG_SIZE_FOR_SWAP = 10
     # Worst possible single-move score: |20 - 0| or |20 - 40|

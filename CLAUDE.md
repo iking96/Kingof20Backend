@@ -59,12 +59,12 @@ Players build interlocking math expressions on the board. Each turn's score is `
 - Game stages: `in_play` → `end_round_one` → `end_round_two` → `complete` (also `initiator_forfit` / `opponent_forfit`)
 
 ## AI System (`app/services/ai/`)
-- `BaseAi` — shared logic: `calculate_move_score`, `best_swap_tiles`, `can_swap?`, `execute_swap`, superset filtering, shared constants (`SWAP_PENALTY=10`, `MIN_SWAP_TILES=2`, `MIN_BAG_SIZE_FOR_SWAP=10`, `LEAVE_NO_MOVES_PENALTY=20`)
+- `BaseAi` — shared logic: `calculate_move_score`, `best_swap_tiles`, `can_swap?`, `execute_swap`, superset filtering, shared constants (`SWAP_THRESHOLD=10`, `MIN_SWAP_TILES=2`, `MIN_BAG_SIZE_FOR_SWAP=10`, `LEAVE_NO_MOVES_PENALTY=20`)
 - `MoveFinder` — finds all valid moves for a given board/rack
 - `EasyAi` — immediate-score-only selection with quality floor (`QUALITY_FLOOR=5`) and rubber-banding K; scores all post-filter moves once with `calculate_move_score`, applies floor, picks randomly from top K (`K_LOSING=1`, `K_NEUTRAL=3`, `K_WINNING=5`, `RUBBER_BAND_THRESHOLD=10`)
 - `HardAi` — immediate-score-only, greedy and deterministic: always plays the move with the lowest `calculate_move_score`
 - **Move scoring**: `calculate_move_score` = `|20 - expression_result|` (lower = better, 0 = perfect); no leave evaluation
-- **Swap decision** (both AIs): swap when `SWAP_PENALTY (10) < best immediate score` from post-filter moves
+- **Swap decision** (both AIs): swap when `SWAP_THRESHOLD (10) < best immediate score` from post-filter moves
 - **Swap tile selection**: keeps tiles participating in the best `number op number` combo; discards the rest
 - AI runs as a background job via Sidekiq (`AiMoveJob`); ~0.1-0.2s response time
 

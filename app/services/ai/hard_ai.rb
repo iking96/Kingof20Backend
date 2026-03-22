@@ -13,7 +13,7 @@ module Ai
 
       best_move, best_score = valid_moves.map { |m| [m, calculate_move_score(m)] }.min_by(&:last)
 
-      if can_swap? && SWAP_PENALTY < best_score
+      if can_swap? && SWAP_THRESHOLD < best_score
         execute_swap
         return
       end

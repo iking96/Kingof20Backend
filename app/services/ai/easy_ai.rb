@@ -23,7 +23,7 @@ module Ai
       scored = valid_moves.map { |m| [m, calculate_move_score(m)] }.sort_by(&:last)
       best_score = scored.first.last
 
-      if can_swap? && SWAP_PENALTY < best_score
+      if can_swap? && SWAP_THRESHOLD < best_score
         execute_swap
         return
       end
