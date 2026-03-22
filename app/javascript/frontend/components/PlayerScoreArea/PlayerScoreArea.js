@@ -17,7 +17,7 @@ const PlayerCard = ({ username, score, isActive }) => {
   );
 };
 
-const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult }) => {
+const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult, yourTurn, lastMove, playerUsername }) => {
   const getStageLabel = () => {
     if (stage === "end_round_one") return "One more Round";
     if (stage === "end_round_two") return "Final Round";
@@ -36,8 +36,21 @@ const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult }) => {
     );
   }
 
+  const showOpponentAction =
+    yourTurn &&
+    lastMove &&
+    lastMove.username !== playerUsername &&
+    (lastMove.move_type === 'swap' || lastMove.move_type === 'pass');
+
+  const actionText = showOpponentAction
+    ? (lastMove.move_type === 'swap' ? 'Opponent swapped tiles' : 'Opponent passed')
+    : null;
+
   return (
     <div className="game-status-bar">
+      {showOpponentAction && (
+        <span className="opponent-action-indicator">{actionText}</span>
+      )}
       {stageLabel && <span className="stage-indicator">{stageLabel}</span>}
       <span>{tilesRemaining} tiles remaining</span>
     </div>
@@ -54,6 +67,7 @@ const PlayerScoreArea = ({
   stage,
   complete,
   yourResult,
+  lastMove,
 }) => {
   return (
     <div className="player-score-area-wrapper">
@@ -79,6 +93,9 @@ const PlayerScoreArea = ({
         stage={stage}
         complete={complete}
         yourResult={yourResult}
+        yourTurn={yourTurn}
+        lastMove={lastMove}
+        playerUsername={playerUsername}
       />
     </div>
   );

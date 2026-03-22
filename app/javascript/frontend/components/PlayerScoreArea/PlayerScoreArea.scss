@@ -41,6 +41,11 @@
     font-weight: 600;
   }
 
+  .opponent-action-indicator {
+    color: $royal-gold;
+    font-weight: 600;
+  }
+
   &.game-over {
     font-weight: 600;
     color: white;
@@ -53,6 +58,7 @@
       background: color.adjust($royal-gold, $lightness: -10%);
     }
   }
+
 }
 
 .player-card {
