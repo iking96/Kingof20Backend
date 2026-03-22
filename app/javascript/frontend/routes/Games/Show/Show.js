@@ -92,7 +92,8 @@ const Show = ({
         your_result: your_result,
         available_tiles: available_tiles,
         vs_computer: game.vs_computer,
-        stage: stage
+        stage: stage,
+        last_move: last_move,
       });
       setPlayerData({
         you: you,
@@ -276,6 +277,7 @@ const Show = ({
         stage={gameFlowData.stage}
         complete={gameFlowData.complete}
         yourResult={gameFlowData.your_result}
+        lastMove={gameFlowData.last_move}
       />
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
         <div className="game-content-wrapper">
