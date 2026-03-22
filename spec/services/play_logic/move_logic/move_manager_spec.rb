@@ -310,7 +310,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         expect(new_move.col_num).to(eq(col_num))
         expect(new_move.tile_value).to(eq(tile_value))
         expect(new_move.returned_tiles).to(eq(returned_tiles))
-        expect(new_move.result).to(eq(10))
+        expect(new_move.result).to(eq(6))
         expect(new_move.move_number).to(eq(2))
       end
 
@@ -325,7 +325,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         expect(game.board).to(eq(expected_board))
         expect(game.initiator_score).to(eq(0))
         expect(game.opponent_rack).to(include(*expected_opponent_rack))
-        expect(game.opponent_score).to(eq(10))
+        expect(game.opponent_score).to(eq(6))
         expect(game.current_player).to(eq('initiator'))
         expect(game.stage).to(eq('in_play'))
       end
@@ -358,7 +358,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         expect(new_move).to(be_a(Move))
         expect(new_move.user).to(eq(opponent_user))
         expect(new_move.game).to(eq(game))
-        expect(new_move.result).to(eq(10))
+        expect(new_move.result).to(eq(6))
         expect(new_move.move_number).to(eq(2))
       end
 
@@ -373,7 +373,7 @@ RSpec.describe(PlayLogic::MoveLogic::MoveManager) do
         expect(game.board).to(eq(expected_board))
         expect(game.initiator_score).to(eq(0))
         expect(game.opponent_rack).to(include(*expected_opponent_rack))
-        expect(game.opponent_score).to(eq(10))
+        expect(game.opponent_score).to(eq(6))
         expect(game.current_player).to(eq('initiator'))
         expect(game.stage).to(eq('in_play'))
       end

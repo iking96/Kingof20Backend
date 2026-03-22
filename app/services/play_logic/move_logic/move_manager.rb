@@ -4,7 +4,7 @@ module PlayLogic
   module MoveLogic
     class MoveManager
       MOVE_INDEX_PARAMS = [:result, :game_id].freeze
-      SWAP_PASS_PENALTY = 10
+      SWAP_PASS_PENALTY = 6
       class << self
         def get_user_moves_with_params(user:, params:)
           options = params.keys
