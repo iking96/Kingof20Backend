@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./HowToPlay.scss";
-
-const TOTAL_CARDS = 6;
+import { swapPassPenalty } from "frontend/utils/constants.js";
 
 const HtpTile = ({ label }) => (
   <div className="htp-tile">{label}</div>
@@ -49,12 +48,12 @@ const CardYourTurn = () => (
     <div className="htp-turn-option">
       <div className="htp-turn-title">Swap</div>
       <div className="htp-turn-desc">Return tiles to the bag and draw new ones.</div>
-      <div className="htp-penalty-badge">−6 pts</div>
+      <div className="htp-penalty-badge">−{swapPassPenalty} pts</div>
     </div>
     <div className="htp-turn-option">
       <div className="htp-turn-title">Pass</div>
       <div className="htp-turn-desc">Skip your turn.</div>
-      <div className="htp-penalty-badge">−6 pts</div>
+      <div className="htp-penalty-badge">−{swapPassPenalty} pts</div>
     </div>
   </div>
 );
@@ -79,7 +78,7 @@ const CardPlacement = () => (
           <HtpTile label="+" />
           <HtpTile label="5" />
         </div>
-        <div style={{ margin: "6px 0", fontSize: 11, textAlign: "center", color: "#c62828" }}>
+        <div className="htp-invalid-note">
           + isolated formula nearby
         </div>
       </div>
@@ -99,7 +98,7 @@ const CardScoring = () => (
     <p className="htp-scoring-rule">
       Score = <strong>|20 − result|</strong>. Lower is better. Zero is perfect.
     </p>
-    <p className="htp-scoring-rule" style={{ fontSize: 13, color: "#666" }}>
+    <p className="htp-scoring-rule htp-scoring-note">
       No order of operations — evaluate strictly <strong>left to right</strong>.
     </p>
     <div className="htp-formula-container">
@@ -162,18 +161,16 @@ const HowToPlay = () => {
 
   const prev = () => setCurrent(i => Math.max(0, i - 1));
   const next = () => {
-    if (current < TOTAL_CARDS - 1) {
-      setCurrent(i => i + 1);
-    } else {
-      setCurrent(0);
-    }
+    setCurrent(i =>
+      i < CARD_COMPONENTS.length - 1 ? i + 1 : 0
+    );
   };
 
   return (
     <div className="how-to-play">
       <div className="htp-card">
         <div className="htp-card-header">
-          <div className="htp-step-label">Step {current + 1} of {TOTAL_CARDS}</div>
+          <div className="htp-step-label">Step {current + 1} of {CARD_COMPONENTS.length}</div>
           <h2 className="htp-card-title">{title}</h2>
         </div>
 
@@ -199,7 +196,7 @@ const HowToPlay = () => {
           </div>
 
           <button className="htp-nav-btn htp-next" onClick={next}>
-            {current === TOTAL_CARDS - 1 ? "Done ✓" : "Next →"}
+            {current === CARD_COMPONENTS.length - 1 ? "Done ✓" : "Next →"}
           </button>
         </div>
       </div>

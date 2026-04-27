@@ -285,12 +285,24 @@
   line-height: 1.9;
 }
 
+.htp-invalid-note {
+  margin: 6px 0;
+  font-size: 11px;
+  text-align: center;
+  color: #c62828;
+}
+
 /* ── Card 5: Scoring ────────────────────────────────── */
 .htp-scoring-rule {
   font-size: 14px;
   color: #333;
   margin-bottom: 8px;
   text-align: center;
+}
+
+.htp-scoring-note {
+  font-size: 13px;
+  color: #666;
 }
 
 .htp-score-callout {
