@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./HowToPlay.scss";
 import { swapPassPenalty } from "frontend/utils/constants.js";
+import boardScreenshot from "frontend/assets/how-to-play/board-screenshot.png";
 
 const HtpTile = ({ label }) => (
   <div className="htp-tile">{label}</div>
@@ -29,9 +30,11 @@ const CardGoal = () => (
 
 const CardBoard = () => (
   <>
-    <div className="htp-board-placeholder">
-      📷 Board screenshot coming soon
-    </div>
+    <img
+      src={boardScreenshot}
+      alt="King of 20 game board"
+      className="htp-board-screenshot"
+    />
     <p className="htp-board-caption">
       12×12 grid. Your first move must include at least one tile
       on a <strong>highlighted starting square</strong>. First move uses exactly 3 tiles.
