@@ -1,0 +1,15 @@
+@use "../../../scss/base" as *;
+
+.exchange-rack-container {
+  background: $royal-purple;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.exchange-view .btn-group {
+  margin-top: 16px;
+  margin-bottom: 0;
+}

@@ -33,12 +33,12 @@ Players build interlocking math expressions on the board. Each turn's score is `
 ### Scoring
 - Score per turn: `|20 - expression_result|` (0 = perfect)
 - When a player extends an existing expression, their score is based on the **entire resulting expression**
-- Swap or pass penalty: **10 points**
+- Swap or pass penalty: **6 points**
 
 ### Turn Options
 - **Place tiles**: play 1–3 tiles to form or extend an expression
-- **Swap**: return any tiles to the bag and draw replacements; 10-point penalty
-- **Pass**: skip the turn; 10-point penalty
+- **Swap**: return any tiles to the bag and draw replacements; 6-point penalty
+- **Pass**: skip the turn; 6-point penalty
 
 ### End Game
 - When the bag empties, each player gets **2 more turns** (tracked as `end_round_one` → `end_round_two` → `complete`)
@@ -53,7 +53,8 @@ Players build interlocking math expressions on the board. Each turn's score is `
 - Board: 12×12 grid
 - Rack size: 7 tiles
 - Move scoring: `|20 - expression_result|` (lower = better, 0 = perfect)
-- Swap penalty: 10 points (returns tiles to bag, draws new ones)
+- Swap penalty: 6 points (returns tiles to bag, draws new ones)
+- **Penalty source of truth:** `swapPassPenalty` in `app/javascript/frontend/utils/constants.js`. The pass confirmation and swap modal read this value directly — update the constant to change the displayed penalty, and update CLAUDE.md to match.
 - Turn options: place tiles, swap, or pass
 - The human player is always `initiator`; AI or opponent is `opponent`
 - Game stages: `in_play` → `end_round_one` → `end_round_two` → `complete` (also `initiator_forfit` / `opponent_forfit`)

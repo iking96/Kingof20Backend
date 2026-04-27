@@ -17,7 +17,7 @@ const PlayerCard = ({ username, score, isActive }) => {
   );
 };
 
-const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult, yourTurn, lastMove, playerUsername }) => {
+const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult, yourTurn, lastMove, playerUsername, opponentUsername, vsComputer }) => {
   const getStageLabel = () => {
     if (stage === "end_round_one") return "One more Round";
     if (stage === "end_round_two") return "Final Round";
@@ -28,10 +28,18 @@ const GameStatusBar = ({ tilesRemaining, stage, complete, yourResult, yourTurn, 
 
   if (complete) {
     const resultClass = yourResult === 'win' ? 'won' : yourResult === 'tie' ? 'tied' : 'lost';
-    const resultText = yourResult === 'win' ? 'You Won!' : yourResult === 'tie' ? "It's a Tie!" : 'You Lost';
+    let resultText;
+    if (yourResult === 'win') {
+      resultText = 'You Won!';
+    } else if (yourResult === 'tie') {
+      resultText = "It's a Tie!";
+    } else {
+      const opponentLabel = vsComputer ? 'the Computer' : (opponentUsername || 'Opponent');
+      resultText = `You Lost to ${opponentLabel}`;
+    }
     return (
       <div className={`game-status-bar game-over ${resultClass}`}>
-        Game Over - {resultText}
+        Game Over — {resultText}
       </div>
     );
   }
@@ -67,6 +75,7 @@ const PlayerScoreArea = ({
   stage,
   complete,
   yourResult,
+  vsComputer,
   lastMove,
 }) => {
   return (
@@ -96,6 +105,8 @@ const PlayerScoreArea = ({
         yourTurn={yourTurn}
         lastMove={lastMove}
         playerUsername={playerUsername}
+        opponentUsername={opponentUsername}
+        vsComputer={vsComputer}
       />
     </div>
   );

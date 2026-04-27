@@ -1,5 +1,6 @@
 export const boardSize = 12
 export const rackSize = 7
+export const swapPassPenalty = 6
 
 const prod = {
   url: {
