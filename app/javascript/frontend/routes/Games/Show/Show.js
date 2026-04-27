@@ -8,7 +8,7 @@ import useFetch from "frontend/utils/useFetch";
 import usePost from "frontend/utils/usePost";
 import { isAuthenticated, getAccessToken } from "frontend/utils/authenticateHelper.js";
 
-import { boardSize, rackSize } from "frontend/utils/constants.js";
+import { boardSize, rackSize, swapPassPenalty } from "frontend/utils/constants.js";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 
 import PlayerScoreArea from "frontend/components/PlayerScoreArea";
@@ -281,6 +281,7 @@ const Show = ({
         stage={gameFlowData.stage}
         complete={gameFlowData.complete}
         yourResult={gameFlowData.your_result}
+        vsComputer={gameFlowData.vs_computer}
         lastMove={gameFlowData.last_move}
       />
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
@@ -377,7 +378,7 @@ const Show = ({
       {showPassConfirm && (
         <ConfirmationModal
           title="Pass Turn"
-          message="Are you sure you want to pass your turn?"
+          message={<>Are you sure you want to pass your turn?<br />Passing costs <strong>{swapPassPenalty} points</strong>.</>}
           confirmText="Pass"
           cancelText="Cancel"
           onConfirm={postPass}
