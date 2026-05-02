@@ -181,7 +181,7 @@ const CardTileRef = () => (
         </div>
       ))}
     </div>
-    <p className="htp-tile-section-label" style={{ marginTop: 16 }}>Operators</p>
+    <p className="htp-tile-section-label">Operators</p>
     <div className="htp-tile-grid">
       {TILE_OPERATORS.map(([op, c]) => (
         <div key={op} className="htp-tile-grid-item">

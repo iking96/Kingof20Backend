@@ -368,6 +368,10 @@
   text-align: center;
 }
 
+.htp-tile-grid + .htp-tile-section-label {
+  margin-top: 16px;
+}
+
 .htp-tile-grid {
   display: flex;
   flex-wrap: wrap;
