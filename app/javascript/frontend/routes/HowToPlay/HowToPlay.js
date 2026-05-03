@@ -32,9 +32,8 @@ const CardBoard = () => (
       className="htp-board-screenshot"
     />
     <p className="htp-board-caption">
-      12×12 grid. Your first move must include at least one tile on
-      a <strong>highlighted starting square</strong> near the center of the board.
-      First move uses exactly 3 tiles.
+      The board is a 12×12 grid. Your first move must include at least one tile on
+      a <strong>highlighted starting square</strong>, and uses exactly 3 tiles.
     </p>
   </>
 );
