@@ -33,7 +33,7 @@ const CardBoard = () => (
     />
     <p className="htp-board-caption">
       The board is a 12×12 grid. Your first move must include at least one tile on
-      a <strong>grey starting square</strong>, and uses exactly 3 tiles.
+      a <strong>grey starting square</strong>, and use exactly 3 tiles.
     </p>
   </>
 );
