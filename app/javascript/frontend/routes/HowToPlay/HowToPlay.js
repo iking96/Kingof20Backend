@@ -4,7 +4,7 @@ import { swapPassPenalty } from "frontend/utils/constants.js";
 import boardScreenshot from "frontend/assets/how-to-play/board-screenshot.png";
 
 const HtpTile = ({ label, variant }) => (
-  <div className={`htp-tile${variant ? ` htp-tile-${variant}` : ""}`}>{label}</div>
+  <div className={`htp-tile${variant ? ` htp-tile-${variant}` : ""}${label.length > 1 ? " htp-tile-word" : ""}`}>{label}</div>
 );
 
 const CardGoal = () => (
