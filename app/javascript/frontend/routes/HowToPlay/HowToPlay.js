@@ -23,7 +23,6 @@ const CardGoal = () => (
       <span className="htp-tile-equals">=</span>
       <div className="htp-tile-result">24</div>
     </div>
-    <p className="htp-formula-caption">Build formulas that land as close to 20 as possible.</p>
     <p className="htp-formula-caption">Lower score is better. Zero is perfect.</p>
   </>
 );
