@@ -15,13 +15,11 @@ const CardGoal = () => (
       Lowest score wins.
     </p>
     <div className="htp-formula-container">
-      <HtpTile label="8" />
-      <HtpTile label="+" />
-      <HtpTile label="4" />
+      <HtpTile label="5" />
       <HtpTile label="×" />
-      <HtpTile label="2" />
+      <HtpTile label="4" />
       <span className="htp-tile-equals">=</span>
-      <div className="htp-tile-result">24</div>
+      <div className="htp-tile-result">20</div>
     </div>
     <p className="htp-formula-caption">Lower score is better. Zero is perfect.</p>
   </>
