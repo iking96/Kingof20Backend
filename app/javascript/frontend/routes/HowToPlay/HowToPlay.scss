@@ -259,18 +259,18 @@
 
 .htp-placement-examples {
   display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 12px;
-
-  @media (max-width: 480px) {
-    flex-direction: column;
-  }
 }
 
 .htp-placement-example {
-  flex: 1;
   border-radius: 8px;
   padding: 12px;
+
+  .htp-tile-row {
+    flex-wrap: nowrap;
+  }
 
   &.valid {
     background: #e8f5e9;
@@ -291,6 +291,13 @@
 
   &.valid .htp-example-label { color: #2e7d32; }
   &.invalid .htp-example-label { color: #c62828; }
+}
+
+.htp-example-or {
+  text-align: center;
+  font-size: 11px;
+  color: #666;
+  margin: 8px 0;
 }
 
 .htp-example-caption {
@@ -325,10 +332,14 @@
 
 .htp-rules-list {
   margin: 0;
-  padding-left: 18px;
+  text-align: center;
   font-size: 13px;
   color: #444;
   line-height: 1.9;
+
+  p {
+    margin: 0;
+  }
 }
 
 /* ── Card 5: Scoring ────────────────────────────────── */
