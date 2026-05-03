@@ -147,7 +147,7 @@ const TILE_NUMBERS = [[1,4],[2,5],[3,4],[4,6],[5,5],[6,6],[7,5],[8,6],[9,4]];
 const TILE_OPERATORS = [["Plus",8],["Times",8],["Minus",8],["Over",5]];
 const CardTileRef = () => (
   <>
-    <p className="htp-tile-table-note">74 tiles total in the bag</p>
+    <p className="htp-rack-intro">74 tiles total in the bag</p>
     <p className="htp-tile-section-label">Numbers</p>
     <div className="htp-tile-grid">
       {TILE_NUMBERS.map(([n, c]) => (
