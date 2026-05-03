@@ -18,8 +18,7 @@ const CardGoal = () => (
       <HtpTile label="5" />
       <HtpTile label="×" />
       <HtpTile label="4" />
-      <span className="htp-tile-equals">=</span>
-      <div className="htp-tile-result">20</div>
+      <span className="htp-tile-equals">= <em>20</em></span>
     </div>
     <p className="htp-formula-caption">Lower score is better. Zero is perfect.</p>
   </>
