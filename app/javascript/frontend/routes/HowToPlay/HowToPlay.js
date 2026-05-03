@@ -16,7 +16,7 @@ const CardGoal = () => (
     </p>
     <div className="htp-formula-container">
       <HtpTile label="5" />
-      <HtpTile label="×" />
+      <HtpTile label="Times" />
       <HtpTile label="4" />
       <span className="htp-tile-equals">= <em>20</em></span>
     </div>
@@ -74,7 +74,7 @@ const CardPlacement = () => (
     <div className="htp-placement-legend">
       <HtpTile label="4" variant="board" />
       <span>= on board</span>
-      <HtpTile label="×" variant="new" />
+      <HtpTile label="Times" variant="new" />
       <span>= your tile</span>
     </div>
 
@@ -83,9 +83,9 @@ const CardPlacement = () => (
         <div className="htp-example-label">✅ Valid — extend existing</div>
         <div className="htp-tile-row">
           <HtpTile label="4" variant="board" />
-          <HtpTile label="+" variant="board" />
+          <HtpTile label="Plus" variant="board" />
           <HtpTile label="7" variant="board" />
-          <HtpTile label="×" variant="new" />
+          <HtpTile label="Times" variant="new" />
           <HtpTile label="2" variant="new" />
         </div>
         <div className="htp-example-caption">Extending a formula already on the board.</div>
@@ -95,11 +95,11 @@ const CardPlacement = () => (
         <div className="htp-example-label">❌ Invalid — two formulas</div>
         <div className="htp-tile-row">
           <HtpTile label="4" variant="board" />
-          <HtpTile label="+" variant="board" />
+          <HtpTile label="Plus" variant="board" />
           <HtpTile label="7" variant="board" />
           <span className="htp-tile-gap">···</span>
           <HtpTile label="3" variant="new" />
-          <HtpTile label="+" variant="new" />
+          <HtpTile label="Plus" variant="new" />
           <HtpTile label="5" variant="new" />
         </div>
         <div className="htp-example-caption">A gap between tiles creates two separate formulas.</div>
@@ -110,17 +110,17 @@ const CardPlacement = () => (
       <div className="htp-example-label">✅ Valid — dangling operator ignored</div>
       <div className="htp-tile-row">
         <HtpTile label="4" variant="board" />
-        <HtpTile label="+" variant="board" />
+        <HtpTile label="Plus" variant="board" />
         <HtpTile label="7" variant="board" />
-        <HtpTile label="×" variant="new" />
+        <HtpTile label="Times" variant="new" />
         <HtpTile label="2" variant="new" />
         <div className="htp-tile-ignored-wrap">
-          <HtpTile label="÷" variant="ignored" />
+          <HtpTile label="Over" variant="ignored" />
           <div className="htp-tile-ignored-label">ignored</div>
         </div>
       </div>
       <div className="htp-example-caption">
-        The ÷ was placed by a crossing formula — it's ignored. Your formula: 4 + 7 × 2 = 22.
+        The "Over" tile was placed by a crossing formula — it's ignored. Your formula: 4 + 7 × 2 = 22.
       </div>
     </div>
 
@@ -143,9 +143,9 @@ const CardScoring = () => (
     </p>
     <div className="htp-formula-container">
       <HtpTile label="4" />
-      <HtpTile label="+" />
+      <HtpTile label="Plus" />
       <HtpTile label="9" />
-      <HtpTile label="×" />
+      <HtpTile label="Times" />
       <HtpTile label="2" />
       <span className="htp-tile-equals">=</span>
       <div className="htp-tile-result">26</div>
@@ -161,7 +161,7 @@ const CardScoring = () => (
 );
 
 const TILE_NUMBERS = [[1,4],[2,2],[3,4],[4,6],[5,4],[6,4],[7,2],[8,5],[9,2]];
-const TILE_OPERATORS = [["+",5],["×",8],["−",8],["÷",4]];
+const TILE_OPERATORS = [["Plus",5],["Times",8],["Minus",8],["Over",4]];
 const RARE_TILES = new Set([2, 7, 9]);
 
 const CardTileRef = () => (
