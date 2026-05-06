@@ -1,0 +1,16 @@
+{
+  "name": "King of 20",
+  "short_name": "King of 20",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#5c2d91",
+  "theme_color": "#5c2d91",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}

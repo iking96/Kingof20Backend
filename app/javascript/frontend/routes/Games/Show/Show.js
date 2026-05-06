@@ -62,7 +62,7 @@ const Show = ({
       var status = response.status;
       if (status != 200) {
         setErrorMessage("Unable to load game. Redirecting...");
-        setTimeout(() => window.location.replace(`/`), 2000);
+        setTimeout(() => history.replace(`/`), 2000);
         return;
       }
 
