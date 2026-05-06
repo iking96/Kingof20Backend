@@ -53,7 +53,7 @@ const CardYourTurn = () => (
       </div>
       <div className="htp-turn-option">
         <div className="htp-turn-title">Swap</div>
-        <div className="htp-turn-desc">Return tiles to the bag and draw new ones.</div>
+        <div className="htp-turn-desc">Return any number of tiles to the bag and draw new ones.</div>
         <div className="htp-penalty-badge">−{swapPassPenalty} pts</div>
       </div>
       <div className="htp-turn-option">
@@ -182,7 +182,7 @@ const CardEndGame = () => (
 );
 
 const CARD_COMPONENTS = [
-  { title: "The Goal",        Component: CardGoal },
+  { title: "Welcome to King of 20", Component: CardGoal },
   { title: "The Board",       Component: CardBoard },
   { title: "Your Turn",       Component: CardYourTurn },
   { title: "Placement Rules", Component: CardPlacement },
@@ -232,7 +232,6 @@ const HowToPlay = () => {
               {current === CARD_COMPONENTS.length - 1 ? "Done ✓" : "Next →"}
             </button>
           </div>
-          <div className="htp-step-label">Step {current + 1} of {CARD_COMPONENTS.length}</div>
           <h2 className="htp-card-title">{title}</h2>
         </div>
 
