@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # Here I do destory because the games may have clean-up to do
   has_many :initiated_games, class_name: 'Game', foreign_key: :initiator_id, dependent: :destroy
   has_many :opposing_games, class_name: 'Game', foreign_key: :opponent_id, dependent: :destroy
 
@@ -18,8 +15,10 @@ class User < ApplicationRecord
   validates :encrypted_password, presence: true
   validates :username, presence: true
   validates :username, uniqueness: true
+  validates :username, length: { minimum: 2, maximum: 15 }
 
-  # Inform Devise that email is NOT required
+  validate :username_not_offensive
+
   def email_required?
     false
   end
@@ -42,5 +41,12 @@ class User < ApplicationRecord
 
   def current_player_games
     games.select { |game| game.current_user == self }
+  end
+
+  private
+
+  def username_not_offensive
+    return if username.blank?
+    errors.add(:username, 'contains inappropriate language') if Obscenity.profane?(username)
   end
 end

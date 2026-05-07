@@ -6,6 +6,20 @@ RSpec.describe(User, type: :model) do
   it { should validate_presence_of(:username) }
   it { should validate_presence_of(:encrypted_password) }
   it { should validate_uniqueness_of(:username) }
+  it { should validate_length_of(:username).is_at_least(2).is_at_most(15) }
+
+  context 'username profanity check' do
+    it 'rejects a username containing a blocked word' do
+      user = build(:user, username: 'asshole')
+      expect(user).not_to(be_valid)
+      expect(user.errors[:username]).to(include('contains inappropriate language'))
+    end
+
+    it 'accepts a clean username' do
+      user = build(:user, username: 'cleanplayer')
+      expect(user).to(be_valid)
+    end
+  end
 
   context 'when the user is involved in a game' do
     let(:initiating_user) { create(:user) }
