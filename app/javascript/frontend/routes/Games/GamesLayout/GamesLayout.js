@@ -30,7 +30,7 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
         }
         doFetch();
       } else {
-        setCreateGameError(json.message || "Failed to create game.");
+        setCreateGameError((json && json.message) || "Failed to create game.");
       }
     }
   );

@@ -23,7 +23,8 @@ function usePost(url, handleResponse = () => {}) {
       };
 
       const response = await fetch(url, opts);
-      const json = await response.json();
+      let json = null;
+      try { json = await response.json(); } catch (_) {}
 
       handleResponse({ response, json });
       onComplete({ response, json });
