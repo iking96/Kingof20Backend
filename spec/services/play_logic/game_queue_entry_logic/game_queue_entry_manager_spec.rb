@@ -24,7 +24,7 @@ RSpec.describe(PlayLogic::GameQueueEntryLogic::GameQueueEntryManager) do
           described_class.enqueue_game(game: second_game)
         end.to(raise_error(Error::Game::ProcessingError)) do |error|
           expect(error.error_code).to(eq(:game_already_queued))
-          expect(error.message).to(eq("You're already waiting for an opponent"))
+          expect(error.message).to(eq(Error::Game::ProcessingError::PROCESSING_ERRORS[:game_already_queued]))
         end
       end
     end

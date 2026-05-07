@@ -18,14 +18,12 @@ module PlayLogic
         end
 
         def enqueue_game(game:)
-          if GameQueueEntry.exists?(user: game.initiator)
-            raise Error::Game::ProcessingError.new(error_code: :game_already_queued)
-          end
-
-          GameQueueEntry.create!(
-            user: game.initiator,
-            game: game,
-          )
+          GameQueueEntry.create!(user: game.initiator, game: game)
+        rescue ActiveRecord::RecordNotUnique
+          raise Error::Game::ProcessingError.new(error_code: :game_already_queued)
+        rescue ActiveRecord::RecordInvalid => e
+          raise Error::Game::ProcessingError.new(error_code: :game_already_queued) if e.record.errors[:user_id].any?
+          raise
         end
       end
     end

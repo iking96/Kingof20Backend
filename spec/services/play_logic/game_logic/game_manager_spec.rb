@@ -200,16 +200,26 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
       end
       let!(:game_queue_entry) { GameQueueEntry.create!(user: requesting_user, game: waiting_game) }
 
-      it 'raises Error::Game::ProcessingError with :game_already_queued code and does not create a new game or queue entry' do
+      it 'raises Error::Game::ProcessingError with :game_already_queued code' do
         expect do
           subject
         end.to(raise_error(Error::Game::ProcessingError)) do |error|
           expect(error.error_code).to(eq(:game_already_queued))
-          expect(error.message).to(eq("You're already waiting for an opponent"))
+          expect(error.message).to(eq(Error::Game::ProcessingError::PROCESSING_ERRORS[:game_already_queued]))
         end
+      end
 
-        expect(Game.count).to(eq(1))
-        expect(GameQueueEntry.count).to(eq(1))
+      it 'does not create a new game or queue entry' do
+        expect do
+          subject
+        rescue Error::Game::ProcessingError
+          # Expected error
+        end.not_to(change(Game, :count))
+        expect do
+          subject
+        rescue Error::Game::ProcessingError
+          # Expected error
+        end.not_to(change(GameQueueEntry, :count))
       end
     end
   end
