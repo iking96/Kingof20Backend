@@ -10,9 +10,9 @@ import "./GamesLayout.scss";
 
 const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar }) => {
   const [games, setGames] = useState([]);
+  const [createGameError, setCreateGameError] = useState(null);
   const history = useHistory();
 
-  // Fetch games list for sidebar
   const { isFetching, doFetch } = useFetch(
     "/api/v1/games",
     ({ json }) => {
@@ -20,34 +20,35 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
     }
   );
 
-  // Create new game
-  const { isPosting, hasPosted, postError, doPost } = usePost(
+  const { isPosting, doPost } = usePost(
     "/api/v1/games",
-    ({ json }) => {
-      // Navigate to newly created game
-      if (json && json.game && json.game.id) {
-        history.push(`/games/${json.game.id}`);
+    ({ response, json }) => {
+      if (response.ok) {
+        setCreateGameError(null);
+        if (json && json.game && json.game.id) {
+          history.push(`/games/${json.game.id}`);
+        }
+        doFetch();
+      } else {
+        setCreateGameError(json.message || "Failed to create game.");
       }
-      doFetch(); // Refresh games list
     }
   );
 
-  // Hide/delete game
   const { doDelete } = useDelete("/api/v1/games", () => {
-    doFetch(); // Refresh games list after hiding
+    doFetch();
   });
 
   useEffect(() => {
     if (isAuthenticated) {
       doFetch();
     } else {
-      // Clear games when logged out
       setGames([]);
     }
   }, [isAuthenticated]);
 
   const handleReceivedUpdate = response => {
-    if (isFetching) { return }
+    if (isFetching) { return; }
     doFetch();
   };
 
@@ -59,7 +60,6 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
     }
   };
 
-  // Get current game ID from URL if we're viewing a specific game
   const getCurrentGameId = () => {
     const match = window.location.pathname.match(/\/games\/(\d+)/);
     return match ? parseInt(match[1]) : null;
@@ -84,6 +84,7 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
         isAuthenticated={isAuthenticated}
         isOpen={sidebarOpen}
         onGameSelect={handleGameSelect}
+        createGameError={createGameError}
       />
       <div className="games-content">
         {children}

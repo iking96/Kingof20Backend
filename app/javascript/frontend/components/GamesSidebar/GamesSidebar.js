@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import "./GamesSidebar.scss";
 
-const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated, isOpen, onGameSelect }) => {
+const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthenticated, isOpen, onGameSelect, createGameError }) => {
   const history = useHistory();
   const [showNewGameMenu, setShowNewGameMenu] = useState(false);
 
@@ -63,6 +63,10 @@ const GamesSidebar = ({ games, currentGameId, onCreateGame, onHideGame, isAuthen
           </div>
         )}
       </div>
+
+      {createGameError && (
+        <p className="create-game-error">{createGameError}</p>
+      )}
 
       <div className="sidebar-section">
         <div className="section-header">
