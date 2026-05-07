@@ -53,6 +53,7 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
   };
 
   const handleCreateGame = (aiDifficulty = null) => {
+    setCreateGameError(null);
     if (aiDifficulty) {
       doPost({ ai_difficulty: aiDifficulty });
     } else {
