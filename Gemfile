@@ -6,7 +6,7 @@ ruby '3.3.5'
 gem 'pry'
 gem 'pry-rails'
 gem 'pry-byebug'
-gem 'obscenity', '~> 1.0'
+gem 'obscenity'
 gem 'rubocop', require: false
 
 # Webpack and React
