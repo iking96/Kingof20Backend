@@ -93,6 +93,7 @@ const SignupModal = ({ onClose, onLogin, onSwitchToLogin }) => {
               onChange={username.handleChange}
               required
               autoFocus
+              maxLength={15}
             />
           </div>
           <div className="form-field">
