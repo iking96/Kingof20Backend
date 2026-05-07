@@ -94,6 +94,7 @@ const SignupModal = ({ onClose, onLogin, onSwitchToLogin }) => {
               required
               autoFocus
               maxLength={15}
+              minLength={2}
             />
           </div>
           <div className="form-field">
