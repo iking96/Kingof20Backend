@@ -6,4 +6,5 @@ class GameQueueEntry < ApplicationRecord
 
   validates :user, presence: true
   validates :game, presence: true
+  validates :user_id, uniqueness: true
 end
