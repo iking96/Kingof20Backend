@@ -209,42 +209,16 @@ RSpec.describe('Game API', type: :request) do
       context 'when waiting user and creating user are the same' do
         let(:user2) { user }
 
-        it 'responds with a new game' do
+        it 'responds with an error' do
           subject
-          expect(response).to(have_http_status(200))
-          expect(json['game']).to(include(
-            "you" => hash_including('id' => user.id),
-            "them" => nil,
-          ))
-          expect(json['game']["complete"]).to(eq(false))
+          expect(response).to(have_http_status(422))
+          expect(json['error_code']).to(eq('game_already_queued'))
+          expect(json['message']).to(eq("You're already waiting for an opponent"))
         end
 
-        it 'adds a game to the game queue' do
-          expect { subject }.to(change { GameQueueEntry.count }.by(1))
-        end
-
-        context 'when there is another waiting game' do
-          let!(:waiting_game2) do
-            create(:game,
-            initiator: user3,
-            initiator_rack: [7, 6, 5, 4, 3, 2, 1],)
-          end
-          let(:user3) { create(:user) }
-          let!(:game_queue_entry) { GameQueueEntry.create!(user: user3, game: waiting_game2) }
-
-          it 'should respond with the waiting game' do
-            subject
-            expect(response).to(have_http_status(200))
-            expect(json['game']).to(include(
-              "you" => hash_including('id' => user.id),
-              "them" => hash_including('id' => user3.id),
-            ))
-            expect(json['game']["complete"]).to(eq(false))
-          end
-
-          it 'removes a game to the game queue' do
-            expect { subject }.to(change { GameQueueEntry.count }.by(-1))
-          end
+        it 'does not create a new game or queue entry' do
+          expect { subject }.not_to(change { Game.count })
+          expect { subject }.not_to(change { GameQueueEntry.count })
         end
       end
     end

@@ -19,6 +19,7 @@ module Error
         move_creates_dangling_operation: 'All tiles placed this turn must contribute to the expression',
         move_creates_lone_integer: 'All tiles placed this turn must contribute to the expression',
         move_not_building: 'Tiles must connect to existing tiles on the board',
+        game_already_queued: "You're already waiting for an opponent",
       }.freeze
 
       def initialize(error_code: :game_processing_error)
