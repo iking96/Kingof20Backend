@@ -63,7 +63,10 @@ module PlayLogic
             error_code: :game_already_complete
           ) if game.complete?
 
-          game.forfit_user(user: user) if options.include?('forfit')
+          if options.include?('forfit')
+            game.forfit_user(user: user)
+            game.game_queue_entries.destroy_all
+          end
           game.save!
           game
         end
