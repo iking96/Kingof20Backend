@@ -262,6 +262,14 @@ RSpec.describe(PlayLogic::GameLogic::GameManager) do
             expect(game.stage).to(eq('opponent_forfit'))
           end
         end
+
+        context 'when the game has a queue entry' do
+          let!(:game_queue_entry) { GameQueueEntry.create!(user: initiating_user, game: game) }
+
+          it 'destroys the queue entry' do
+            expect { subject }.to(change(GameQueueEntry, :count).by(-1))
+          end
+        end
       end
     end
   end
