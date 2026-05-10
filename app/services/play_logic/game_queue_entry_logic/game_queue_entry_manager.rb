@@ -25,6 +25,10 @@ module PlayLogic
           raise Error::Game::ProcessingError.new(error_code: :game_already_queued) if e.record.errors[:user_id].any?
           raise
         end
+
+        def dequeue_game(game:)
+          game.game_queue_entries.destroy_all
+        end
       end
     end
   end
