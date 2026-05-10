@@ -3,6 +3,29 @@
 require 'rails_helper'
 
 RSpec.describe(PlayLogic::GameQueueEntryLogic::GameQueueEntryManager) do
+  describe '.dequeue_game' do
+    let(:user) { create(:user) }
+    let(:game) { create(:game, initiator: user) }
+
+    context 'when the game has a queue entry' do
+      before { described_class.enqueue_game(game: game) }
+
+      it 'destroys the queue entry' do
+        expect do
+          described_class.dequeue_game(game: game)
+        end.to(change(GameQueueEntry, :count).by(-1))
+      end
+    end
+
+    context 'when the game has no queue entry' do
+      it 'does nothing' do
+        expect do
+          described_class.dequeue_game(game: game)
+        end.not_to(change(GameQueueEntry, :count))
+      end
+    end
+  end
+
   describe '.enqueue_game' do
     let(:user) { create(:user) }
     let(:game) { create(:game, initiator: user) }
