@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ActionCableConsumer } from "frontend/utils/actionCableProvider";
 import useFetch from "frontend/utils/useFetch";
@@ -11,6 +11,7 @@ import "./GamesLayout.scss";
 const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar }) => {
   const [games, setGames] = useState([]);
   const [createGameError, setCreateGameError] = useState(null);
+  const errorTimeoutRef = useRef(null);
   const history = useHistory();
 
   const { isFetching, doFetch } = useFetch(
@@ -30,7 +31,9 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
         }
         doFetch();
       } else {
+        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
         setCreateGameError((json && json.message) || "Failed to create game.");
+        errorTimeoutRef.current = setTimeout(() => setCreateGameError(null), 5000);
       }
     }
   );
@@ -47,12 +50,17 @@ const GamesLayout = ({ children, isAuthenticated, sidebarOpen, onCloseSidebar })
     }
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    return () => { if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current); };
+  }, []);
+
   const handleReceivedUpdate = response => {
     if (isFetching) { return; }
     doFetch();
   };
 
   const handleCreateGame = (aiDifficulty = null) => {
+    if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
     setCreateGameError(null);
     if (aiDifficulty) {
       doPost({ ai_difficulty: aiDifficulty });

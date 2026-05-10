@@ -30,14 +30,14 @@ begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
-  exit 1
+  exit(1)
 end
 
 # configure shoulda matchers to use rspec as the test framework and full matcher libraries for rails
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
+    with.test_framework(:rspec)
+    with.library(:rails)
   end
 end
 
@@ -49,8 +49,8 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
-  config.include RequestSpecHelper, type: :request
-  
+  config.include(RequestSpecHelper, type: :request)
+
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.
@@ -72,7 +72,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   #
   # add `FactoryBot` methods
-  config.include FactoryBot::Syntax::Methods
+  config.include(FactoryBot::Syntax::Methods)
 
   # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do

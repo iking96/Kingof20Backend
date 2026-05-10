@@ -39,5 +39,5 @@ Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
 
 # Update node location in $PATH
 set :default_env, {
-  'PATH' => "$PATH:/home/deploy/.nvm/versions/node/v13.8.0/bin"
+  'PATH' => "$PATH:/home/deploy/.nvm/versions/node/v13.8.0/bin",
 }

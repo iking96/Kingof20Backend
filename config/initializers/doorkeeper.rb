@@ -10,11 +10,9 @@ Doorkeeper.configure do
     #   User.find_by_id(session[:user_id]) || redirect_to(new_user_session_url)
   end
 
-  resource_owner_from_credentials do |routes|
+  resource_owner_from_credentials do |_routes|
     user = User.find_by(username: params[:username])
-    if user && user.valid_password?(params[:password])
-      user
-    end
+    user if user&.valid_password?(params[:password])
   end
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
   # file then you need to declare this block in order to restrict access to the web interface for
@@ -51,7 +49,7 @@ Doorkeeper.configure do
   # If you want to disable expiration, set this to nil.
   #
   access_token_expires_in 1.year
-  
+
   # Assign custom TTL for access tokens. Will be used instead of access_token_expires_in
   # option if defined. `context` has the following properties available
   #
